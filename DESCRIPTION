@@ -1,0 +1,13 @@
+Package: HerpNom
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("Joao Paulo", "dos Santos Vieira-Alencar", , "joaopaulo.valencar@gmail.com", role = c("aut", "cre"))
+Description: The package compiles reptile species url from The Reptile Dabase website and summarizes species synonyms in a dataframe
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    rvest,
+    xml2

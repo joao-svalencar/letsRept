@@ -4,6 +4,8 @@
 
 #' Get reptile species synonyms
 #'
+#' @description
+#' creates a _dataframe_ containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
 #' @param x a _dataframe_ with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of HerpNom::getSpecies()
 #' @param getRef a _logical_ value. default is FALSE. TRUE returns an extra column with the abbreviated reference that used each synonym
 #'

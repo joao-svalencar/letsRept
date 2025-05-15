@@ -4,7 +4,8 @@
 
 #' Building url species list 
 #'
-#' @description
+#' @description 
+#' creates a _dataframe_ containing list of species based on a Reptile Database advanced search with their respective url
 #' @usage getSpecies(url, higherTaxa = FALSE)
 #' @param url a _character_ string with the url from an advanced search in Reptile Database
 #' @param higherTaxa a _logical_ value indicating if user wants the families for each species within the resulting data frame

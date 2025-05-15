@@ -14,9 +14,7 @@
 #' @param return.no.matches logical argument of whether to leave taxa not found in the reference table blank or whether to fill in the names provided by the query. default is FALSE
 #' @return this function returns a data frame with the following information/columns: original/input names, "stripped" names with no formatting, status of what action has been taken, updated names as recommended by the reference table
 #' @export
-#' @examples
-#' herpSync(query=c("c("Boa diviniloqua", "Boa eques", "Boa sigma", "Epicrates sabogae")")
-#'           synonym=)
+#' 
 
 herpSync<-function(query, synonym=NULL, interactive=F, return.no.matches=F){
 
