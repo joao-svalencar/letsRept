@@ -20,7 +20,7 @@
 #' @export
 #'
 
-getSynonyms <- function(x, getAuthor = FALSE)
+getSynonyms <- function(x, getRef = FALSE)
 {
   species_list <- c()
   synonym_list <- c()
