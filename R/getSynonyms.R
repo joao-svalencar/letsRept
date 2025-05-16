@@ -39,7 +39,11 @@ getSynonyms <- function(x, getRef = FALSE)
     children <- xml2::xml_contents(td2)
     synonym_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
     synonyms <- unique(sapply(strsplit(synonym_vector, " "), function(y) {
-      if (length(y) >= 3 && y[2] %in% c("aff.", "cf", "gr.","[sic]") || grepl("^\\(.+\\)$", y[2])) {
+      if (length(y) >= 4 && y[1] == "?" && y[3] %in% c("aff", "cf", "gr", "[sic]")) {
+        paste(y[1:4], collapse = " ")
+      } else if (length(y) >= 3 && y[1] == "?") {
+        paste(y[1:3], collapse = " ")
+      } else if (length(y) >= 3 && (y[2] %in% c("aff", "cf", "gr", "[sic]") || grepl("^\\(.+\\)$", y[2]))) {
         paste(y[1:3], collapse = " ")
       } else {
         paste(y[1:2], collapse = " ")
