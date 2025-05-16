@@ -43,7 +43,7 @@ getSynonyms <- function(x, getRef = FALSE)
       }
     }))
     
-    cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!"))
+    cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
     species <- c(rep(x$species[i], times=length(synonyms)))
     
     species_list <- c(species_list, species)
