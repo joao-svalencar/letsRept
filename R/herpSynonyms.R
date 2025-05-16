@@ -45,7 +45,7 @@ herpSynonyms <- function(x, getRef = FALSE)
     synonym_ref_list <- c()
     synonym_ref <- sub(".*\\b([A-Z]{2,}.*)","\\1", unique(synonym_vector))
     }else{ 
-    synonyms <- sub("\\s*[-\\u2013\\u2014]?\\s*\\b[A-Z]{2,}.*", "", unique(synonym_vector))
+    synonyms <- sub("\\s*[\\p{Pd}]?\\s*\\b[A-Z]{2,}.*", "", unique(synonym_vector), perl = TRUE)
     # synonyms <- unique(sapply(strsplit(unique(synonym_vector), " "), function(y) {
     #   if (length(y) >= 4 && y[1] == "?" && y[3] %in% c("aff", "cf", "gr", "aff.", "cf.", "gr.", "sp.", "[sic]")) {
     #     paste(y[1:4], collapse = " ")
