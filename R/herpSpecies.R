@@ -88,5 +88,5 @@ herpSpecies <- function(url, higherTaxa = FALSE)
                               stringsAsFactors = FALSE)
   }
   
-  return(searchResults)
+  return(searchResults) #give higher taxa options
 }
