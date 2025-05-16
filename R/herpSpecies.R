@@ -1,18 +1,18 @@
 ##########################################################################################################
-######################## function getSpecies by:  JP VIEIRA-ALENCAR  #####################################
+######################## function herpSpecies by:  JP VIEIRA-ALENCAR  #####################################
 ##########################################################################################################
 
 #' Building url species list 
 #'
 #' @description 
 #' creates a _dataframe_ containing list of species based on a Reptile Database advanced search with their respective url
-#' @usage getSpecies(url, higherTaxa = FALSE)
+#' @usage herpSpecies(url, higherTaxa = FALSE)
 #' @param url a _character_ string with the url from an advanced search in Reptile Database
 #' @param higherTaxa a _logical_ value indicating if user wants the families for each species within the resulting data frame
 #'
-#' @return if _higherTaxa_ = FALSE (default), '_getSpecies_' returns a dataframe with columns: species and url.
+#' @return if _higherTaxa_ = FALSE (default), '_herpSpecies_' returns a dataframe with columns: species and url.
 #' 
-#' if _higherTaxa_ = TRUE, '_getSpecies_' returns a dataframe with columns: family, genus, species and url
+#' if _higherTaxa_ = TRUE, '_herpSpecies_' returns a dataframe with columns: family, genus, species and url
 #' 
 #' @references 
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
@@ -20,7 +20,7 @@
 #' @export
 #'
 
-getSpecies <- function(url, higherTaxa = FALSE)
+herpSpecies <- function(url, higherTaxa = FALSE)
 {
   species_list <- c()
   genus_list <- c()

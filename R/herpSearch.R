@@ -1,8 +1,8 @@
 #' Search The Reptile Database website (TRD)
 #' 
 #' @description
-#' ATTENTION: under development, may not work yet. Alternatively, for advanced search copy the link with the results from TRD and run getSpecies()
-#' simulates searches in The Reptile Database website and provides the data of a single species or the url for multiple species sampling by getSpecies()
+#' ATTENTION: under development, may not work yet. Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
+#' simulates searches in The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()
 #' 
 #' @param binomial a _character_ string with the current valid binomial name of a given reptile species (e.g.: "Apostolepis adhara")
 #' @param highertaxa a _character_ string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")
@@ -11,11 +11,11 @@
 #'
 #' @returns
 #' If a search for an specific species information (e.g.: argument binomial is not NULL): returns the species information collected from its respective page in The Reptile Database
-#' If advanced search: returns the url to be used in getSpecies()
+#' If advanced search: returns the url to be used in herpSpecies()
 #' @export
 #'
 
-searchHerp <- function(binomial=NULL, highertaxa=NULL, genus=NULL, distribution=NULL){
+herpSearch <- function(binomial=NULL, highertaxa=NULL, genus=NULL, distribution=NULL){
 
   # block for single species search -----------------------------------------
   #for binomial:
@@ -56,7 +56,7 @@ searchHerp <- function(binomial=NULL, highertaxa=NULL, genus=NULL, distribution=
   return(url)
 }
 
-boa<-searchHerp(binomial= "Boa constrictor")
+boa<-herpSearch(binomial= "Boa constrictor")
 
 url <- rvest::read_html(boa)
 element <- rvest::html_element(url, "table") #scrap species table from Reptile Database
@@ -71,7 +71,3 @@ synonyms <- unique(sapply(strsplit(synonym_vector, " "), function(x) {
     paste(x[1:2], collapse = " ")
   }
 }))
-
-synonyms
-
-getSpecies(boa)
