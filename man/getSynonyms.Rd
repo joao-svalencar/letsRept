@@ -4,7 +4,7 @@
 \alias{getSynonyms}
 \title{Get reptile species synonyms}
 \usage{
-getSynonyms(x, getAuthor = FALSE)
+getSynonyms(x, getRef = FALSE)
 }
 \arguments{
 \item{x}{a \emph{dataframe} with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of HerpNom::getSpecies()}
