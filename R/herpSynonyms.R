@@ -24,6 +24,7 @@ herpSynonyms <- function(x, getRef = FALSE)
 {
   species_list <- c()
   synonym_list <- c()
+  synonym_ref_list <- c()
   
   for(i in 1:length(x$species))
   {
@@ -42,21 +43,9 @@ herpSynonyms <- function(x, getRef = FALSE)
     #including synonyms references
     if(getRef==TRUE)
     {
-    synonym_ref_list <- c()
     synonym_ref <- sub(".*\\b([A-Z]{2,}.*)","\\1", unique(synonym_vector))
     }else{ 
     synonyms <- sub("\\s*[\\p{Pd}]?\\s*\\b[A-Z]{2,}.*", "", unique(synonym_vector), perl = TRUE)
-    # synonyms <- unique(sapply(strsplit(unique(synonym_vector), " "), function(y) {
-    #   if (length(y) >= 4 && y[1] == "?" && y[3] %in% c("aff", "cf", "gr", "aff.", "cf.", "gr.", "sp.", "[sic]")) {
-    #     paste(y[1:4], collapse = " ")
-    #   } else if (length(y) >= 3 && y[1] == "?") {
-    #     paste(y[1:3], collapse = " ")
-    #   } else if (length(y) >= 3 && (y[2] %in% c("aff", "cf", "gr", "aff.", "cf.", "gr.","sp.", "[sic]") || grepl("^\\(.+\\)$", y[2]))) {
-    #     paste(y[1:3], collapse = " ")
-    #   } else {
-    #     paste(y[1:2], collapse = " ")
-    #   }
-    # }))
     }#close the getRef else
     
     cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
@@ -65,7 +54,6 @@ herpSynonyms <- function(x, getRef = FALSE)
     species_list <- c(species_list, species)
     synonym_list <- c(synonym_list, synonyms)
     synonym_ref_list <- c(synonym_ref_list, synonym_ref)
-    
   }
   
   synonymResults <- data.frame(species = species_list,
