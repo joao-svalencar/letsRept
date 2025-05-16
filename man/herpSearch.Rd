@@ -21,10 +21,12 @@ herpSearch(
 \item{distribution}{a \emph{character} string with a location from which the user wants the list of species expected to occur}
 }
 \value{
-If searching for an specific species information (e.g.: argument binomial is not NULL) - \emph{herpSearch()} returns the species information collected from its respective page in The Reptile Database.\n\n
+If searching for an specific species information (e.g.: argument binomial is not NULL) - \emph{herpSearch()} returns the species information collected from its respective page in The Reptile Database.
+
 If advanced search: returns the url to be used in herpSpecies()
 }
 \description{
-ATTENTION: under development, may not work yet. Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
-simulates searches in The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()
+Simulates searches in The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()\\cr
+#' \emph{ATTENTION:} under development, may not work yet.\\cr
+Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
 }

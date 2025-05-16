@@ -57,17 +57,3 @@ herpSearch <- function(binomial=NULL, highertaxa=NULL, genus=NULL, distribution=
   
   return(url)
 }
-
-url <- rvest::read_html(boa)
-element <- rvest::html_element(url, "table") #scrap species table from Reptile Database
-syn <- xml2::xml_child(element, 4) #select the synonym part of the table
-td2 <- rvest::html_element(syn, "td:nth-child(2)")
-children <- xml2::xml_contents(td2)
-synonym_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
-synonyms <- unique(sapply(strsplit(synonym_vector, " "), function(x) {
-  if (length(x) >= 3 && x[2] %in% c("aff.", "cf", "gr.")) {
-    paste(x[1:3], collapse = " ")
-  } else {
-    paste(x[1:2], collapse = " ")
-  }
-}))
