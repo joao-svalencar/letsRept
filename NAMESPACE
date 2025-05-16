@@ -3,3 +3,4 @@
 export(getSpecies)
 export(getSynonyms)
 export(herpSync)
+export(searchHerp)
