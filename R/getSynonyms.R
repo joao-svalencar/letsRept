@@ -28,7 +28,7 @@ getSynonyms <- function(x, getRef = FALSE)
   for(i in 1:length(x$species))
   {
     #add random sleep time
-    Sys.sleep(runif(1, min = 0.3, max = 1)) # random sleep time
+    Sys.sleep(stats::runif(1, min = 0.3, max = 1)) # random sleep time
     
     url <- rvest::read_html(x$url[i])
     element <- rvest::html_element(url, "table") #scrap species table from Reptile Database

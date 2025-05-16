@@ -33,7 +33,7 @@ getSpecies <- function(url, higherTaxa = FALSE)
   for(i in 1:length(xml2::xml_children(ul_element[[1]])))
   {
     #add random sleep time
-    Sys.sleep(runif(1, min = 0.3, max = 1)) # random sleep time
+    Sys.sleep(stats::runif(1, min = 0.3, max = 1)) # random sleep time
     
     target <- xml2::xml_child(xml2::xml_child(ul_element[[1]], i), 1)
     
