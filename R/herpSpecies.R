@@ -74,9 +74,18 @@ herpSpecies <- function(url, higherTaxa = FALSE)
       suborder_list <- c(suborder_list, suborder)
       family_list <- c(family_list, family)
      }
-      searchResults <- data.frame(higher_taxa = taxa_vector_list, order = order_list, suborder = suborder_list, family = family_list, genus = genus_list, species = species_list, url = url_list, stringsAsFactors = FALSE)
+      searchResults <- data.frame(higher_taxa = taxa_vector_list,
+                                  order = order_list,
+                                  suborder = suborder_list,
+                                  family = family_list,
+                                  genus = genus_list,
+                                  species = species_list,
+                                  url = url_list,
+                                  stringsAsFactors = FALSE)
    }else{
-  searchResults <- data.frame(species = species_list, url = url_list, stringsAsFactors = FALSE)
+  searchResults <- data.frame(species = species_list,
+                              url = url_list,
+                              stringsAsFactors = FALSE)
   }
   
   return(searchResults)

@@ -4,13 +4,13 @@
 #' ATTENTION: under development, may not work yet. Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
 #' simulates searches in The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()
 #' 
-#' @param binomial a _character_ string with the current valid binomial name of a given reptile species (e.g.: "Apostolepis adhara")
+#' @param binomial a _character_ string with the current valid binomial name of a given reptile species (e.g.: "_Apostolepis adhara_")
 #' @param highertaxa a _character_ string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")
-#' @param genus a _character_ string with the current valid name of a given reptile genus (e.g.: "Apostolepis")
+#' @param genus a _character_ string with the current valid name of a given reptile genus (e.g.: "_Apostolepis_")
 #' @param distribution a _character_ string with a location from which the user wants the list of species expected to occur
 #'
 #' @returns
-#' If a search for an specific species information (e.g.: argument binomial is not NULL): returns the species information collected from its respective page in The Reptile Database
+#' If searching for an specific species information (e.g.: argument binomial is not NULL) - _herpSearch()_ returns the species information collected from its respective page in The Reptile Database.\n\n
 #' If advanced search: returns the url to be used in herpSpecies()
 #' @export
 #'
