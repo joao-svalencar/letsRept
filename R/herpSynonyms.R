@@ -44,6 +44,7 @@ herpSynonyms <- function(x, getRef = FALSE)
     if(getRef==TRUE)
     {
     synonym_ref <- sub(".*\\b([A-Z]{2,}.*)","\\1", synonym_vector)
+    synonym_ref_list <- c(synonym_ref_list, synonym_ref)
     }else{ 
     synonyms <- sub("\\s*[\\p{Pd}]?\\s*\\b[A-Z]{2,}.*", "", synonym_vector, perl = TRUE)
     }#close the getRef else
@@ -53,7 +54,6 @@ herpSynonyms <- function(x, getRef = FALSE)
     
     species_list <- c(species_list, species)
     synonym_list <- c(synonym_list, synonyms)
-    synonym_ref_list <- c(synonym_ref_list, synonym_ref)
   }
   
   if(getRef==TRUE)
