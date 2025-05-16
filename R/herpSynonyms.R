@@ -38,14 +38,14 @@ herpSynonyms <- function(x, getRef = FALSE)
     syn <- xml2::xml_child(element, 4) #select the synonym part of the table
     td2 <- rvest::html_element(syn, "td:nth-child(2)")
     children <- xml2::xml_contents(td2)
-    synonym_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+    synonym_vector <- unique(children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE))
     
     #including synonyms references
     if(getRef==TRUE)
     {
-    synonym_ref <- sub(".*\\b([A-Z]{2,}.*)","\\1", unique(synonym_vector))
+    synonym_ref <- sub(".*\\b([A-Z]{2,}.*)","\\1", synonym_vector)
     }else{ 
-    synonyms <- sub("\\s*[\\p{Pd}]?\\s*\\b[A-Z]{2,}.*", "", unique(synonym_vector), perl = TRUE)
+    synonyms <- sub("\\s*[\\p{Pd}]?\\s*\\b[A-Z]{2,}.*", "", synonym_vector, perl = TRUE)
     }#close the getRef else
     
     cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
