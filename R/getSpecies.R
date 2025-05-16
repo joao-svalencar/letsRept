@@ -46,23 +46,46 @@ getSpecies <- function(url, higherTaxa = FALSE)
     url_list <- c(url_list, url)
   }
   
+  # #higherTaxa
+  # if(higherTaxa==TRUE)
+  # {
+  #   for(j in 1:length(species_list))
+  #   {
+  #     sp_page <- rvest::read_html(url_list[j])
+  #     element <- rvest::html_element(sp_page, "table") #scrap species table from Reptile Database
+  #     taxa <- xml2::xml_child(element, 1) #select the higher taxa part of the table
+  #     td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
+  #     children <- xml2::xml_contents(td_taxa)
+  #     taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+  #     family_vector <- sub(" .*", "", taxa_vector)
+  #     
+  #     family_list <- c(family_list, family_vector)
+  #   }
+  #   searchResults <- data.frame(family = family_list, genus = genus_list, species = species_list, url = url_list, stringsAsFactors = FALSE)
+  # }else{
   #higherTaxa
-  if(higherTaxa==TRUE)
-  {
-    for(j in 1:length(species_list))
-    {
-      sp_page <- rvest::read_html(url_list[j])
-      element <- rvest::html_element(sp_page, "table") #scrap species table from Reptile Database
-      taxa <- xml2::xml_child(element, 1) #select the higher taxa part of the table
-      td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
-      children <- xml2::xml_contents(td_taxa)
-      taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
-      family_vector <- sub(" .*", "", taxa_vector)
-      
-      family_list <- c(family_list, family_vector)
-    }
-    searchResults <- data.frame(family = family_list, genus = genus_list, species = species_list, url = url_list, stringsAsFactors = FALSE)
-  }else{
+   if(higherTaxa==TRUE)
+   {
+     for(j in 1:length(species_list))
+     {
+  orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines") #order count = OK
+  sp_page <- rvest::read_html(url_list[j])
+  element <- rvest::html_element(sp_page, "table") #scrap species table from Reptile Database
+  taxa <- xml2::xml_child(element, 1) #select the higher taxa part of the table
+  td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
+  children <- xml2::xml_contents(td_taxa)
+  
+  #each species Higher Taxa information:
+  taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+  family <- sub(" .*", "", taxa_vector)
+  order <- orders[stringr::str_detect(taxa_vector, orders)][1]
+  
+  taxa_vector_list <- c(taxa_vector_list, taxa_vector)
+  family_list <- c(family_list, family)
+  order_list <- c(order_list, order)
+     }
+     searchResults <- data.frame(higher_taxa = taxa_vector_list, order = order_list, family = family_list, genus = genus_list, species = species_list, url = url_list, stringsAsFactors = FALSE)
+   }else{
     searchResults <- data.frame(species = species_list, url = url_list, stringsAsFactors = FALSE)
   }
   
