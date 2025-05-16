@@ -7,7 +7,7 @@
 herpSynonyms(x, getRef = FALSE)
 }
 \arguments{
-\item{x}{a \emph{dataframe} with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of HerpNom::getSpecies()}
+\item{x}{a \emph{dataframe} columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies()}
 
 \item{getRef}{a \emph{logical} value. default is FALSE. TRUE returns an extra column with the abbreviated reference that used each synonym}
 }

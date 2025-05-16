@@ -12,16 +12,16 @@ herpSearch(
 )
 }
 \arguments{
-\item{binomial}{a \emph{character} string with the current valid binomial name of a given reptile species (e.g.: "Apostolepis adhara")}
+\item{binomial}{a \emph{character} string with the current valid binomial name of a given reptile species (e.g.: "\emph{Apostolepis adhara}")}
 
 \item{highertaxa}{a \emph{character} string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
 
-\item{genus}{a \emph{character} string with the current valid name of a given reptile genus (e.g.: "Apostolepis")}
+\item{genus}{a \emph{character} string with the current valid name of a given reptile genus (e.g.: "\emph{Apostolepis}")}
 
 \item{distribution}{a \emph{character} string with a location from which the user wants the list of species expected to occur}
 }
 \value{
-If a search for an specific species information (e.g.: argument binomial is not NULL): returns the species information collected from its respective page in The Reptile Database
+If searching for an specific species information (e.g.: argument binomial is not NULL) - \emph{herpSearch()} returns the species information collected from its respective page in The Reptile Database.\n\n
 If advanced search: returns the url to be used in herpSpecies()
 }
 \description{
