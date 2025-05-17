@@ -24,6 +24,7 @@ herpSynonyms <- function(x, getRef = FALSE)
 {
   species_list <- c()
   synonym_list <- c()
+  synonym_vector_list <- c()
   synonym_ref_list <- c()
   
   for(i in 1:length(x$species))
@@ -40,18 +41,25 @@ herpSynonyms <- function(x, getRef = FALSE)
     children <- xml2::xml_contents(td2)
     synonym_vector <- unique(children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE))
     
+    # synonyms <- sub(
+    #   "^(.+?\\b(?:[a-z]+|[A-Z][a-z]+|sp\\.\\s*\\d*|var\\.\\s*\\w+|aff\\.\\s*\\w+))\\s*(?:[-–—]|\\(|\\b[A-Z]{2,}\\b).*",
+    #   "\\1",
+    #   iconv(synonym_vector, to = "ASCII//TRANSLIT"),
+    #   perl = TRUE
+    # )
     synonyms <- sub(
-      "^(.+?\\b(?:[a-z]+|[A-Z][a-z]+|sp\\.\\s*\\d*|var\\.\\s*\\w+|aff\\.\\s*\\w+))\\s*(?:[-–—]|\\(|\\b[A-Z]{2,}\\b).*",
-      "\\1",
-      iconv(synonym_vector, to = "ASCII//TRANSLIT"),
-      perl = TRUE
-    )
+        "^\\W*\\s*([A-Z][a-z]+(?:\\s+[a-z]+){1,3}(?:\\s+\\[sic\\])?)\\b.*",
+        "\\1",
+        iconv(synonym_vector, to = "ASCII//TRANSLIT"),
+        perl = TRUE
+      )
     
     cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
     species <- c(rep(x$species[i], times=length(synonyms)))
     
     species_list <- c(species_list, species)
     synonym_list <- c(synonym_list, synonyms)
+    synonym_vector_list <- c(synonym_vector_list, synonym_vector)
     
 #including synonyms references
     if(getRef==TRUE)
