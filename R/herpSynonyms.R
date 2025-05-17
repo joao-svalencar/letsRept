@@ -77,7 +77,8 @@ herpSynonyms <- function(x, getRef = FALSE)
                                  stringsAsFactors = FALSE)
   }else{
     synonymResults <- data.frame(species = species_list,
-                               synonyms = synonym_list,
+                                 synonyms = synonym_list,
+                                 synonymsRef = synonym_vector_list,
                                 stringsAsFactors = FALSE)}
   
   return(synonymResults)
