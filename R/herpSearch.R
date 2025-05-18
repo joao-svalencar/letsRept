@@ -69,9 +69,8 @@ if(!is.null(binomial))
     }
   } #closes the species content printing
   return(invisible(NULL))
-}else #closes the if binomial part
-  { 
-
+}else 
+   
 # block for advanced search -----------------------------------------------
   #higher taxa:
   if(!is.null(highertaxa))
@@ -95,7 +94,7 @@ if(!is.null(binomial))
     url <- paste0(base_url, query) #url for page of species list
     }
   return(url) 
-  }
+  
   #NEXT: IMPLEMENT SEARCH FOR COMBINED ADVANCED ARGUMENTS
 }
   
