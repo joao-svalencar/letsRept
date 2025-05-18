@@ -7,13 +7,15 @@
 herpSearch(binomial=NULL)
 }
 \arguments{
-\item{binomial}{a \emph{character} string with the current valid binomial name of a given reptile species (e.g.: "\emph{Apostolepis adhara}")}
+\item{binomial}{A character string with the current valid binomial name of a given reptile species.}
 }
 \value{
-Returns species information collected from its respective page in The Reptile Database.
+Returns species information as provided by The Reptile Database.
 }
 \description{
-Simulates searches in The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()\\cr
-#' \emph{ATTENTION:} under development, may not work yet.\\cr
-Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
+Searches The Reptile Database website and provides the data of a single species
+}
+\examples{
+herpSearch("Boa constrictor")
+
 }

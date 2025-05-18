@@ -2,21 +2,23 @@
 ######################## function herpSpecies by:  JP VIEIRA-ALENCAR  #####################################
 ##########################################################################################################
 
-#' Building url species list 
+#' Reptile species summary 
 #'
 #' @description 
-#' Creates a _dataframe_ containing a list of species based on a Reptile Database advanced search with their respective url
+#' Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
 #' 
 #' @usage herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
 #' 
-#' @param url A _character_ string with the url from an advanced search in Reptile Database.
-#' @param higherTaxa A _logical_ value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species retrieved. default = *TRUE*.
-#' @param fullHigher A _logical_ value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires higherTaxa = TRUE.
-#' @param getlink A _logical_ value indicating if user wants the url that provides access to each retrieved species (e.g: to use with herpSynonyms()). default = *TRUE*
+#' @param url A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.
+#' @param higherTaxa A logical value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species. default = *TRUE*
+#' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires higherTaxa = TRUE
+#' @param getlink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
 #'
-#' @return if _higherTaxa_ = FALSE (default), '_herpSpecies_' returns a dataframe with columns: species and url.
+#' @return if _higherTaxa_ = FALSE (default), the function returns a vector with the list of species
 #' 
-#' if _higherTaxa_ = TRUE, '_herpSpecies_' returns a dataframe with columns: family, genus, species and url
+#' if _higherTaxa_ = TRUE, the function returns a data frame with columns: order, family, genus and species
+#' 
+#' Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url
 #' 
 #' @references 
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935

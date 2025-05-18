@@ -2,26 +2,28 @@
 % Please edit documentation in R/herpSpecies.R
 \name{herpSpecies}
 \alias{herpSpecies}
-\title{Building url species list}
+\title{Reptile species summary}
 \usage{
 herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
 }
 \arguments{
-\item{url}{A \emph{character} string with the url from an advanced search in Reptile Database.}
+\item{url}{A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.}
 
-\item{higherTaxa}{A \emph{logical} value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species retrieved. default = \emph{TRUE}.}
+\item{higherTaxa}{A logical value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species. default = \emph{TRUE}}
 
-\item{fullHigher}{A \emph{logical} value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}. OBS.: Requires higherTaxa = TRUE.}
+\item{fullHigher}{A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}. OBS.: Requires higherTaxa = TRUE}
 
-\item{getlink}{A \emph{logical} value indicating if user wants the url that provides access to each retrieved species (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
+\item{getlink}{A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
 }
 \value{
-if \emph{higherTaxa} = FALSE (default), '\emph{herpSpecies}' returns a dataframe with columns: species and url.
+if \emph{higherTaxa} = FALSE (default), the function returns a vector with the list of species
 
-if \emph{higherTaxa} = TRUE, '\emph{herpSpecies}' returns a dataframe with columns: family, genus, species and url
+if \emph{higherTaxa} = TRUE, the function returns a data frame with columns: order, family, genus and species
+
+Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url
 }
 \description{
-Creates a \emph{dataframe} containing a list of species based on a Reptile Database advanced search with their respective url
+Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
 }
 \references{
 Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. \emph{Systematics and Biodiversity}, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
