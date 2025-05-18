@@ -5,10 +5,12 @@
 #' Building url species list 
 #'
 #' @description 
-#' creates a _dataframe_ containing list of species based on a Reptile Database advanced search with their respective url
+#' Creates a _dataframe_ containing a list of species based on a Reptile Database advanced search with their respective url
+#' 
 #' @usage herpSpecies(url, higherTaxa = FALSE)
-#' @param url a _character_ string with the url from an advanced search in Reptile Database
-#' @param higherTaxa a _logical_ value indicating if user wants the families for each species within the resulting data frame
+#' 
+#' @param url A _character_ string with the url from an advanced search in Reptile Database
+#' @param higherTaxa A _logical_ value indicating if user wants the families for each species within the resulting data frame
 #'
 #' @return if _higherTaxa_ = FALSE (default), '_herpSpecies_' returns a dataframe with columns: species and url.
 #' 
