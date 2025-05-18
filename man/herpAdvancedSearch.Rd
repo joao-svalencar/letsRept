@@ -4,14 +4,16 @@
 \alias{herpAdvancedSearch}
 \title{Search The Reptile Database website (TRD): Advanced}
 \usage{
-herpAdvancedSearch(highertaxa=NULL, genus=NULL, distribution=NULL)
+herpAdvancedSearch(highertaxa=NULL, genus=NULL, synonym=NULL, distribution=NULL)
 }
 \arguments{
-\item{highertaxa}{a \emph{character} string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
+\item{highertaxa}{A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
 
-\item{genus}{a \emph{character} string with the current valid name of a given reptile genus (e.g.: "\emph{Apostolepis}")}
+\item{genus}{A character string with the current valid name of a given reptile genus (e.g.: "\emph{Apostolepis}")}
 
-\item{distribution}{a \emph{character} string with a location from which the user wants the list of species expected to occur}
+\item{synonym}{A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "\emph{Boa diviniloqua}")}
+
+\item{distribution}{A character string with a location from which the user wants the list of species expected to occur}
 }
 \value{
 the url to be used in herpSpecies()
