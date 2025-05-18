@@ -36,7 +36,7 @@ herpAdvancedSearch <- function(highertaxa=NULL, genus=NULL, synonym=NULL, distri
   if(!is.null(synonym))
   {
     base_url <- "https://reptile-database.reptarium.cz/advanced_search"
-    query <- paste0("?common_name=", synonym, "&submit=Search")
+    query <- paste0("?common_name=", sub(" ", "+", synonym), "&submit=Search")
     url <- paste0(base_url, query) #url for page of species list
   }
   #distribution:
