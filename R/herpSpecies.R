@@ -92,5 +92,5 @@ herpSpecies <- function(url, higherTaxa = FALSE)
   
   cat("\n","Link collection is done!","\n", paste0("A total of ", length(species), "links retrieved."))
   return(searchResults) #give higher taxa options
-  #NEXT: IMPLEMENT OPTION TO AVOID TAKING THE WHOLE HIGHER TAXA LIST
+  #NEXT: IMPLEMENT OPTION TO AVOID TAKING THE WHOLE HIGHER TAXA LIST.
 }
