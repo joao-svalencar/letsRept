@@ -4,12 +4,16 @@
 \alias{herpSpecies}
 \title{Building url species list}
 \usage{
-herpSpecies(url, higherTaxa = FALSE)
+herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
 }
 \arguments{
-\item{url}{A \emph{character} string with the url from an advanced search in Reptile Database}
+\item{url}{A \emph{character} string with the url from an advanced search in Reptile Database.}
 
-\item{higherTaxa}{A \emph{logical} value indicating if user wants the families for each species within the resulting data frame}
+\item{higherTaxa}{A \emph{logical} value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species retrieved. default = \emph{TRUE}.}
+
+\item{fullHigher}{A \emph{logical} value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}.}
+
+\item{getlink}{A \emph{logical} value indicating if user wants the url that provides access to each retrieved species (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
 }
 \value{
 if \emph{higherTaxa} = FALSE (default), '\emph{herpSpecies}' returns a dataframe with columns: species and url.

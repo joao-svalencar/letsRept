@@ -7,10 +7,12 @@
 #' @description 
 #' Creates a _dataframe_ containing a list of species based on a Reptile Database advanced search with their respective url
 #' 
-#' @usage herpSpecies(url, higherTaxa = FALSE)
+#' @usage herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
 #' 
-#' @param url A _character_ string with the url from an advanced search in Reptile Database
-#' @param higherTaxa A _logical_ value indicating if user wants the families for each species within the resulting data frame
+#' @param url A _character_ string with the url from an advanced search in Reptile Database.
+#' @param higherTaxa A _logical_ value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species retrieved. default = *TRUE*.
+#' @param fullHigher A _logical_ value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = *FALSE*.
+#' @param getlink A _logical_ value indicating if user wants the url that provides access to each retrieved species (e.g: to use with herpSynonyms()). default = *TRUE*
 #'
 #' @return if _higherTaxa_ = FALSE (default), '_herpSpecies_' returns a dataframe with columns: species and url.
 #' 
@@ -21,12 +23,10 @@
 #' 
 #' @export
 #'
-
-herpSpecies <- function(url, higherTaxa = FALSE)
+herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
 {
   species_list <- c()
   genus_list <- c()
-  
   url_list <- c()
   
   search <- rvest::read_html(url)
@@ -49,8 +49,6 @@ herpSpecies <- function(url, higherTaxa = FALSE)
   }
 
 # to get higher taxa information ------------------------------------------
-   if(higherTaxa==TRUE)
-   {
      taxa_vector_list <- c()
      order_list <- c()
      suborder_list <- c()
@@ -67,33 +65,64 @@ herpSpecies <- function(url, higherTaxa = FALSE)
         
       #each species Higher Taxa information:
       taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
-      family <- sub(" .*", "", taxa_vector)
-      order <- orders[stringr::str_detect(taxa_vector, orders)][1]
-      suborder <- suborders[stringr::str_detect(taxa_vector, suborders)][1]
+      family <- sub(" .*", "", taxa_vector) #always the first item in Higher Taxa
+      order <- orders[stringr::str_detect(taxa_vector, orders)][1] #get respective item from orders
+      suborder <- suborders[stringr::str_detect(taxa_vector, suborders)][1] #get respective item from suborders
       
       taxa_vector_list <- c(taxa_vector_list, taxa_vector)
       order_list <- c(order_list, order)
       suborder_list <- c(suborder_list, suborder)
       family_list <- c(family_list, family)
      }
-      searchResults <- data.frame(higher_taxa = taxa_vector_list,
-                                  order = order_list,
-                                  suborder = suborder_list,
-                                  family = family_list,
-                                  genus = genus_list,
-                                  species = species_list,
-                                  url = url_list,
-                                  stringsAsFactors = FALSE)
-  cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links and higher taxa information retrieved."))
-   
-  }else{
-  searchResults <- data.frame(species = species_list,
-                              url = url_list,
-                              stringsAsFactors = FALSE)
-  cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links retrieved."))
-  }
-  
-  
-  return(searchResults) #give higher taxa options
-  #NEXT: IMPLEMENT OPTION TO AVOID TAKING THE WHOLE HIGHER TAXA LIST.
+
+# getlink == FALSE --------------------------------------------------------
+   if(getlink==FALSE)
+   { 
+     if(higherTaxa ==FALSE)
+     {
+      searchResults <- species_list
+      cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species retrieved."))
+      return(searchResults)
+     }else{ 
+     searchResults <- data.frame(order = order_list,
+                                 suborder = suborder_list,
+                                 family = family_list,
+                                 genus = genus_list,
+                                 species = species_list,
+                                 stringsAsFactors = FALSE)
+     if(fullHigher==TRUE)
+     {
+       searchResults$higher_taxa <- taxa_vector_list
+     }
+     cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species higher taxa information retrieved."))
+     return(searchResults)
+     }
+     
+   }else
+   { 
+
+# getlink == TRUE ---------------------------------------------------------
+     if(higherTaxa ==FALSE)
+     {
+       searchResults <- data.frame(species = species_list,
+                                   url = url_list)
+       cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links retrieved."))
+       return(searchResults)
+     }else{ 
+       searchResults <- data.frame(order = order_list,
+                                   suborder = suborder_list,
+                                   family = family_list,
+                                   genus = genus_list,
+                                   species = species_list,
+                                   url = url_list,
+                                   stringsAsFactors = FALSE)
+       if(fullHigher==TRUE)
+       {
+         searchResults$higher_taxa <- taxa_vector_list
+       }
+       cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links and higher taxa information retrieved."))
+       return(searchResults)
+     }
+   }
+      
 }
