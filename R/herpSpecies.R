@@ -84,13 +84,13 @@ herpSpecies <- function(url, higherTaxa = FALSE)
                                   species = species_list,
                                   url = url_list,
                                   stringsAsFactors = FALSE)
-  cat("Data collection is done!","\n", paste0("A total of ", length(species_list), " species links and higher taxa information retrieved."))
+  cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links and higher taxa information retrieved."))
    
   }else{
   searchResults <- data.frame(species = species_list,
                               url = url_list,
                               stringsAsFactors = FALSE)
-  cat("Data collection is done!","\n", paste0("A total of ", length(species_list), " species links retrieved."))
+  cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links retrieved."))
   }
   
   
