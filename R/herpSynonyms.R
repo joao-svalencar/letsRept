@@ -7,11 +7,8 @@
 #' @description
 #' creates a _dataframe_ containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
 #' @param x a _dataframe_ columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies()
-#' @param getRef a _logical_ value. default is FALSE. TRUE returns an extra column with the abbreviated reference that used each synonym
 #'
-#' @returns if _getRef_ = FALSE (default) '_herpSynonyms_' returns a dataframe with columns: species and their respective synonyms according to the version of Reptile Database.
-#' 
-#' if _getRef_ = TRUE '_herpSynonyms_' returns an additional column with the synonym and the abbreviated reference that used that nomenclature
+#' @returns '_herpSynonyms_' returns a dataframe with columns: species and their respective synonyms according to the version of Reptile Database.
 #' 
 #' @references 
 #' Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database, http://www.reptile-database.org
@@ -20,19 +17,18 @@
 #' @export
 #'
 
-herpSynonyms <- function(x, getRef = FALSE)
+herpSynonyms <- function(x)
 {
   species_list <- c()
   synonym_list <- c()
   synonym_vector_list <- c()
-  synonym_ref_list <- c()
   
   for(i in 1:length(x$species))
   {
     #add random sleep time
     Sys.sleep(stats::runif(1, min = 0.3, max = 1)) # random sleep time
     
-    url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
+    url <- rvest::read_html(x$url[i])
     element <- rvest::html_element(url, "table") #scrap species table from Reptile Database
     
     #synonyms
@@ -53,27 +49,11 @@ herpSynonyms <- function(x, getRef = FALSE)
     
     species_list <- c(species_list, species)
     synonym_list <- c(synonym_list, synonyms)
-    synonym_vector_list <- c(synonym_vector_list, synonym_vector)
-    
-#including synonyms references
-    if(getRef==TRUE)
-    {
-      #synonym_ref <- sub(".*\\b([A-Z]{2,}.*)","\\1", synonym_vector)
-      synonym_ref <- sub(".*?\\s*[-–—]?\\s*(\\b[A-Z]{2,}.*)", "\\1", synonym_vector, perl = TRUE)
-      synonym_ref_list <- c(synonym_ref_list, synonym_ref)
-    }
-}#loop for ends here
-  if(getRef==TRUE)
-  {
+  
+}   #loop for ends here
     synonymResults <- data.frame(species = species_list,
                                  synonyms = synonym_list,
-                                 ref = synonym_ref_list,
                                  stringsAsFactors = FALSE)
-  }else{
-    synonymResults <- data.frame(species = species_list,
-                                 synonyms = synonym_list,
-                                 synonymsRef = synonym_vector_list,
-                                 stringsAsFactors = FALSE)}
   #
   return(synonymResults)
 }
