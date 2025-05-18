@@ -11,7 +11,7 @@
 #' 
 #' @param url A _character_ string with the url from an advanced search in Reptile Database.
 #' @param higherTaxa A _logical_ value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species retrieved. default = *TRUE*.
-#' @param fullHigher A _logical_ value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = *FALSE*.
+#' @param fullHigher A _logical_ value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires higherTaxa = TRUE.
 #' @param getlink A _logical_ value indicating if user wants the url that provides access to each retrieved species (e.g: to use with herpSynonyms()). default = *TRUE*
 #'
 #' @return if _higherTaxa_ = FALSE (default), '_herpSpecies_' returns a dataframe with columns: species and url.
