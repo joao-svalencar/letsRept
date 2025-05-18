@@ -65,7 +65,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FA
         
       #each species Higher Taxa information:
       taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
-      family <- sub(" .*", "", taxa_vector) #always the first item in Higher Taxa
+      family <- sub("^([A-Z][a-zA-Z]*)\\b.*", "\\1", taxa_vector)
       order <- orders[stringr::str_detect(taxa_vector, orders)][1] #get respective item from orders
       suborder <- suborders[stringr::str_detect(taxa_vector, suborders)][1] #get respective item from suborders
       
@@ -124,5 +124,4 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FA
        return(searchResults)
      }
    }
-      
 }

@@ -1,7 +1,9 @@
 #' Search The Reptile Database website (TRD): Advanced
 #'
 #' @description
-#' A short description...
+#' Searches The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()\\cr
+#' #' *ATTENTION:* under development, may not work yet.\\cr
+#' Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
 #' 
 #' @usage herpAdvancedSearch(highertaxa=NULL, genus=NULL, distribution=NULL)
 #' 
