@@ -27,7 +27,7 @@ herpSpecies <- function(url, higherTaxa = FALSE)
   
   url_list <- c()
   
-  search <- rvest::read_html(url)
+  search <- rvest::read_html(httr::GET(url, httr::user_agent("Mozilla/5.0")))
   ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
   
   for(i in 1:length(xml2::xml_children(ul_element[[1]])))

@@ -32,7 +32,7 @@ herpSynonyms <- function(x, getRef = FALSE)
     #add random sleep time
     Sys.sleep(stats::runif(1, min = 0.3, max = 1)) # random sleep time
     
-    url <- rvest::read_html(x$url[i])
+    url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
     element <- rvest::html_element(url, "table") #scrap species table from Reptile Database
     
     #synonyms
@@ -41,12 +41,6 @@ herpSynonyms <- function(x, getRef = FALSE)
     children <- xml2::xml_contents(td2)
     synonym_vector <- unique(children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE))
     
-    # synonyms <- sub(
-    #   "^(.+?\\b(?:[a-z]+|[A-Z][a-z]+|sp\\.\\s*\\d*|var\\.\\s*\\w+|aff\\.\\s*\\w+))\\s*(?:[-–—]|\\(|\\b[A-Z]{2,}\\b).*",
-    #   "\\1",
-    #   iconv(synonym_vector, to = "ASCII//TRANSLIT"),
-    #   perl = TRUE
-    # )
     synonyms <- sub(
         "^\\W*\\s*([A-Z][a-z]+(?:\\s+[a-z]+){1,3}(?:\\s+\\[sic\\])?)\\b.*",
         "\\1",
