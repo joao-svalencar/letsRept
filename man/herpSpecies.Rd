@@ -7,9 +7,9 @@
 herpSpecies(url, higherTaxa = FALSE)
 }
 \arguments{
-\item{url}{a \emph{character} string with the url from an advanced search in Reptile Database}
+\item{url}{A \emph{character} string with the url from an advanced search in Reptile Database}
 
-\item{higherTaxa}{a \emph{logical} value indicating if user wants the families for each species within the resulting data frame}
+\item{higherTaxa}{A \emph{logical} value indicating if user wants the families for each species within the resulting data frame}
 }
 \value{
 if \emph{higherTaxa} = FALSE (default), '\emph{herpSpecies}' returns a dataframe with columns: species and url.
@@ -17,7 +17,7 @@ if \emph{higherTaxa} = FALSE (default), '\emph{herpSpecies}' returns a dataframe
 if \emph{higherTaxa} = TRUE, '\emph{herpSpecies}' returns a dataframe with columns: family, genus, species and url
 }
 \description{
-creates a \emph{dataframe} containing list of species based on a Reptile Database advanced search with their respective url
+Creates a \emph{dataframe} containing a list of species based on a Reptile Database advanced search with their respective url
 }
 \references{
 Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. \emph{Systematics and Biodiversity}, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935

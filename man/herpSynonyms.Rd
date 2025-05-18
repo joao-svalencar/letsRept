@@ -4,17 +4,13 @@
 \alias{herpSynonyms}
 \title{Get reptile species synonyms}
 \usage{
-herpSynonyms(x, getRef = FALSE)
+herpSynonyms(x)
 }
 \arguments{
 \item{x}{a \emph{dataframe} columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies()}
-
-\item{getRef}{a \emph{logical} value. default is FALSE. TRUE returns an extra column with the abbreviated reference that used each synonym}
 }
 \value{
-if \emph{getRef} = FALSE (default) '\emph{herpSynonyms}' returns a dataframe with columns: species and their respective synonyms according to the version of Reptile Database.
-
-if \emph{getRef} = TRUE '\emph{herpSynonyms}' returns an additional column with the synonym and the abbreviated reference that used that nomenclature
+'\emph{herpSynonyms}' returns a dataframe with columns: species and their respective synonyms according to the version of Reptile Database.
 }
 \description{
 creates a \emph{dataframe} containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms

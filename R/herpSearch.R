@@ -45,9 +45,13 @@ if(!is.null(binomial))
       
       if (i == 4) {
         # For Synonym row: split by <br> and trim
-        br_items <- cells[2] %>%
-          rvest::html_nodes("br") %>%
-          xml2::xml_add_sibling("marker", "<SPLIT>") # helper tag to split text
+        # br_items <- cells[2] %>%
+        #   rvest::html_nodes("br") %>%
+        #   xml2::xml_add_sibling("marker", "<SPLIT>") # helper tag to split text
+        
+        br_items <- xml2::xml_add_sibling(
+          rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
+        
         syn_text <- rvest::html_text(cells[2], trim = TRUE)
         syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
         syn_list <- trimws(syn_list[syn_list != ""])
