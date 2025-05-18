@@ -79,7 +79,7 @@ herpSynonyms <- function(x, getRef = FALSE)
     synonymResults <- data.frame(species = species_list,
                                  synonyms = synonym_list,
                                  synonymsRef = synonym_vector_list,
-                                stringsAsFactors = FALSE)}
+                                 stringsAsFactors = FALSE)}
   #
   return(synonymResults)
 }
