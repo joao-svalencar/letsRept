@@ -91,4 +91,5 @@ herpSpecies <- function(url, higherTaxa = FALSE)
   }
   
   return(searchResults) #give higher taxa options
+  #NEXT: IMPLEMENT OPTION TO AVOID TAKING THE WHOLE HIGHER TAXA LIST
 }

@@ -72,4 +72,5 @@ herpSynonyms <- function(x)
                                  stringsAsFactors = FALSE)
   #
   return(synonymResults)
+  #NEXT: IMPROVE REGEX ARGUMENTS FOR GENERAL SYNONYM SAMPLING
 }

@@ -77,7 +77,7 @@ if(!is.null(binomial))
   if(!is.null(highertaxa))
     {
     base_url <- "https://reptile-database.reptarium.cz/advanced_search"
-    query <- paste0("?taxon=", distribution, "&submit=Search")
+    query <- paste0("?taxon=", highertaxa, "&submit=Search")
     url <- paste0(base_url, query) #url for page of species list
     }
   #genus:
@@ -96,5 +96,6 @@ if(!is.null(binomial))
     }
   return(url) 
   }
+  #NEXT: IMPLEMENT SEARCH FOR COMBINED ADVANCED ARGUMENTS
 }
   
