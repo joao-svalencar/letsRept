@@ -80,6 +80,6 @@ herpSynonyms <- function(x, getRef = FALSE)
                                  synonyms = synonym_list,
                                  synonymsRef = synonym_vector_list,
                                 stringsAsFactors = FALSE)}
-  
+  #
   return(synonymResults)
 }
