@@ -25,8 +25,9 @@ if(!is.null(binomial))
   gen <- strsplit(binomial, " ")[[1]][1]
   species <- strsplit(binomial, " ")[[1]][2]
   query <- paste0("?genus=", gen, "&species=", species)
-  url <- paste0(base_url, query) #url for direct species search
+  sppLink <- paste0(base_url, query) #url for direct species search
   
+  url <- rvest::read_html(sppLink)
   element <- rvest::html_element(url, "table") #get the content table for each species
   
   #pasting the content of Higher Taxa, Subspecies, Common Names, Synonyms, Distribution and Reproduction when available:
@@ -42,11 +43,6 @@ if(!is.null(binomial))
       if (content_raw == "") next
       
       if (i == 4) {
-        # For Synonym row: split by <br> and trim
-        # br_items <- cells[2] %>%
-        #   rvest::html_nodes("br") %>%
-        #   xml2::xml_add_sibling("marker", "<SPLIT>") # helper tag to split text
-        
         br_items <- xml2::xml_add_sibling(
           rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
         
