@@ -2,28 +2,15 @@
 % Please edit documentation in R/herpSearch.R
 \name{herpSearch}
 \alias{herpSearch}
-\title{Search The Reptile Database website (TRD)}
+\title{Search The Reptile Database website (TRD): Simple}
 \usage{
-herpSearch(
-  binomial = NULL,
-  highertaxa = NULL,
-  genus = NULL,
-  distribution = NULL
-)
+herpSearch(binomial=NULL)
 }
 \arguments{
 \item{binomial}{a \emph{character} string with the current valid binomial name of a given reptile species (e.g.: "\emph{Apostolepis adhara}")}
-
-\item{highertaxa}{a \emph{character} string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
-
-\item{genus}{a \emph{character} string with the current valid name of a given reptile genus (e.g.: "\emph{Apostolepis}")}
-
-\item{distribution}{a \emph{character} string with a location from which the user wants the list of species expected to occur}
 }
 \value{
-If searching for an specific species information (e.g.: argument binomial is not NULL) - \emph{herpSearch()} returns the species information collected from its respective page in The Reptile Database.
-
-If advanced search: returns the url to be used in herpSpecies()
+Returns species information collected from its respective page in The Reptile Database.
 }
 \description{
 Simulates searches in The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()\\cr

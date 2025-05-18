@@ -11,7 +11,7 @@ herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
 
 \item{higherTaxa}{A \emph{logical} value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species retrieved. default = \emph{TRUE}.}
 
-\item{fullHigher}{A \emph{logical} value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}.}
+\item{fullHigher}{A \emph{logical} value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species retrieved, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}. OBS.: Requires higherTaxa = TRUE.}
 
 \item{getlink}{A \emph{logical} value indicating if user wants the url that provides access to each retrieved species (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
 }
