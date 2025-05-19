@@ -21,6 +21,7 @@ herpSynonyms <- function(x)
 {
   species_list <- c()
   synonym_list <- c()
+  synonymRef_list <- c()
   
   for(i in 1:length(x$species))
   {
@@ -65,10 +66,12 @@ herpSynonyms <- function(x)
     
     species_list <- c(species_list, species)
     synonym_list <- c(synonym_list, synonyms)
+    synonymRef_list <- c(synonymRef_list, synonym_vector)
   
 }   #loop for ends here
     synonymResults <- data.frame(species = species_list,
                                  synonyms = synonym_list,
+                                 ref = synonymRef_list,
                                  stringsAsFactors = FALSE)
   #
   return(synonymResults)
