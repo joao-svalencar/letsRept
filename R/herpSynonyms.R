@@ -55,11 +55,11 @@ herpSynonyms <- function(x)
     synonym_vector <- unique(children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE))
     
     synonyms <- sub(
-        "^\\W*\\s*([A-Z][a-z]+(?:\\s+[a-z]+){1,3}(?:\\s+\\[sic\\])?)\\b.*",
-        "\\1",
-        iconv(synonym_vector, to = "ASCII//TRANSLIT"),
-        perl = TRUE
-      )
+      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]+|\\p{Lu}[a-z]+|\\[sic\\]|sp\\.\\s*\\d+|var\\.\\s*\\w+|aff\\.\\s*\\w+))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}).*",
+      "\\1",
+      allSynonyms$ref[1:500],
+      perl = TRUE
+    )
     
     cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
     species <- c(rep(x$species[i], times=length(synonyms)))
