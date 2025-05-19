@@ -8,11 +8,11 @@
 A dataframe with XXXXX rows and 2 variables:
 \describe{
 \item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website (download: May 15th, 2025)}
-\item{synonym}{A character column with the respective synonyms for all reptile species cataloged in The Reptile Database website information (download: May 17th, 2025)}
+\item{synonym}{A character column with the respective synonyms for all reptile species cataloged in The Reptile Database website information (download: May 19th, 2025)}
 }
 }
 \source{
-The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function HerpNom::getSynonyms(HerpNom::allRepitiles)
+The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function HerpNom::getSynonyms(HerpNom::allReptiles)
 }
 \usage{
 allSynonyms
