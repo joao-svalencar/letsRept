@@ -1,5 +1,5 @@
 ##########################################################################################################
-####################### function herpSynonyms by:  JP VIEIRA-ALENCAR  #####################################
+####################### function herpSynonyms by:  JP VIEIRA-ALENCAR  ####################################
 ##########################################################################################################
 
 #' Get reptile species synonyms
@@ -25,13 +25,13 @@ herpSynonyms <- function(x, getRef=FALSE)
 
 # creates clean_names function: -------------------------------------------
   # Build Unicode chars dynamically
-  left_quote  <- intToUtf8(0x2018)
-  right_quote <- intToUtf8(0x2019)
-  left_dquote <- intToUtf8(0x201C)
+  left_quote   <- intToUtf8(0x2018)
+  right_quote  <- intToUtf8(0x2019)
+  left_dquote  <- intToUtf8(0x201C)
   right_dquote <- intToUtf8(0x201D)
-  emdash      <- intToUtf8(0x2014)
-  endash      <- intToUtf8(0x2013)
-  acute_e     <- intToUtf8(0x00E9)
+  emdash       <- intToUtf8(0x2014)
+  endash       <- intToUtf8(0x2013)
+  acute_e      <- intToUtf8(0x00E9)
   
   pattern <- paste0(
     "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:",
@@ -106,11 +106,27 @@ herpSynonyms <- function(x, getRef=FALSE)
     synonymRef_list <- c(synonymRef_list, synonym_vector)
   
 }   #loop for ends here
-    synonymResults <- data.frame(species = species_list,
-                                 synonyms = synonym_list,
-                                 stringsAsFactors = FALSE)
+
     if(getRef==TRUE){
-      synonymResults$ref <- synonymRef_list
+      synonymResults <- data.frame(species = species_list,
+                                   synonyms = synonym_list,
+                                   ref = synonymRef_list,
+                                   stringsAsFactors = FALSE)
+      return(synonymResults)
+    }else{
+      synonymResults <- data.frame(species = species_list,
+                        synonyms = synonym_list,
+                        stringsAsFactors = FALSE)
+      
+      synonymResults$combined <- paste((synonymResults)$species, (synonymResults)$synonyms, sep="_")
+      
+      uniquerec <- data.frame(unique(synonymResults$combined))
+      
+      uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymResults.combined.", 
+                                     into=c("species", "synonym"), sep="_",
+                                     convert=TRUE) #funcao de separacao
+      return(uniqueSynonyms)
     }
-  return(synonymResults)
+  
+  
 }
