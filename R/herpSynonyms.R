@@ -24,17 +24,27 @@ herpSynonyms <- function(x, getRef=FALSE)
 {
 
 # creates clean_names function: -------------------------------------------
-
+  # Build Unicode chars dynamically
+  left_quote  <- intToUtf8(0x2018)
+  right_quote <- intToUtf8(0x2019)
+  left_dquote <- intToUtf8(0x201C)
+  right_dquote <- intToUtf8(0x201D)
+  emdash      <- intToUtf8(0x2014)
+  endash      <- intToUtf8(0x2013)
+  acute_e     <- intToUtf8(0x00E9)
+  
+  pattern <- paste0(
+    "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:",
+    "[a-z]\\.|[a-z]+|\\p{Lu}[a-z]+|",
+    left_quote, "?[A-Za-z]+", right_quote, "?|\\'[A-Za-z]+\\'|\\[.*?\\]|gr\\.\\s*\\w+|sp\\.\\s*nov\\.?|",
+    "subsp\\.\\s*nov\\.?|var\\.\\s*\\w+|vari", acute_e, "t", acute_e, "\\.?(?:\\s*\\w+)?|",
+    "aff\\.\\s*\\w+|cf\\.\\s*\\w+|\"[^\"]+\"|",
+    left_dquote, "[^", right_dquote, "]+", right_dquote,
+    "))+)\\s*(?:[-", endash, emdash, "]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*"
+  )
   clean_species_names <- function(names_vec) {
-    # Step 1: Extract species+qualifiers+vernacular (stop before authors/years)
-    extracted <- sub(
-      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]\\.|[a-z]+|\\p{Lu}[a-z]+|‘'?[A-Za-z]+’?|\\'[A-Za-z]+\\'|\\[.*?\\]|gr\\.\\s*\\w+|sp\\.\\s*nov\\.?|subsp\\.\\s*nov\\.?|var\\.\\s*\\w+|vari[ée]t[é]\\.?(?:\\s*\\w+)?|aff\\.\\s*\\w+|cf\\.\\s*\\w+|\"[^\"]+\"|\\“[^\\”]+\\”))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*",
-      "\\1",
-      names_vec,
-      perl = TRUE
-    )
+    extracted <- sub(pattern, "\\1", names_vec, perl=TRUE)
     
-    # Step 2: Remove trailing author names / partials / conjunctions
     cleaned <- sub(
       "\\s+((?:\\p{Lu}{2,}|\\p{Lu}{1})\\s*(?:and|&)?\\s*)+\\b(in|et al\\.|et al|and|&)?\\b.*$",
       "",
@@ -42,15 +52,15 @@ herpSynonyms <- function(x, getRef=FALSE)
       perl = TRUE
     )
     
-    # Step 3: Remove leading question marks or uncertainty symbols
     cleaned <- sub("^\\?\\s*", "", cleaned, perl = TRUE)
     
-    # Step 4: Remove trailing dash at the very end
-    cleaned <- sub("\\s*[-–—]\\s*$", "", cleaned, perl = TRUE)
+    cleaned <- sub(paste0("\\s*[-", endash, emdash, "-]\\s*$"), "", cleaned, perl = TRUE)
     
     return(cleaned)
   }
-  
+
+# end of function ---------------------------------------------------------
+
   species_list <- c()
   synonym_list <- c()
   synonymRef_list <- c()
