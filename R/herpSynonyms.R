@@ -28,7 +28,7 @@ herpSynonyms <- function(x, getRef=FALSE)
   clean_species_names <- function(names_vec) {
     # Step 1: Extract species+qualifiers+vernacular (stop before authors/years)
     extracted <- sub(
-      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]\\.|[a-z]+|\\p{Lu}[a-z]+|‘?[A-Za-z]+’?|\\'[A-Za-z]+\\'|\\[.*?\\]|gr\\.\\s*\\w+|sp\\.\\s*nov\\.?|subsp\\.\\s*nov\\.?|var\\.\\s*\\w+|vari[ée]t[é]\\.?(?:\\s*\\w+)?|aff\\.\\s*\\w+|cf\\.\\s*\\w+|\"[^\"]+\"|\\“[^\\”]+\\”))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*",
+      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]\\.|[a-z]+|\\p{Lu}[a-z]+|‘'?[A-Za-z]+’?|\\'[A-Za-z]+\\'|\\[.*?\\]|gr\\.\\s*\\w+|sp\\.\\s*nov\\.?|subsp\\.\\s*nov\\.?|var\\.\\s*\\w+|vari[ée]t[é]\\.?(?:\\s*\\w+)?|aff\\.\\s*\\w+|cf\\.\\s*\\w+|\"[^\"]+\"|\\“[^\\”]+\\”))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*",
       "\\1",
       names_vec,
       perl = TRUE
@@ -45,7 +45,7 @@ herpSynonyms <- function(x, getRef=FALSE)
     # Step 3: Remove leading question marks or uncertainty symbols
     cleaned <- sub("^\\?\\s*", "", cleaned, perl = TRUE)
     
-    # Step 4: Remove trailing dash (—, –, -) at the very end
+    # Step 4: Remove trailing dash at the very end
     cleaned <- sub("\\s*[-–—]\\s*$", "", cleaned, perl = TRUE)
     
     return(cleaned)
