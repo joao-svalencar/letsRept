@@ -7,16 +7,16 @@
 #' @description 
 #' Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
 #' 
-#' @usage herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
+#' @usage herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FALSE)
 #' 
 #' @param url A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.
 #' @param higherTaxa A logical value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species. default = *TRUE*
 #' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires higherTaxa = TRUE
-#' @param getlink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
+#' @param getLink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
 #'
-#' @return if _higherTaxa_ = FALSE (default), the function returns a vector with the list of species
+#' @return if higherTaxa = FALSE (default), the function returns a vector with the list of species
 #' 
-#' if _higherTaxa_ = TRUE, the function returns a data frame with columns: order, family, genus and species
+#' if _igherTaxa = TRUE, the function returns a data frame with columns: order, family, genus and species
 #' 
 #' Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url
 #' 
@@ -25,7 +25,7 @@
 #' 
 #' @export
 #'
-herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FALSE)
+herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FALSE)
 {
   species_list <- c()
   genus_list <- c()
@@ -77,8 +77,8 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FA
       family_list <- c(family_list, family)
      }
 
-# getlink == FALSE --------------------------------------------------------
-   if(getlink==FALSE)
+# getLink == FALSE --------------------------------------------------------
+   if(getLink==FALSE)
    { 
      if(higherTaxa ==FALSE)
      {
@@ -103,7 +103,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getlink = FA
    }else
    { 
 
-# getlink == TRUE ---------------------------------------------------------
+# getLink == TRUE ---------------------------------------------------------
      if(higherTaxa ==FALSE)
      {
        searchResults <- data.frame(species = species_list,
