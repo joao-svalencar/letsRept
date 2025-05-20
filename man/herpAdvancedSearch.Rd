@@ -4,22 +4,27 @@
 \alias{herpAdvancedSearch}
 \title{Search The Reptile Database website (TRD): Advanced}
 \usage{
-herpAdvancedSearch(highertaxa=NULL, genus=NULL, synonym=NULL, distribution=NULL)
+herpAdvancedSearch(higher=NULL, genus=NULL, year=NULL, synonym=NULL, location=NULL)
 }
 \arguments{
-\item{highertaxa}{A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
+\item{higher}{A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
 
 \item{genus}{A character string with the current valid name of a given reptile genus (e.g.: "\emph{Apostolepis}")}
 
+\item{year}{A character string to be used as a filter for the year of description of the searched species (e.g.: "2025")}
+
 \item{synonym}{A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "\emph{Boa diviniloqua}")}
 
-\item{distribution}{A character string with a location from which the user wants the list of species expected to occur}
+\item{location}{A character string with a location from which the user wants the list of species expected to occur}
 }
 \value{
 the url to be used in herpSpecies()
 }
 \description{
-Searches The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()\\cr
-#' \emph{ATTENTION:} under development, may not work yet.\\cr
-Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
+Creates the link for multiple species sampling by herpSpecies()
+}
+\examples{
+herpAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
+herpAdvancedSearch(higher = "Sauria", location = "Argentina")
+
 }
