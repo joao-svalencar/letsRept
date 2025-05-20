@@ -21,7 +21,7 @@ herpSync<-function(query, synonym=NULL, interactive=F, return.no.matches=F){
   ### first step is to remove all formatting from both names and the frost database
   if(is.null(synonym))
   {
-    synonym <- allSynonyms
+    synonym <- letsHerp::allSynonyms
   }
   else{
   synonym <- synonym
