@@ -19,12 +19,19 @@
 herpSync<-function(query, synonym=NULL, interactive=F, return.no.matches=F){
 
   ### first step is to remove all formatting from both names and the frost database
+  if(is.null(synonym))
+  {
+    synonym <- allSynonyms
+  }
+  else{
+  synonym <- synonym
+  }
   
   query<-data.frame(query=query,stringsAsFactors=F)
-  query$stripped<-gsub(query$query, pattern="[^[:alnum:]]",replacement="_")
+  query$stripped<-gsub(query$query, pattern=" ",replacement="_")
   query$stripped<-tolower(query$stripped)
   
-  synonym$stripped<-gsub(synonym$synonym, pattern="[^[:alnum:]]",replacement="_")
+  synonym$stripped<-gsub(synonym$synonym, pattern=" ",replacement="_", )
   synonym$stripped<-tolower(synonym$stripped)
   
   
