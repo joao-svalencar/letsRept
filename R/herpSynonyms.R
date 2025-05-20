@@ -5,8 +5,10 @@
 #' Get reptile species synonyms
 #'
 #' @description
-#' creates a _dataframe_ containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
-#' @param x a _dataframe_ columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies()
+#' creates a dataframe containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
+#'
+#' @param x A dataframe with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies()
+#' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them 
 #'
 #' @returns '_herpSynonyms_' returns a dataframe with columns: species and their respective synonyms according to the version of Reptile Database.
 #' 
@@ -14,11 +16,41 @@
 #' Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database, http://www.reptile-database.org
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
 #' 
+#' @usage herpSynonyms(x, getRef = FALSE)
 #' @export
 #'
 
-herpSynonyms <- function(x)
+herpSynonyms <- function(x, getRef=FALSE)
 {
+
+# creates clean_names function: -------------------------------------------
+
+  clean_species_names <- function(names_vec) {
+    # Step 1: Extract species+qualifiers+vernacular (stop before authors/years)
+    extracted <- sub(
+      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]\\.|[a-z]+|\\p{Lu}[a-z]+|‘?[A-Za-z]+’?|\\'[A-Za-z]+\\'|\\[.*?\\]|gr\\.\\s*\\w+|sp\\.\\s*nov\\.?|subsp\\.\\s*nov\\.?|var\\.\\s*\\w+|vari[ée]t[é]\\.?(?:\\s*\\w+)?|aff\\.\\s*\\w+|cf\\.\\s*\\w+|\"[^\"]+\"|\\“[^\\”]+\\”))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*",
+      "\\1",
+      names_vec,
+      perl = TRUE
+    )
+    
+    # Step 2: Remove trailing author names / partials / conjunctions
+    cleaned <- sub(
+      "\\s+((?:\\p{Lu}{2,}|\\p{Lu}{1})\\s*(?:and|&)?\\s*)+\\b(in|et al\\.|et al|and|&)?\\b.*$",
+      "",
+      extracted,
+      perl = TRUE
+    )
+    
+    # Step 3: Remove leading question marks or uncertainty symbols
+    cleaned <- sub("^\\?\\s*", "", cleaned, perl = TRUE)
+    
+    # Step 4: Remove trailing dash (—, –, -) at the very end
+    cleaned <- sub("\\s*[-–—]\\s*$", "", cleaned, perl = TRUE)
+    
+    return(cleaned)
+  }
+  
   species_list <- c()
   synonym_list <- c()
   synonymRef_list <- c()
@@ -54,12 +86,7 @@ herpSynonyms <- function(x)
     children <- xml2::xml_contents(td2)
     synonym_vector <- unique(children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE))
     
-    synonyms <- sub(
-      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]\\.|[a-z]+|\\p{Lu}[a-z]+|\\[sic\\]|sp\\.(?:\\s*\\d+)?|var\\.\\s*\\w+|vari[ée]t[é]\\.?(?:\\s*\\w+)?|aff\\.\\s*\\w+|cf\\.\\s*\\w+))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}).*",
-      "\\1",
-      synonym_vector,
-      perl = TRUE
-    )
+    synonyms <- clean_species_names(synonym_vector)
     
     cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
     species <- c(rep(x$species[i], times=length(synonyms)))
@@ -71,9 +98,9 @@ herpSynonyms <- function(x)
 }   #loop for ends here
     synonymResults <- data.frame(species = species_list,
                                  synonyms = synonym_list,
-                                 ref = synonymRef_list,
                                  stringsAsFactors = FALSE)
-  #
+    if(getRef==TRUE){
+      synonymResults$ref <- synonymRef_list
+    }
   return(synonymResults)
-  #NEXT: IMPROVE REGEX ARGUMENTS FOR GENERAL SYNONYM SAMPLING
 }
