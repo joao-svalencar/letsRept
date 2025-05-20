@@ -43,7 +43,7 @@ herpSynonyms <- function(x, getRef=FALSE)
     "))+)\\s*(?:[-", endash, emdash, "]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*"
   )
   clean_species_names <- function(names_vec) {
-    extracted <- sub(pattern, "\\1", names_vec, perl=TRUE)
+    extracted <- sub(pattern, "\\1", names_vec, perl = TRUE)
     
     cleaned <- sub(
       "\\s+((?:\\p{Lu}{2,}|\\p{Lu}{1})\\s*(?:and|&)?\\s*)+\\b(in|et al\\.|et al|and|&)?\\b.*$",
@@ -56,8 +56,13 @@ herpSynonyms <- function(x, getRef=FALSE)
     
     cleaned <- sub(paste0("\\s*[-", endash, emdash, "-]\\s*$"), "", cleaned, perl = TRUE)
     
+    # Final cleanup: collapse multiple spaces and trim
+    cleaned <- gsub("\\s{2,}", " ", cleaned)
+    cleaned <- trimws(gsub("\\s+", " ", cleaned))
+    
     return(cleaned)
   }
+  
 
 # end of function ---------------------------------------------------------
 
@@ -98,7 +103,7 @@ herpSynonyms <- function(x, getRef=FALSE)
     
     synonyms <- clean_species_names(synonym_vector)
     
-    cat(paste("Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
+    cat(paste(" Species number",paste0(i,"",":"), "\n", x$species[i],"\n", "Done!", "\n", "\n"))
     species <- c(rep(x$species[i], times=length(synonyms)))
     
     species_list <- c(species_list, species)
