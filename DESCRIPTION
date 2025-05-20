@@ -13,6 +13,7 @@ Imports:
     rvest,
     stats,
     stringr,
+    tidyr,
     xml2
 Depends: 
     R (>= 3.5)
