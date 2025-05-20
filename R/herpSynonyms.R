@@ -55,9 +55,9 @@ herpSynonyms <- function(x)
     synonym_vector <- unique(children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE))
     
     synonyms <- sub(
-      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]+|\\p{Lu}[a-z]+|\\[sic\\]|sp\\.\\s*\\d+|var\\.\\s*\\w+|aff\\.\\s*\\w+))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}).*",
+      "^((?:\\p{Lu}[a-z]+)\\s*(?:\\([A-Za-z]+\\))?(?:\\s+(?:[a-z]\\.|[a-z]+|\\p{Lu}[a-z]+|\\[sic\\]|sp\\.(?:\\s*\\d+)?|var\\.\\s*\\w+|vari[ée]t[é]\\.?(?:\\s*\\w+)?|aff\\.\\s*\\w+|cf\\.\\s*\\w+))+)\\s*(?:[-–—]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}).*",
       "\\1",
-      allSynonyms$ref[1:500],
+      synonym_vector,
       perl = TRUE
     )
     
