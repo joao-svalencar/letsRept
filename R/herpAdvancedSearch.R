@@ -1,51 +1,57 @@
+##########################################################################################################
+################### function herpAdvancedSearch by:  JP VIEIRA-ALENCAR  ##################################
+##########################################################################################################
+
 #' Search The Reptile Database website (TRD): Advanced
 #'
 #' @description
-#' Searches The Reptile Database website and provides the data of a single species or the url for multiple species sampling by herpSpecies()\\cr
-#' #' *ATTENTION:* under development, may not work yet.\\cr
-#' Alternatively, for advanced search copy the link with the results from TRD and run herpSpecies()
+#' Creates the link for multiple species sampling by herpSpecies()
 #' 
-#' @usage herpAdvancedSearch(highertaxa=NULL, genus=NULL, synonym=NULL, distribution=NULL)
+#' @usage herpAdvancedSearch(higher=NULL, genus=NULL, year=NULL, synonym=NULL, location=NULL)
 #' 
-#' @param highertaxa A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")
+#' @param higher A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")
 #' @param genus A character string with the current valid name of a given reptile genus (e.g.: "_Apostolepis_")
+#' @param year A character string to be used as a filter for the year of description of the searched species (e.g.: "2025")
 #' @param synonym A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "_Boa diviniloqua_")
-#' @param distribution A character string with a location from which the user wants the list of species expected to occur
+#' @param location A character string with a location from which the user wants the list of species expected to occur
 #' 
 #' @returns the url to be used in herpSpecies()
 #' 
+#' @examples
+#' herpAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
+#' herpAdvancedSearch(higher = "Sauria", location = "Argentina")
+#' 
 #' @export
 #'
-herpAdvancedSearch <- function(highertaxa=NULL, genus=NULL, synonym=NULL, distribution=NULL){
-
-  #higher taxa:
-  if(!is.null(highertaxa))
-  {
-    base_url <- "https://reptile-database.reptarium.cz/advanced_search"
-    query <- paste0("?taxon=", highertaxa, "&submit=Search")
-    url <- paste0(base_url, query) #url for page of species list
+herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, synonym = NULL, location = NULL) {
+  
+  # Check if all arguments are NULL
+  if (all(sapply(list(higher, genus, year, synonym, location), is.null))) {
+    cat("\n No query parameters provided. Please supply at least one.\n")
+    return(NULL)
   }
-  #genus:
-  if(!is.null(genus))
-  {
-    base_url <- "https://reptile-database.reptarium.cz/advanced_search"
-    query <- paste0("?genus=%22", genus, "%22&submit=Search")
-    url <- paste0(base_url, query) #url for page of species list
-  }
-  #synonyms:
-  if(!is.null(synonym))
-  {
-    base_url <- "https://reptile-database.reptarium.cz/advanced_search"
-    query <- paste0("?common_name=", sub(" ", "+", synonym), "&submit=Search")
-    url <- paste0(base_url, query) #url for page of species list
-  }
-  #distribution:
-  if(!is.null(distribution))
-  {
-    base_url <- "https://reptile-database.reptarium.cz/advanced_search"
-    query <- paste0("?location=", distribution, "&submit=Search")
-    url <- paste0(base_url, query) #url for page of species list
-  }
-  return(url) 
-  #NEXT: IMPLEMENT TEST OF LINK VIABILITY AND SEARCH OF COMBINED ADVANCED ARGUMENTS
+  
+  base_url <- "https://reptile-database.reptarium.cz/advanced_search"
+  
+  # Build list of query parameters based on non-NULL arguments
+  params <- list()
+  
+  if (!is.null(higher))     params$taxon      <- higher
+  if (!is.null(genus))          params$genus      <- genus
+  if (!is.null(year))           params$year       <- year
+  if (!is.null(synonym))        params$synonym    <- synonym
+  if (!is.null(location))   params$location   <- location
+  
+  # Always include the submit flag
+  params$submit <- "Search"
+  
+  # Collapse the parameters into a query string
+  query <- paste0("?", paste0(
+    names(params), "=", utils::URLencode(params, reserved = TRUE),
+    collapse = "&"
+  ))
+  
+  # Final URL
+  url <- paste0(base_url, query)
+  return(url)
 }
