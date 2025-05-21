@@ -5,7 +5,7 @@
 \title{Reptile species summary}
 \usage{
 herpSpecies(url, 
-                   higherTaxa=TRUE, 
+                   taxonomicInfo=TRUE, 
                    fullHigher=FALSE, 
                    getLink=FALSE, 
                    batches=1, 
@@ -14,9 +14,9 @@ herpSpecies(url,
 \arguments{
 \item{url}{A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.}
 
-\item{higherTaxa}{A logical value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species. default = \emph{TRUE}}
+\item{taxonomicInfo}{A logical value indicating if user wants full species taxonomic information (specifically: Order, Suborder, Family, Genus, species author and description year) for each species. default = \emph{TRUE}}
 
-\item{fullHigher}{A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}. OBS.: Requires higherTaxa = TRUE}
+\item{fullHigher}{A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}. OBS.: Requires taxonomicInfo = TRUE}
 
 \item{getLink}{A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
 
@@ -25,18 +25,12 @@ herpSpecies(url,
 \item{startBatch}{An integer indicating where to start data collection (e.g.: if failed in previous attempt).}
 }
 \value{
-if higherTaxa = FALSE (default), the function returns a vector with the list of species
+if taxonomicInfo = FALSE (default), the function returns a vector with the list of species
 
-if higherTaxa = TRUE, the function returns a data frame with columns: order, suborder (e.g.: Sauria or Serpentes only; when available), family, genus and species
+if taxonomicInfo = TRUE, the function returns a data frame with columns: order, suborder (e.g.: Sauria or Serpentes only; when available), family, genus, species, author and year
 
 Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url (necessary if looking for synonyms afterwards)
 }
 \description{
 Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
-}
-\examples{
-boaLink <- herpAdvancedSearch(genus = "Boa")
-boa <- herpSpecies(boaLink, higherTaxa = TRUE)
-boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
-
 }

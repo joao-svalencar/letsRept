@@ -8,33 +8,30 @@
 #' Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
 #' 
 #' @usage herpSpecies(url, 
-#'                    higherTaxa=TRUE, 
+#'                    taxonomicInfo=TRUE, 
 #'                    fullHigher=FALSE, 
 #'                    getLink=FALSE, 
 #'                    batches=1, 
 #'                    startBatch=1)
-#' 
+#'                    
 #' @param url A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.
-#' @param higherTaxa A logical value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species. default = *TRUE*
-#' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires higherTaxa = TRUE
+#' @param taxonomicInfo A logical value indicating if user wants full species taxonomic information (specifically: Order, Suborder, Family, Genus, species author and description year) for each species. default = *TRUE*
+#' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires taxonomicInfo = TRUE
 #' @param getLink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
 #' @param batches An integer indicating in how many batches user would like to divide data collection (good for large datasets). 
 #' @param startBatch An integer indicating where to start data collection (e.g.: if failed in previous attempt).
 #'
-#' @return if higherTaxa = FALSE (default), the function returns a vector with the list of species
+#' @return if taxonomicInfo = FALSE (default), the function returns a vector with the list of species
 #' 
-#' if higherTaxa = TRUE, the function returns a data frame with columns: order, suborder (e.g.: Sauria or Serpentes only; when available), family, genus and species
+#' if taxonomicInfo = TRUE, the function returns a data frame with columns: order, suborder (e.g.: Sauria or Serpentes only; when available), family, genus, species, author and year
 #' 
 #' Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url (necessary if looking for synonyms afterwards)
 #' 
-#' @examples
-#' boaLink <- herpAdvancedSearch(genus = "Boa")
-#' boa <- herpSpecies(boaLink, higherTaxa = TRUE)
-#' boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
+
 #' 
 #' @export
 #'
-herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FALSE, batches = 1, startBatch = 1)
+herpSpecies <- function(url, taxonomicInfo = TRUE, fullHigher = FALSE, getLink = FALSE, batches = 1, startBatch = 1)
 {
   species_list <- c()
   genus_list <- c()
@@ -44,7 +41,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
   suborder_list <- c()
   family_list <- c()
   sppAuthor_list <- c()
-  year_list <- c()
+  sppYear_list <- c()
   
   search <- rvest::read_html(url)
   ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
@@ -70,7 +67,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
   }
   cat("\n")
     #code with batch:
-  if (higherTaxa == TRUE) {
+  if (taxonomicInfo == TRUE) {
     
     match_taxon <- function(taxa_vector, rank_list) {
       match_idx <- which.max(vapply(rank_list, function(rank) any(stringr::str_detect(taxa_vector, rank)), logical(1)))
@@ -100,9 +97,10 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
         for (j in from:to) {
           sp_page <- rvest::read_html(url_list[j])
           
-          title <- rvest::html_element(url, "h1")
+          title <- rvest::html_element(sp_page, "h1")
           
           sppAuthor <- rvest::html_text(title, trim = TRUE)
+          sppAuthor <- gsub("^([A-Z][a-z]+\\s+[a-z\\-]+)\\s*", "", sppAuthor)
           sppAuthor <- gsub("\\s{2,}", " ", sppAuthor)
           sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
           
@@ -123,7 +121,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
           suborder_list <- c(suborder_list, suborder)
           family_list <- c(family_list, family)
           sppAuthor_list <- c(sppAuthor_list, sppAuthor)
-          year_list <- c(year_list, sppYear)
+          sppYear_list <- c(sppYear_list, sppYear)
           
           percent <- (j / total_species) * 100
           cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
@@ -140,7 +138,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
     }
     
     # Final output — always return as much as was scraped
-    n <- length(order_list)
+    n <- length(family_list)
     searchResults <- data.frame(
                       order = order_list,
                       suborder = suborder_list,
@@ -159,7 +157,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
     return(searchResults)
   }
   
-  #if(higherTaxa== TRUE){
+  #if(taxonomicInfo== TRUE){
     # # to get higher taxa information ------------------------------------------
     # match_taxon <- function(taxa_vector, rank_list) {
     #   match_idx <- which.max(vapply(rank_list, function(rank) any(stringr::str_detect(taxa_vector, rank)), logical(1)))
@@ -229,15 +227,15 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
   #}#closes higher taxa = TRUE
   
 # getLink == FALSE --------------------------------------------------------
-   if(higherTaxa==FALSE && getLink==FALSE)
+   if(taxonomicInfo==FALSE && getLink==FALSE)
    { 
       searchResults <- species_list
       cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species retrieved."))
       return(searchResults)
       
-   }else if (higherTaxa==TRUE && getLink==FALSE)
+   }else if (taxonomicInfo==TRUE && getLink==FALSE)
      {
-       n <- length(order_list)
+       n <- length(family_list)
        searchResults <- data.frame(order = order_list,
                                    suborder = suborder_list,
                                    family = family_list,
@@ -255,15 +253,15 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
      }
 
 # getLink == TRUE ---------------------------------------------------------
-     if(higherTaxa ==FALSE && getLink==TRUE)
+     if(taxonomicInfo ==FALSE && getLink==TRUE)
      {
        searchResults <- data.frame(species = species_list,
                                    url = url_list)
        cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links retrieved."))
        return(searchResults)
-     }else if (higherTaxa==TRUE && getLink==TRUE)
+     }else if (taxonomicInfo==TRUE && getLink==TRUE)
        {
-       n <- length(order_list)
+       n <- length(family_list)
        searchResults <- data.frame(order = order_list,
                                    suborder = suborder_list,
                                    family = family_list,
