@@ -3,7 +3,7 @@ Title: An R Interface to the Reptile Database
 Version: 0.0.0.9000
 Authors@R: 
     person("Joao Paulo", "dos Santos Vieira-Alencar", , "joaopaulo.valencar@gmail.com", role = c("aut", "cre"))
-Description: The package compiles reptile species url from The Reptile Dabase website and summarizes species synonyms in a dataframe.
+Description: The package compiles reptile species informatino from The Reptile Dabase website and summarizes species taxonomy and synonyms in dataframes.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
