@@ -101,7 +101,11 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
           sp_page <- rvest::read_html(url_list[j])
           
           title <- rvest::html_element(url, "h1")
+          
           sppAuthor <- rvest::html_text(title, trim = TRUE)
+          sppAuthor <- gsub("\\s{2,}", " ", sppAuthor)
+          sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
+          
           sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
           
           element <- rvest::html_element(sp_page, "table")
