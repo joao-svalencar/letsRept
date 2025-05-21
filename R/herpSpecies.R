@@ -55,12 +55,9 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
     genus_list <- c(genus_list, genus)
     url_list <- c(url_list, url)
     
-    if(higherTaxa==FALSE){
-      percent <- (i/length(xml2::xml_children(ul_element[[1]]))) * 100
-      cat(sprintf("\rProgress: %.1f%%", percent))
-      utils::flush.console()
-    }
-    
+    percent <- (i/length(xml2::xml_children(ul_element[[1]]))) * 100
+    cat(sprintf("\rGetting species links progress: %.1f%%", percent))
+    utils::flush.console()
   }
 
   if(higherTaxa== TRUE){
@@ -87,7 +84,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
       family_list <- c(family_list, family)
       
       percent <- (j/length(species_list)) * 100
-      cat(sprintf("\rProgress: %.1f%%", percent))
+      cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
       flush.console()
     }
   }
