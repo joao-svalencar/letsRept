@@ -20,9 +20,9 @@ herpSpecies(url,
 
 \item{getLink}{A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
 
-\item{batches}{description}
+\item{batches}{An integer indicating in how many batches user would like to divide data collection (good for large datasets).}
 
-\item{startBatch}{description}
+\item{startBatch}{An integer indicating where to start data collection (e.g.: if failed in previous attempt).}
 }
 \value{
 if higherTaxa = FALSE (default), the function returns a vector with the list of species

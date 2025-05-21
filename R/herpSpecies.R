@@ -18,8 +18,8 @@
 #' @param higherTaxa A logical value indicating if user wants higher taxa information (specifically: Order, Suborder, Family and Genus) for each species. default = *TRUE*
 #' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires higherTaxa = TRUE
 #' @param getLink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
-#' @param batches description
-#' @param startBatch description
+#' @param batches An integer indicating in how many batches user would like to divide data collection (good for large datasets). 
+#' @param startBatch An integer indicating where to start data collection (e.g.: if failed in previous attempt).
 #'
 #' @return if higherTaxa = FALSE (default), the function returns a vector with the list of species
 #' 
