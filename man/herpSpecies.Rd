@@ -4,7 +4,12 @@
 \alias{herpSpecies}
 \title{Reptile species summary}
 \usage{
-herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FALSE)
+herpSpecies(url, 
+                   higherTaxa=TRUE, 
+                   fullHigher=FALSE, 
+                   getLink=FALSE, 
+                   batches=1, 
+                   startBatch=1)
 }
 \arguments{
 \item{url}{A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.}
@@ -14,6 +19,10 @@ herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FALSE)
 \item{fullHigher}{A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}. OBS.: Requires higherTaxa = TRUE}
 
 \item{getLink}{A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
+
+\item{batches}{description}
+
+\item{startBatch}{description}
 }
 \value{
 if higherTaxa = FALSE (default), the function returns a vector with the list of species
