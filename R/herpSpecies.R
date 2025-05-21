@@ -30,6 +30,10 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
   species_list <- c()
   genus_list <- c()
   url_list <- c()
+  taxa_vector_list <- c()
+  order_list <- c()
+  suborder_list <- c()
+  family_list <- c()
   
   search <- rvest::read_html(url)
   ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
@@ -48,23 +52,27 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
     species_list <- c(species_list, species)
     genus_list <- c(genus_list, genus)
     url_list <- c(url_list, url)
+    
+    if(higherTaxa==FALSE){
+      percent <- (i/length(xml2::xml_children(ul_element[[1]]))) * 100
+      cat(sprintf("\rProgress: %.1f%%", percent))
+      flush.console()
+    }
+    
   }
 
-# to get higher taxa information ------------------------------------------
-     taxa_vector_list <- c()
-     order_list <- c()
-     suborder_list <- c()
-     family_list <- c()
-     orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines") #order count = OK
-     suborders <- c("Sauria", "Serpentes") #suborder count = OK
-     for(j in 1:length(species_list))
-     {
+  if(higherTaxa== TRUE){
+    # to get higher taxa information ------------------------------------------
+    orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines") #order count = OK
+    suborders <- c("Sauria", "Serpentes") #suborder count = OK
+    for(j in 1:length(species_list))
+    {
       sp_page <- rvest::read_html(url_list[j])
       element <- rvest::html_element(sp_page, "table") #scrap species table from Reptile Database
       taxa <- xml2::xml_child(element, 1) #select the higher taxa part of the table
       td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
       children <- xml2::xml_contents(td_taxa)
-        
+      
       #each species Higher Taxa information:
       taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
       family <- sub("^([A-Z][a-zA-Z]*)\\b.*", "\\1", taxa_vector)
@@ -75,42 +83,45 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
       order_list <- c(order_list, order)
       suborder_list <- c(suborder_list, suborder)
       family_list <- c(family_list, family)
-     }
-
+      
+      percent <- (j/length(species_list)) * 100
+      cat(sprintf("\rProgress: %.1f%%", percent))
+      flush.console()
+    }
+  }
+  
 # getLink == FALSE --------------------------------------------------------
-   if(getLink==FALSE)
+   if(higherTaxa==FALSE && getLink==FALSE)
    { 
-     if(higherTaxa ==FALSE)
-     {
       searchResults <- species_list
       cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species retrieved."))
       return(searchResults)
-     }else{ 
-     searchResults <- data.frame(order = order_list,
-                                 suborder = suborder_list,
-                                 family = family_list,
-                                 genus = genus_list,
-                                 species = species_list,
-                                 stringsAsFactors = FALSE)
-     if(fullHigher==TRUE)
+      
+   }else if (higherTaxa==TRUE && getLink==FALSE)
      {
-       searchResults$higher_taxa <- taxa_vector_list
+       searchResults <- data.frame(order = order_list,
+                                   suborder = suborder_list,
+                                   family = family_list,
+                                   genus = genus_list,
+                                   species = species_list,
+                                   stringsAsFactors = FALSE)
+       if(fullHigher==TRUE)
+       {
+         searchResults$higher_taxa <- taxa_vector_list
+       }
+       cat(" Data collection is done!", "\n", paste0("A total of ", length(species_list), " species higher taxa information retrieved."))
+       return(searchResults)
      }
-     cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species higher taxa information retrieved."))
-     return(searchResults)
-     }
-     
-   }else
-   { 
 
 # getLink == TRUE ---------------------------------------------------------
-     if(higherTaxa ==FALSE)
+     if(higherTaxa ==FALSE && getLink==TRUE)
      {
        searchResults <- data.frame(species = species_list,
                                    url = url_list)
        cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links retrieved."))
        return(searchResults)
-     }else{ 
+     }else if (higherTaxa==TRUE && getLink==TRUE)
+       {
        searchResults <- data.frame(order = order_list,
                                    suborder = suborder_list,
                                    family = family_list,
@@ -118,12 +129,11 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
                                    species = species_list,
                                    url = url_list,
                                    stringsAsFactors = FALSE)
-       if(fullHigher==TRUE)
-       {
-         searchResults$higher_taxa <- taxa_vector_list
-       }
+         if(fullHigher==TRUE)
+         {
+          searchResults$higher_taxa <- taxa_vector_list
+         }
        cat(" Data collection is done!","\n", paste0("A total of ", length(species_list), " species links and higher taxa information retrieved."))
        return(searchResults)
      }
-   }
 }
