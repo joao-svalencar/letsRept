@@ -4,7 +4,7 @@
 \alias{herpSync}
 \title{Submit query to find updates in nomenclature}
 \usage{
-herpSync(query, synonym = NULL, interactive = F, return.no.matches = F)
+herpSync(query, synonym, interactive = FALSE, return.no.matches = FALSE)
 }
 \arguments{
 \item{query}{vector of taxon names to be processed (can also be tip labels of a phylogeny for example)}
@@ -13,7 +13,7 @@ herpSync(query, synonym = NULL, interactive = F, return.no.matches = F)
 
 \item{interactive}{logical argument (default=FALSE) of whether to allow an "on the fly" decision to be made on what name to take if synonym matches multiple names. FLASE will return all possible names for a given query as a string, TRUE will ask the user to select one.}
 
-\item{return.no.matches}{logical argument of whether to leave taxa not found in the reference table blank or whether to fill in the names provided by the query. default is FALSE}
+\item{return.no.matches}{logical argument (default=FALSE) of whether to leave taxa not found in the reference table blank or whether to fill in the names provided by the query.}
 }
 \value{
 this function returns a data frame with the following information/columns: original/input names, "stripped" names with no formatting, status of what action has been taken, updated names as recommended by the reference table
@@ -23,4 +23,15 @@ This function takes a query (a list of taxon names to be assessed) and the amphi
 }
 \details{
 Two logical arguments can be turned on to a) allow an "on the fly" decision to be made on what name to take if synonym matches multiple names (if not, it will return all possible names) and to b) return the original query name if no match is found
+}
+\examples{
+boaLink <- herpAdvancedSearch(genus = "Boa")
+boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
+boa_syn <- herpSynonyms(boa, getRef = FALSE)
+query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
+herpSync(query, boa_syn)
+
+}
+\references{
+Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. \emph{Systematics and Biodiversity}, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
 }

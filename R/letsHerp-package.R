@@ -1,4 +1,15 @@
+#' letsHerp: An R Interface to the Reptile Database
+#' 
+#' @description
+#' The letsHerp package provides functions to interact with and extract taxonomic and distributional data
+#' from the Reptile Database (https://reptile-database.reptarium.cz). It supports advanced search queries, 
+#' extraction of species names, synonyms, higher taxa, and related metadata for herpetological research.
+#' 
+#' @docType package
+#' @name letsHerp
 #' @keywords internal
+#' 
+
 "_PACKAGE"
 
 ## usethis namespace: start

@@ -7,15 +7,22 @@
 herpSynonyms(x, getRef = FALSE)
 }
 \arguments{
-\item{x}{A dataframe with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies()}
+\item{x}{A data frame with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies().}
 
-\item{getRef}{A logical value. If TRUE, returns synonyms with the respective references that mention them}
+\item{getRef}{A logical value. If TRUE, returns synonyms with the respective references that mention them. default = \emph{FALSE}}
 }
 \value{
-'\emph{herpSynonyms}' returns a dataframe with columns: species and their respective synonyms according to the version of Reptile Database.
+'herpSynonyms' returns a data frame with columns: species and their respective synonyms according to the version of Reptile Database. Optionally, returns the references that mentioned each synonym.
 }
 \description{
-creates a dataframe containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
+creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
+}
+\examples{
+boaLink <- herpAdvancedSearch(genus = "Boa") #creates advanced search link
+boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
+boa_syn <- herpSynonyms(boa, getRef = TRUE) #synonyms with respective references
+boa_syn <- herpSynonyms(boa, getRef = FALSE) #only synonyms
+
 }
 \references{
 Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database, http://www.reptile-database.org

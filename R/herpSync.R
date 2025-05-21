@@ -8,20 +8,35 @@
 #'
 #'
 #' Two logical arguments can be turned on to a) allow an "on the fly" decision to be made on what name to take if synonym matches multiple names (if not, it will return all possible names) and to b) return the original query name if no match is found
+#' @usage herpSync(query, synonym, interactive = FALSE, return.no.matches = FALSE)
+#' 
 #' @param query vector of taxon names to be processed (can also be tip labels of a phylogeny for example)
 #' @param synonym Reptile Database synonym reference table on which to base new names on Default setting will use the internally stored data set that may not be the most up-to-date.
 #' @param interactive logical argument (default=FALSE) of whether to allow an "on the fly" decision to be made on what name to take if synonym matches multiple names. FLASE will return all possible names for a given query as a string, TRUE will ask the user to select one.
-#' @param return.no.matches logical argument of whether to leave taxa not found in the reference table blank or whether to fill in the names provided by the query. default is FALSE
+#' @param return.no.matches logical argument (default=FALSE) of whether to leave taxa not found in the reference table blank or whether to fill in the names provided by the query.
+#' 
 #' @return this function returns a data frame with the following information/columns: original/input names, "stripped" names with no formatting, status of what action has been taken, updated names as recommended by the reference table
+#' 
+#' @references
+#' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
+#' 
+#' @examples
+#' boaLink <- herpAdvancedSearch(genus = "Boa")
+#' boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
+#' boa_syn <- herpSynonyms(boa, getRef = FALSE)
+#' query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
+#' herpSync(query, boa_syn)
+#' 
 #' @export
 #' 
 
-herpSync<-function(query, synonym=NULL, interactive=F, return.no.matches=F){
+herpSync<-function(query, synonym=NULL, interactive=FALSE, return.no.matches=FALSE){
 
   ### first step is to remove all formatting from both names and the frost database
   if(is.null(synonym))
   {
     synonym <- letsHerp::allSynonyms
+    cat(" User's personal synonym list not provided using internal database" )
   }
   else{
   synonym <- synonym
@@ -34,9 +49,7 @@ herpSync<-function(query, synonym=NULL, interactive=F, return.no.matches=F){
   synonym$stripped<-gsub(synonym$synonym, pattern=" ",replacement="_", )
   synonym$stripped<-tolower(synonym$stripped)
   
-  
   ###### then:
-  
   
   #update names. if interactive=F then it will return a string of names if names are ambiguous
   query$status<-NA
@@ -102,6 +115,6 @@ herpSync<-function(query, synonym=NULL, interactive=F, return.no.matches=F){
   }
   
   query$query<-as.character(query$query)
-  
+  query <- query[,-2]
   return(query)
 }

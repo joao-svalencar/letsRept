@@ -3,20 +3,27 @@
 ##########################################################################################################
 
 #' Get reptile species synonyms
-#'
+#' 
 #' @description
-#' creates a dataframe containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
+#' creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
+#' 
+#' @usage herpSynonyms(x, getRef = FALSE)
+#' 
+#' @param x A data frame with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies().
+#' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them. default = *FALSE*
 #'
-#' @param x A dataframe with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies()
-#' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them 
-#'
-#' @returns '_herpSynonyms_' returns a dataframe with columns: species and their respective synonyms according to the version of Reptile Database.
+#' @returns 'herpSynonyms' returns a data frame with columns: species and their respective synonyms according to the version of Reptile Database. Optionally, returns the references that mentioned each synonym.
 #' 
 #' @references 
 #' Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database, http://www.reptile-database.org
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
 #' 
-#' @usage herpSynonyms(x, getRef = FALSE)
+#' @examples
+#' boaLink <- herpAdvancedSearch(genus = "Boa") #creates advanced search link
+#' boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
+#' boa_syn <- herpSynonyms(boa, getRef = TRUE) #synonyms with respective references
+#' boa_syn <- herpSynonyms(boa, getRef = FALSE) #only synonyms
+#' 
 #' @export
 #'
 
@@ -62,9 +69,7 @@ herpSynonyms <- function(x, getRef=FALSE)
     
     return(cleaned)
   }
-  
-
-# end of function ---------------------------------------------------------
+# end of cleaning function ------------------------------------------------
 
   species_list <- c()
   synonym_list <- c()
@@ -72,26 +77,6 @@ herpSynonyms <- function(x, getRef=FALSE)
   
   for(i in 1:length(x$species))
   {
-    # try_get_html <- function(url, tries = 3) {
-    #   for (attempt in 1:tries) {
-    #     try({
-    #       response <- httr::GET(url, httr::user_agent("Mozilla/5.0"), timeout(30))
-    #       return(rvest::read_html(response))
-    #     }, silent = TRUE)
-    #     Sys.sleep(runif(1, 1, 3))  # slightly longer pause after failure
-    #   }
-    #   warning(sprintf("Failed to fetch: %s after %d tries", url, tries))
-    #   return(NULL)
-    # }
-    # 
-    # #add random sleep time
-    # Sys.sleep(stats::runif(1, min = 0.3, max = 1)) # random sleep time
-    # 
-    # url <- try_get_html(x$url[i])
-    # if (!is.null(url)) {
-    #   element <- rvest::html_element(url, "table")
-    # }
-    
     url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
     element <- rvest::html_element(url, "table") #scrap species table from Reptile Database
 
@@ -116,7 +101,7 @@ herpSynonyms <- function(x, getRef=FALSE)
     synonym_list <- c(synonym_list, synonyms)
     synonymRef_list <- c(synonymRef_list, synonym_vector)
   
-}   #loop for ends here
+  }#loop for ends here
 
     if(getRef==TRUE){
       synonymResults <- data.frame(species = species_list,
@@ -124,7 +109,7 @@ herpSynonyms <- function(x, getRef=FALSE)
                                    ref = synonymRef_list,
                                    stringsAsFactors = FALSE)
       return(synonymResults)
-    }else{
+      }else{
       synonymResults <- data.frame(species = species_list,
                         synonyms = synonym_list,
                         stringsAsFactors = FALSE)
@@ -138,6 +123,4 @@ herpSynonyms <- function(x, getRef=FALSE)
                                      convert=TRUE) #funcao de separacao
       return(uniqueSynonyms)
     }
-  
-  
 }

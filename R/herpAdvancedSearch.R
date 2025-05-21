@@ -37,9 +37,9 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, synonym
   params <- list()
   
   if (!is.null(higher))     params$taxon      <- higher
-  if (!is.null(genus))          params$genus      <- paste0('"', genus,'"')
-  if (!is.null(year))           params$year       <- year
-  if (!is.null(synonym))        params$synonym    <- synonym
+  if (!is.null(genus))      params$genus      <- paste0('"', genus,'"')
+  if (!is.null(year))       params$year       <- year
+  if (!is.null(synonym))    params$synonym    <- synonym
   if (!is.null(location))   params$location   <- location
   
   # Always include the submit flag

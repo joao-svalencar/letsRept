@@ -18,13 +18,16 @@ herpSpecies(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FALSE)
 \value{
 if higherTaxa = FALSE (default), the function returns a vector with the list of species
 
-if _igherTaxa = TRUE, the function returns a data frame with columns: order, family, genus and species
+if higherTaxa = TRUE, the function returns a data frame with columns: order, suborder (e.g.: Sauria or Serpentes only; when available), family, genus and species
 
-Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url
+Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url (necessary if looking for synonyms afterwards)
 }
 \description{
 Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
 }
-\references{
-Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. \emph{Systematics and Biodiversity}, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
+\examples{
+boaLink <- herpAdvancedSearch(genus = "Boa")
+boa <- herpSpecies(boaLink, higherTaxa = TRUE)
+boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
+
 }
