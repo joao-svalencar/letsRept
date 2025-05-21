@@ -56,7 +56,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
     if(higherTaxa==FALSE){
       percent <- (i/length(xml2::xml_children(ul_element[[1]]))) * 100
       cat(sprintf("\rProgress: %.1f%%", percent))
-      flush.console()
+      utils::flush.console()
     }
     
   }

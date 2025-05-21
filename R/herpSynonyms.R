@@ -108,7 +108,7 @@ herpSynonyms <- function(x, getRef=FALSE)
       x$species[i],
       (i / length(x$species)) * 100
     ))
-    flush.console()
+    utils::flush.console()
     
     species <- c(rep(x$species[i], times=length(synonyms)))
     
