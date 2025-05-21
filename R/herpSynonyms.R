@@ -20,7 +20,7 @@
 #' 
 #' @examples
 #' boaLink <- herpAdvancedSearch(genus = "Boa") #creates advanced search link
-#' boa <- herpSpecies(boaLink, getLink=TRUE, higherTaxa = FALSE)
+#' boa <- herpSpecies(boaLink, getLink=TRUE, taxonomicInfo = FALSE)
 #' boa_syn <- herpSynonyms(boa, getRef = TRUE) #synonyms with respective references
 #' boa_syn <- herpSynonyms(boa, getRef = FALSE) #only synonyms
 #' 
