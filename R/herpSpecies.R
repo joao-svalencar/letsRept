@@ -62,8 +62,15 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
 
   if(higherTaxa== TRUE){
     # to get higher taxa information ------------------------------------------
+    match_taxon <- function(taxa_vector, rank_list) {
+      match_idx <- which.max(vapply(rank_list, function(rank) any(stringr::str_detect(taxa_vector, rank)), logical(1)))
+      result <- rank_list[match_idx]
+      if (identical(result, character(0))) NA else result
+    }
+    
     orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines") #order count = OK
     suborders <- c("Sauria", "Serpentes") #suborder count = OK
+    
     for(j in 1:length(species_list))
     {
       sp_page <- rvest::read_html(url_list[j])
@@ -74,9 +81,11 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
       
       #each species Higher Taxa information:
       taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
-      family <- sub("^([A-Z][a-zA-Z]*)\\b.*", "\\1", taxa_vector)
-      order <- orders[stringr::str_detect(taxa_vector, orders)][1] #get respective item from orders
-      suborder <- suborders[stringr::str_detect(taxa_vector, suborders)][1] #get respective item from suborders
+      family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
+      order <- match_taxon(taxa_vector, orders)
+      #order <- orders[stringr::str_detect(taxa_vector, orders)][1] #get respective item from orders
+      suborder <- match_taxon(taxa_vector, suborders)
+      #suborder <- suborders[stringr::str_detect(taxa_vector, suborders)][1] #get respective item from suborders
       
       taxa_vector_list <- c(taxa_vector_list, taxa_vector)
       order_list <- c(order_list, order)
