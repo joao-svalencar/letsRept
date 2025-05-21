@@ -93,7 +93,7 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
       family_list <- c(family_list, family)
       
       percent <- (j/length(species_list)) * 100
-      cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
+      cat(sprintf("\n\rGetting higher taxa progress: %.1f%%", percent))
       flush.console()
     }
   }
