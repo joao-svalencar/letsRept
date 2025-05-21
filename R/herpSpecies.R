@@ -43,6 +43,8 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
   order_list <- c()
   suborder_list <- c()
   family_list <- c()
+  sppAuthor_list <- c()
+  year_list <- c()
   
   search <- rvest::read_html(url)
   ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
@@ -97,6 +99,11 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
       batch_success <- tryCatch({
         for (j in from:to) {
           sp_page <- rvest::read_html(url_list[j])
+          
+          title <- rvest::html_element(url, "h1")
+          sppAuthor <- rvest::html_text(title, trim = TRUE)
+          sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
+          
           element <- rvest::html_element(sp_page, "table")
           taxa <- xml2::xml_child(element, 1)
           td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
@@ -111,6 +118,8 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
           order_list <- c(order_list, order)
           suborder_list <- c(suborder_list, suborder)
           family_list <- c(family_list, family)
+          sppAuthor_list <- c(sppAuthor_list, sppAuthor)
+          year_list <- c(year_list, sppYear)
           
           percent <- (j / total_species) * 100
           cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
@@ -134,6 +143,8 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
                       family = family_list,
                       genus = genus_list[1:n],
                       species = species_list[1:n],
+                      year = sppYear_list[1:n],
+                      author = sppAuthor_list[1:n],
                       stringsAsFactors = FALSE
                       )
     
@@ -228,6 +239,8 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
                                    family = family_list,
                                    genus = genus_list[1:n],
                                    species = species_list[1:n],
+                                   year = sppYear_list[1:n],
+                                   author = sppAuthor_list[1:n],
                                    stringsAsFactors = FALSE)
        if(fullHigher==TRUE)
        {
@@ -252,6 +265,8 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
                                    family = family_list,
                                    genus = genus_list[1:n],
                                    species = species_list[1:n],
+                                   year = sppYear_list[1:n],
+                                   author = sppAuthor_list[1:n],
                                    url = url_list[1:n],
                                    stringsAsFactors = FALSE)
          if(fullHigher==TRUE)
