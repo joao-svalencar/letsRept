@@ -71,30 +71,55 @@ herpSpecies <- function(url, higherTaxa = TRUE, fullHigher = FALSE, getLink = FA
     orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines") #order count = OK
     suborders <- c("Sauria", "Serpentes") #suborder count = OK
     
-    for(j in 1:length(species_list))
-    {
-      sp_page <- rvest::read_html(url_list[j])
-      element <- rvest::html_element(sp_page, "table") #scrap species table from Reptile Database
-      taxa <- xml2::xml_child(element, 1) #select the higher taxa part of the table
-      td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
-      children <- xml2::xml_contents(td_taxa)
+    species_links <- tryCatch({
+      for(j in 1:length(species_list))
+      {
+        sp_page <- rvest::read_html(url_list[j])
+        element <- rvest::html_element(sp_page, "table") #scrap species table from Reptile Database
+        taxa <- xml2::xml_child(element, 1) #select the higher taxa part of the table
+        td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
+        children <- xml2::xml_contents(td_taxa)
+        
+        #each species Higher Taxa information:
+        taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+        family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
+        order <- match_taxon(taxa_vector, orders)
+        #order <- orders[stringr::str_detect(taxa_vector, orders)][1] #get respective item from orders
+        suborder <- match_taxon(taxa_vector, suborders)
+        #suborder <- suborders[stringr::str_detect(taxa_vector, suborders)][1] #get respective item from suborders
+        
+        taxa_vector_list <- c(taxa_vector_list, taxa_vector)
+        order_list <- c(order_list, order)
+        suborder_list <- c(suborder_list, suborder)
+        family_list <- c(family_list, family)
+        
+        cat("\n")
+        percent <- (j/length(species_list)) * 100
+        cat(sprintf("Getting higher taxa progress: %.1f%%", percent))
+        flush.console()
+      }
       
-      #each species Higher Taxa information:
-      taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
-      family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
-      order <- match_taxon(taxa_vector, orders)
-      #order <- orders[stringr::str_detect(taxa_vector, orders)][1] #get respective item from orders
-      suborder <- match_taxon(taxa_vector, suborders)
-      #suborder <- suborders[stringr::str_detect(taxa_vector, suborders)][1] #get respective item from suborders
+    }, error = function(e){
       
-      taxa_vector_list <- c(taxa_vector_list, taxa_vector)
-      order_list <- c(order_list, order)
-      suborder_list <- c(suborder_list, suborder)
-      family_list <- c(family_list, family)
+      if(getLink==TRUE){
+        message("\n Higher taxa scraping failed. Returning only species and links.")
+        data.frame(
+          species = species_list,
+          genus = genus_list,
+          url = url_list,
+          stringsAsFactors = FALSE
+        )
+      }else{
+        message("\n Higher taxa scraping failed. Returning only species list.")
+        data.frame(
+          species = species_list,
+          genus = genus_list,
+          stringsAsFactors = FALSE
+        )
+      }
       
-      percent <- (j/length(species_list)) * 100
-      cat(sprintf("\n\rGetting higher taxa progress: %.1f%%", percent))
-      flush.console()
+    })# closes tryCatch
+    return(species_links)
     }
   }
   
