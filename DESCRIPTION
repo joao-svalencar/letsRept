@@ -1,5 +1,5 @@
 Package: letsHerp
-Title: What the Package Does (One Line, Title Case)
+Title: An R Interface to the Reptile Database
 Version: 0.0.0.9000
 Authors@R: 
     person("Joao Paulo", "dos Santos Vieira-Alencar", , "joaopaulo.valencar@gmail.com", role = c("aut", "cre"))
