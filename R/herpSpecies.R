@@ -107,7 +107,7 @@ herpSpecies <- function(url, dataList = NULL, taxonomicInfo = TRUE, fullHigher =
       match_positions <- sapply(matches, function(rank) stringr::str_locate(taxa_vector, rank)[1])
       sorted_matches <- matches[order(match_positions)]
       return(paste(sorted_matches, collapse = ", "))
-    }
+      }
     
     # Default values if not provided
     if (is.null(batches)) batches <- 1
@@ -163,7 +163,6 @@ herpSpecies <- function(url, dataList = NULL, taxonomicInfo = TRUE, fullHigher =
         success <<- FALSE
         return(FALSE)
       })
-      
       if(!batch_success)break
     }
     
@@ -184,7 +183,6 @@ herpSpecies <- function(url, dataList = NULL, taxonomicInfo = TRUE, fullHigher =
       {
         searchResults$url <- url_list[1:n]
       }
-    
     }
   }
   return(searchResults)
