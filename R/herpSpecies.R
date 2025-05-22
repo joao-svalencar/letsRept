@@ -40,6 +40,9 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
   genus_list <- c()
   url_list <- c()
   
+  if(is.null(url)){
+    stop("\n No search url provided")
+  }
   search <- rvest::read_html(url)
   ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
   
