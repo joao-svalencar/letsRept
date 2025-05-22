@@ -87,7 +87,7 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
   }else{
     species_list <- dataList$species
     genus_list <- sub(" .*", "", species_list)
-    url_list <- dataList$url
+    url_list <- dataList$url}
 # taxonomicInfo == TRUE ---------------------------------------------------
   #code with batch:
   if (taxonomicInfo == TRUE) {
@@ -187,7 +187,6 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
         searchResults$url <- url_list[1:n]
       }
     }
-  }
   return(searchResults)
 }
   
