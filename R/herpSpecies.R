@@ -208,22 +208,40 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
     if(!batch_success)break
   }
     # Final output — always return as much as was scraped
-    
-    n <- length(family_list)
-    searchResults <- list(
-                        order = order_list,
-                        suborder = suborder_list,
-                        family = family_list,
-                        genus = genus_list[1:n],
-                        species = species_list[1:n],
-                        year = sppYear_list[1:n],
-                        author = sppAuthor_list[1:n],
-                        stringsAsFactors = FALSE
-                      )
-      if (getLink == TRUE) 
-      {
-        searchResults$url <- url_list[1:n]
-      }
+  # Final output — always return as much as was scraped
+  n <- length(family_list)
+  
+  # Slice only valid entries (to match `n`)
+  all_vectors <- list(
+    order    = order_list[1:n],
+    suborder = suborder_list[1:n],
+    family   = family_list[1:n],
+    genus    = genus_list[1:n],
+    species  = species_list[1:n],
+    year     = sppYear_list[1:n],
+    author   = sppAuthor_list[1:n],
+    url      = if (getLink) url_list[1:n] else NULL
+  )
+  
+  # Remove NULL elements (if url is NULL)
+  all_vectors <- all_vectors[!sapply(all_vectors, is.null)]
+  
+  # Check if everything is the same length
+  lengths_vec <- sapply(all_vectors, length)
+  expected <- lengths_vec["species"]
+  
+  if (all(lengths_vec == expected)) {
+    searchResults <- as.data.frame(all_vectors, stringsAsFactors = FALSE)
+  } else {
+    message("⚠️ Some vectors have different lengths! Returning list instead.")
+    print(lengths_vec)
+    diffs <- lengths_vec - expected
+    bad <- names(diffs[diffs != 0])
+    message("Mismatched vectors: ", paste(bad, collapse = ", "))
+    searchResults <- all_vectors
+  }
+  
   return(searchResults)
+  
 }
   
