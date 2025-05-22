@@ -7,7 +7,8 @@
 #' @description 
 #' Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
 #' 
-#' @usage herpSpecies(url, 
+#' @usage herpSpecies(url,
+#'                    dataList = NULL, 
 #'                    taxonomicInfo=TRUE, 
 #'                    fullHigher=FALSE, 
 #'                    getLink=FALSE, 
@@ -15,6 +16,7 @@
 #'                    startBatch=1)
 #'                    
 #' @param url A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.
+#' @param dataList A data frame with columns: species and url, only for sampling taxonomicInfo from already sampled species links.
 #' @param taxonomicInfo A logical value indicating if user wants full species taxonomic information (specifically: Order, Suborder, Family, Genus, species author and description year) for each species. default = *TRUE*
 #' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires taxonomicInfo = TRUE
 #' @param getLink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
@@ -96,11 +98,15 @@ herpSpecies <- function(url, dataList = NULL, taxonomicInfo = TRUE, fullHigher =
     
     orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines")
     suborders <- c("Sauria", "Serpentes")
-    
+
     match_taxon <- function(taxa_vector, rank_list) {
-      match_idx <- which.max(vapply(rank_list, function(rank) any(stringr::str_detect(taxa_vector, rank)), logical(1)))
-      result <- rank_list[match_idx]
-      if (identical(result, character(0))) NA else result
+      matches <- rank_list[sapply(rank_list, function(rank) stringr::str_detect(taxa_vector, rank))]
+      if(length(matches)==0){
+        return(NA)
+      }
+      match_positions <- sapply(matches, function(rank) stringr::str_locate(taxa_vector, rank)[1])
+      sorted_matches <- matches[order(match_positions)]
+      return(paste(sorted_matches, collapse = ", "))
     }
     
     # Default values if not provided
@@ -180,6 +186,7 @@ herpSpecies <- function(url, dataList = NULL, taxonomicInfo = TRUE, fullHigher =
       }
     
     }
-  }return(searchResults)
+  }
+  return(searchResults)
 }
   

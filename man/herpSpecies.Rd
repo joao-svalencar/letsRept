@@ -4,7 +4,8 @@
 \alias{herpSpecies}
 \title{Reptile species summary}
 \usage{
-herpSpecies(url, 
+herpSpecies(url,
+                   dataList = NULL, 
                    taxonomicInfo=TRUE, 
                    fullHigher=FALSE, 
                    getLink=FALSE, 
@@ -13,6 +14,8 @@ herpSpecies(url,
 }
 \arguments{
 \item{url}{A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.}
+
+\item{dataList}{A data frame with columns: species and url, only for sampling taxonomicInfo from already sampled species links.}
 
 \item{taxonomicInfo}{A logical value indicating if user wants full species taxonomic information (specifically: Order, Suborder, Family, Genus, species author and description year) for each species. default = \emph{TRUE}}
 
