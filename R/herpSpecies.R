@@ -87,7 +87,8 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
   }else{
     species_list <- dataList$species
     genus_list <- sub(" .*", "", species_list)
-    url_list <- dataList$url}
+    url_list <- dataList$url
+    }
 # taxonomicInfo == TRUE ---------------------------------------------------
   #code with batch:
   if (taxonomicInfo == TRUE) {
@@ -127,7 +128,8 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
       
       message(sprintf("\nProcessing batch %d of %d: species %d to %d", b, batches, from, to))
       
-      batch_success <- tryCatch({
+      batch_success <- TRUE
+      result <- tryCatch({
         for (j in from:to) {
           sp_page <- rvest::read_html(url_list[j])
           title <- rvest::html_element(sp_page, "h1")
@@ -135,19 +137,37 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
           sppAuthor <- rvest::html_text(title, trim = TRUE)
           sppAuthor <- gsub("^([A-Z][a-z]+\\s+[a-z\\-]+)\\s*", "", sppAuthor)
           sppAuthor <- gsub("\\s{2,}", " ", sppAuthor)
-          sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
           
-          sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
+          extracted_sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
+          
+          extracted_sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
           
           element <- rvest::html_element(sp_page, "table")
           taxa <- xml2::xml_child(element, 1)
           td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
           children <- xml2::xml_contents(td_taxa)
           
-          taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
-          family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
-          order <- match_taxon(taxa_vector, orders)
-          suborder <- match_taxon(taxa_vector, suborders)
+          extracted_taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+          
+          extracted_family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
+          extracted_order <- match_taxon(taxa_vector, orders)
+          extracted_suborder <- match_taxon(taxa_vector, suborders)
+          
+          ############################## DETECTING ERROR
+          if (length(extracted_taxa_vector) != 1 || is.na(extracted_family)) {
+            message(sprintf("Skipping invalid species at index %d: %s", j, species_list[j]))
+            
+            # Add placeholder values so all vectors stay aligned
+            taxa_vector_list <- c(taxa_vector_list, "reescrap")
+            order_list <- c(order_list, "reescrap")
+            suborder_list <- c(suborder_list, "reescrap")
+            family_list <- c(family_list, "reescrap")
+            sppAuthor_list <- c(sppAuthor_list, "reescrap")
+            sppYear_list <- c(sppYear_list, "reescrap")
+            
+            next
+          }
+          ##############################
           
           taxa_vector_list <- c(taxa_vector_list, taxa_vector)
           order_list <- c(order_list, order)
@@ -160,33 +180,50 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
           cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
           flush.console()
         }
-        TRUE  # batch_success
       }, error = function(e) {
+        message("Failed at ", i, ": ", conditionMessage(e))
         message(sprintf("\nError in batch %d. Returning all successfully completed batches (%d/%d).", b, b - 1, batches))
         success <<- FALSE
-        return(FALSE)
+        batch_success <<- FALSE
+        return(NULL)
       })
-      if(!batch_success)break
+      
+      if(!batch_success) break
+      
+      if (success && !is.null(result)) {
+        backup_data <- list(
+          order = order_list,
+          suborder = suborder_list,
+          family = family_list,
+          genus = genus_list[1:length(family_list)],
+          species = species_list[1:length(family_list)],
+          author = sppAuthor_list,
+          year = sppYear_list,
+          url = url_list[1:length(family_list)]
+        )
+        saveRDS(backup_data, file = "backup_progress.rds")
+        message(sprintf("✓ Saved progress after batch %d (%d species total).", b, length(family_list)))
+      }
     }
-    
+    if(!batch_success)break
+  }
     # Final output — always return as much as was scraped
-    n <- length(family_list)
-    searchResults <-  data.frame(
-                      order = order_list,
-                      suborder = suborder_list,
-                      family = family_list,
-                      genus = genus_list[1:n],
-                      species = species_list[1:n],
-                      year = sppYear_list[1:n],
-                      author = sppAuthor_list[1:n],
-                      stringsAsFactors = FALSE
-                      )
     
+    n <- length(family_list)
+    searchResults <- list(
+                        order = order_list,
+                        suborder = suborder_list,
+                        family = family_list,
+                        genus = genus_list[1:n],
+                        species = species_list[1:n],
+                        year = sppYear_list[1:n],
+                        author = sppAuthor_list[1:n],
+                        stringsAsFactors = FALSE
+                      )
       if (getLink == TRUE) 
       {
         searchResults$url <- url_list[1:n]
       }
-    }
   return(searchResults)
 }
   
