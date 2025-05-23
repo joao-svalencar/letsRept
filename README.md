@@ -100,6 +100,7 @@ herpSync(apo_list, apo_syn)
 
 ### **Next steps**
 
+- [ ] &nbsp; Implement `herpAdvancedSearch` link testing and result summary
 - [ ] &nbsp; Implement `herpSynonym` batch sampling and tryCatch() mechanism
 - [ ] &nbsp; CRAN release
 - [ ] &nbsp; Paper submission
