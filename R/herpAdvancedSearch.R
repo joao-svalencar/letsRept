@@ -68,16 +68,17 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, synonym
   ul_element <- rvest::html_elements(test, "#content > p:nth-child(5)")
   msg <- rvest::html_text(ul_element[[1]])
   
-  handle_result <- function(msg, url) {
-    if (grepl("^Species found:", msg)) {
-      cat(msg, "\n")
-      return(url)
-    } else if (grepl("No species were found", msg)) {
-      cat("No species were found. Please verify the search arguments.\n")
-      return(NULL)
-    } else {
-      cat("Unexpected page content. Investigate manually.\n")
-      return(NULL)
-    }
+  if (grepl("^Species found:", msg)) {
+    cat(msg, "\nProceed to herpSpecies() with the returned link")
+    return(url)
+  } else if (grepl("No species were found", msg)) {
+    cat("No species were found. Please verify the search arguments.\n")
+    return(NULL)
+  } else {
+    cat("Unexpected page content. Investigate manually.\n")
+    return(NULL)
   }
+  
+  
+  
 }
