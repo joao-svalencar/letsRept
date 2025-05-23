@@ -54,9 +54,11 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
     li_node <- xml2::xml_child(ul_element[[1]], i)
     target <- xml2::xml_child(li_node, 1)
     
-    species <- rvest::html_element(target, "em") |> rvest::html_text(trim = TRUE)
+    species <- rvest::html_text(rvest::html_element(target, "em"), trim = TRUE)
     genus <- sub(" .*", "", species)
-    sppLink <- paste("https://reptile-database.reptarium.cz", xml2::xml_attrs(target)[["href"]], sep="")
+    href_raw <- xml2::xml_attrs(target)[["href"]]
+    href <- sub("&search.*", "", href_raw)
+    sppLink <- paste0("https://reptile-database.reptarium.cz",href)
     
     species_list <- c(species_list, species)
     genus_list <- c(genus_list, genus)

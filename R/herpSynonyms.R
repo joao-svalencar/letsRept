@@ -84,7 +84,8 @@ herpSynonyms <- function(x, getRef=FALSE)
     syn <- xml2::xml_child(element, 4) #select the synonym part of the table
     td2 <- rvest::html_element(syn, "td:nth-child(2)")
     children <- xml2::xml_contents(td2)
-    synonym_vector <- unique(children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE))
+    
+    synonym_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
     synonym_vector <- synonym_vector[!is.na(synonym_vector) & trimws(synonym_vector) != ""]
     
     synonyms <- clean_species_names(synonym_vector)
