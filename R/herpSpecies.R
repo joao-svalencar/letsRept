@@ -150,23 +150,15 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
           children <- xml2::xml_contents(td_taxa)
           
           taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+          taxa_vector <- paste(taxa_vector, collapse = ", ")
           
           family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
           order <- match_taxon(taxa_vector, orders)
           suborder <- match_taxon(taxa_vector, suborders)
           
           ############################## DETECTING ERROR
-          if (length(taxa_vector) != 1 || is.na(family)) {
-            message(sprintf("Skipping invalid species at index %d: %s", j, species_list[j]))
-            
-            # Add placeholder values so all vectors stay aligned
-            taxa_vector_list <- c(taxa_vector_list, "reescrap")
-            order_list <- c(order_list, "reescrap")
-            suborder_list <- c(suborder_list, "reescrap")
-            family_list <- c(family_list, "reescrap")
-            sppAuthor_list <- c(sppAuthor_list, "reescrap")
-            sppYear_list <- c(sppYear_list, "reescrap")
-            
+          if (all(is.na(c(family, order, suborder)))) {
+            message(sprintf("No higher taxa information for", species_list[j]))
             next
           }
           ##############################

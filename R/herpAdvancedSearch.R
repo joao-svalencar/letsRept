@@ -33,23 +33,32 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, synonym
   
   base_url <- "https://reptile-database.reptarium.cz/advanced_search"
   
+  quote_if_simple <- function(x) {
+    if (grepl("\\b(OR|AND|NOT)\\b", x, ignore.case = TRUE)) {
+      # Logical query: replace spaces with +
+      gsub(" ", "+", x)
+    } else {
+      # Exact match: wrap in quotes, then encode
+      utils::URLencode(paste0('"', x, '"'), reserved = FALSE)
+    }
+  }
+  
+  encode_param <- function(x) utils::URLencode(x, reserved = FALSE)
+  
   # Build list of query parameters based on non-NULL arguments
   params <- list()
   
-  if (!is.null(higher))     params$taxon      <- higher
-  if (!is.null(genus))      params$genus      <- paste0('"', genus,'"')
-  if (!is.null(year))       params$year       <- year
-  if (!is.null(synonym))    params$synonym    <- synonym
-  if (!is.null(location))   params$location   <- location
+  if (!is.null(higher))     params$taxon      <- encode_param(higher)
+  if (!is.null(genus))      params$genus      <- encode_param(quote_if_simple(genus))
+  if (!is.null(year))       params$year       <- encode_param(year)
+  if (!is.null(synonym))    params$synonym    <- encode_param(synonym)
+  if (!is.null(location))   params$location   <- encode_param(location)
   
   # Always include the submit flag
   params$submit <- "Search"
   
   # Collapse the parameters into a query string
-  query <- paste0("?", paste0(
-    names(params), "=", utils::URLencode(params, reserved = TRUE),
-    collapse = "&"
-  ))
+  query <- paste0("?", paste0(names(params), "=", params, collapse = "&"))
   
   # Final URL
   url <- paste0(base_url, query)
