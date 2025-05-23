@@ -74,37 +74,41 @@ herpSynonyms <- function(x, getRef=FALSE)
   species_list <- c()
   synonym_list <- c()
   synonymRef_list <- c()
-  
-  for(i in 1:length(x$species))
-  {
-    url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
-    element <- rvest::html_element(url, "table") #scrap species table from Reptile Database
 
-    #synonyms
-    syn <- xml2::xml_child(element, 4) #select the synonym part of the table
-    td2 <- rvest::html_element(syn, "td:nth-child(2)")
-    children <- xml2::xml_contents(td2)
-    
-    synonym_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
-    synonym_vector <- synonym_vector[!is.na(synonym_vector) & trimws(synonym_vector) != ""]
-    
-    synonyms <- clean_species_names(synonym_vector)
-    
-    cat(sprintf(
-      "%s done!\nProgress: %.1f%%\n\n",
-      x$species[i],
-      (i / length(x$species)) * 100
-    ))
-    utils::flush.console()
-    
-    species <- c(rep(x$species[i], times=length(synonyms)))
-    
-    species_list <- c(species_list, species)
-    synonym_list <- c(synonym_list, synonyms)
-    synonymRef_list <- c(synonymRef_list, synonym_vector)
+  for (i in seq_along(x$species)) {
+    result <- tryCatch({
+      url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
+      element <- rvest::html_element(url, "table") # species table
+      
+      # Extract synonyms
+      syn <- xml2::xml_child(element, 4)
+      td2 <- rvest::html_element(syn, "td:nth-child(2)")
+      children <- xml2::xml_contents(td2)
+      
+      synonym_vector <- unique(
+        rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE)
+      )
+      synonym_vector <- synonym_vector[!is.na(synonym_vector) & trimws(synonym_vector) != ""]
+      
+      synonyms <- clean_species_names(synonym_vector)
+      species <- rep(x$species[i], times = length(synonyms))
+      
+      species_list <- c(species_list, species)
+      synonym_list <- c(synonym_list, synonyms)
+      synonymRef_list <- c(synonymRef_list, synonym_vector)
+      
+      msg <- sprintf("%s done! Progress: %.1f%%", x$species[i], (i / length(x$species)) * 100)
+      cat("\r", format(msg, width = 60), sep = "")
+      utils::flush.console()
+    },
+    error = function(e) {
+      message(sprintf("Error scraping %s: %s", x$species[i], e$message))
+      species_list <<- c(species_list, x$species[i])
+      synonym_list <<- c(synonym_list, "failed")
+      synonymRef_list <<- c(synonymRef_list, "failed")
+    })
+  }
   
-  }#loop for ends here
-
     if(getRef==TRUE){
       synonymResults <- data.frame(species = species_list,
                                    synonyms = synonym_list,
