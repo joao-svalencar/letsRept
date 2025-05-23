@@ -5,10 +5,16 @@
 \alias{allReptiles}
 \title{Example dataset: allReptiles}
 \format{
-A dataframe with 12384 rows and 2 variables:
+A dataframe (download: May 23th, 2025) with 12440 rows and 8 variables:
 \describe{
-\item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website (download: May 15th, 2025)}
-\item{url}{A character column with the respective url to access all reptile species cataloged in The Reptile Database website information (download: May 15th, 2025)}
+\item{order}{A species current order}
+\item{suborder}{A species current suborder}
+\item{family}{A species current family}
+\item{genus}{A species current genus}
+\item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website}
+\item{year}{A species description year}
+\item{author}{The authors that described the species under the current valid name}
+\item{url}{A character column with the respective url to access all reptile species cataloged in The Reptile Database website information}
 }
 }
 \source{
