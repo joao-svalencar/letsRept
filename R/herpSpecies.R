@@ -138,23 +138,23 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
           sppAuthor <- gsub("^([A-Z][a-z]+\\s+[a-z\\-]+)\\s*", "", sppAuthor)
           sppAuthor <- gsub("\\s{2,}", " ", sppAuthor)
           
-          extracted_sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
+          sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
           
-          extracted_sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
+          sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
           
           element <- rvest::html_element(sp_page, "table")
           taxa <- xml2::xml_child(element, 1)
           td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
           children <- xml2::xml_contents(td_taxa)
           
-          extracted_taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+          taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
           
-          extracted_family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
-          extracted_order <- match_taxon(taxa_vector, orders)
-          extracted_suborder <- match_taxon(taxa_vector, suborders)
+          family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
+          order <- match_taxon(taxa_vector, orders)
+          suborder <- match_taxon(taxa_vector, suborders)
           
           ############################## DETECTING ERROR
-          if (length(extracted_taxa_vector) != 1 || is.na(extracted_family)) {
+          if (length(taxa_vector) != 1 || is.na(family)) {
             message(sprintf("Skipping invalid species at index %d: %s", j, species_list[j]))
             
             # Add placeholder values so all vectors stay aligned
@@ -198,20 +198,28 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
           genus = genus_list[1:length(family_list)],
           species = species_list[1:length(family_list)],
           author = sppAuthor_list,
-          year = sppYear_list,
-          url = url_list[1:length(family_list)]
+          year = sppYear_list
         )
-        saveRDS(backup_data, file = "backup_progress.rds")
-        message(sprintf("✓ Saved progress after batch %d (%d species total).", b, length(family_list)))
+        
+        # Conditionally add URL if requested
+        if (getLink) {
+          backup_data$url <- url_list[1:length(family_list)]
+        }
+        
+        # Conditionally add full higher taxa vector if requested
+        if (fullHigher) {
+          backup_data$taxa_vector <- taxa_vector_list[1:length(family_list)]
+        }
+        saveRDS(backup_data, file = here::here("data", "backup_progress.rds"))
+        message(sprintf("Saved progress after batch %d (%d species total).", b, length(family_list)))
       }
     }
-    if(!batch_success)break
   }
-    # Final output — always return as much as was scraped
-  # Final output — always return as much as was scraped
+
+    #return as much as was scrapped
   n <- length(family_list)
   
-  # Slice only valid entries (to match `n`)
+  # Slice only valid entries (to match n)
   all_vectors <- list(
     order    = order_list[1:n],
     suborder = suborder_list[1:n],
@@ -233,7 +241,7 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
   if (all(lengths_vec == expected)) {
     searchResults <- as.data.frame(all_vectors, stringsAsFactors = FALSE)
   } else {
-    message("⚠️ Some vectors have different lengths! Returning list instead.")
+    message("Some vectors have different lengths! Returning list instead.")
     print(lengths_vec)
     diffs <- lengths_vec - expected
     bad <- names(diffs[diffs != 0])
