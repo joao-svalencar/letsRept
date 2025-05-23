@@ -149,7 +149,7 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHig
           td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
           children <- xml2::xml_contents(td_taxa)
           
-          taxa_vector <- children[xml2::xml_name(children) == "text"] |> rvest::html_text(trim = TRUE)
+          taxa_vector <- rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE)
           taxa_vector <- paste(taxa_vector, collapse = ", ")
           
           family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
