@@ -78,7 +78,4 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, synonym
     cat("Unexpected page content. Investigate manually.\n")
     return(NULL)
   }
-  
-  
-  
 }
