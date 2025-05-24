@@ -4,10 +4,22 @@
 \alias{herpSynonyms}
 \title{Get reptile species synonyms}
 \usage{
-herpSynonyms(x, getRef = FALSE)
+herpSynonyms(x, 
+                    batch_size = NULL,
+                    resume=FALSE,
+                    backup_file = NULL,
+                    getRef = FALSE)
 }
 \arguments{
-\item{x}{A data frame with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies().}
+\item{x}{A data frame with columns: 'species' and 'url' (their respective Reptile Database url).
+Could be the output of letsHerp::herpSpecies().}
+
+\item{batch_size}{An integer representing the number of species to process before saving progress to the backup file.
+Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if batch_size is not NULL.}
+
+\item{resume}{A logical value. If TRUE, takes the path to backup_file and resume sampling from the last backup file.}
+
+\item{backup_file}{A character string with the path to access, read and save the backup file.}
 
 \item{getRef}{A logical value. If TRUE, returns synonyms with the respective references that mention them. default = \emph{FALSE}}
 }

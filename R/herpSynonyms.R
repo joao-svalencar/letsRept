@@ -7,11 +7,20 @@
 #' @description
 #' creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
 #' 
-#' @usage herpSynonyms(x, getRef = FALSE)
+#' @usage herpSynonyms(x, 
+#'                     batch_size = NULL,
+#'                     resume=FALSE,
+#'                     backup_file = NULL,
+#'                     getRef = FALSE)
 #' 
-#' @param x A data frame with columns: 'species' and 'url' (their respective Reptile Database url). Could be the output of letsHerp::herpSpecies().
+#' @param x A data frame with columns: 'species' and 'url' (their respective Reptile Database url).
+#' Could be the output of letsHerp::herpSpecies().
+#' @param batch_size An integer representing the number of species to process before saving progress to the backup file.
+#' Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if batch_size is not NULL.
 #' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them. default = *FALSE*
-#'
+#' @param resume A logical value. If TRUE, takes the path to backup_file and resume sampling from the last backup file.
+#' @param backup_file A character string with the path to access, read and save the backup file.
+#' 
 #' @returns 'herpSynonyms' returns a data frame with columns: species and their respective synonyms according to the version of Reptile Database. Optionally, returns the references that mentioned each synonym.
 #' 
 #' @references 
@@ -27,9 +36,15 @@
 #' @export
 #'
 
-herpSynonyms <- function(x, getRef=FALSE)
+herpSynonyms <- function(x, batch_size = NULL, resume=FALSE, backup_file = NULL, getRef=FALSE)
 {
-
+  if (is.null(backup_file) && !is.null(batch_size) && batch_size < length(x$species)) {
+    stop("You must provide a valid backup_file path if batch_size is smaller than the number of species.")
+  }else 
+    if(!grepl(".rds", backup_file)){
+      stop("Backup file path must end with 'filename.rds'")
+    }
+  
 # creates clean_names function: -------------------------------------------
   # Build Unicode chars dynamically
   left_quote   <- intToUtf8(0x2018)
@@ -75,6 +90,21 @@ herpSynonyms <- function(x, getRef=FALSE)
   synonym_list <- c()
   synonymRef_list <- c()
 
+  start_index <- 1
+  
+  # Load backup if resuming
+  if (resume && file.exists(backup_file)) {
+    x <- readRDS(backup_file)
+    species <- x$species
+    synonym <- x$synonym
+    if ("synonymRef" %in% names(backup_file)) {
+      synonymRef <- backup_file$synonymRef
+    }
+    
+    start_index <- length(species_list) + 1
+    message(sprintf("Resuming from species %d: %s", start_index, x$species[start_index]))
+  }
+  
   for (i in seq_along(x$species)) {
     result <- tryCatch({
       url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
@@ -85,9 +115,7 @@ herpSynonyms <- function(x, getRef=FALSE)
       td2 <- rvest::html_element(syn, "td:nth-child(2)")
       children <- xml2::xml_contents(td2)
       
-      synonym_vector <- unique(
-        rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE)
-      )
+      synonym_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
       synonym_vector <- synonym_vector[!is.na(synonym_vector) & trimws(synonym_vector) != ""]
       
       synonyms <- clean_species_names(synonym_vector)
@@ -100,12 +128,32 @@ herpSynonyms <- function(x, getRef=FALSE)
       msg <- sprintf("%s done! Progress: %.1f%%", x$species[i], (i / length(x$species)) * 100)
       cat("\r", format(msg, width = 60), sep = "")
       utils::flush.console()
-    },
-    error = function(e) {
-      message(sprintf("Error scraping %s: %s", x$species[i], e$message))
-      species_list <<- c(species_list, x$species[i])
-      synonym_list <<- c(synonym_list, "failed")
-      synonymRef_list <<- c(synonymRef_list, "failed")
+      
+      # Save backup every batch_size
+      if(!is.null(batch_size)){
+        if ((i %% batch_size) == 0 || i == length(x$species)) {
+          backup <- data.frame(species = species_list,
+                               synonym = synonym_list,
+                               stringsAsFactors = FALSE)
+          if(getRef==FALSE){
+            backup$combined <- paste(backup$species, backup$synonym, sep="_")
+            uniquerec <- data.frame(unique(backup$combined))
+            
+            backup_uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.backup.combined.", 
+                                              into=c("species", "synonym"), sep="_",
+                                              convert=TRUE)
+            saveRDS(backup_uniqueSynonyms, backup_file)
+          }else{
+            backup$synonymRef <- synonymRef_list
+            saveRDS(backup,backup_file)
+          }
+        }else{}
+      }
+    }, error = function(e) {
+        message(sprintf("Error scraping %s: %s", x$species[i], e$message))
+        species_list <<- c(species_list, x$species[i])
+        synonym_list <<- c(synonym_list, "failed")
+        synonymRef_list <<- c(synonymRef_list, "failed")
     })
   }
   
@@ -126,7 +174,9 @@ herpSynonyms <- function(x, getRef=FALSE)
       
       uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymResults.combined.", 
                                      into=c("species", "synonym"), sep="_",
-                                     convert=TRUE) #funcao de separacao
+                                     convert=TRUE)
+      
+      cat("\nSynonyms sampling complete!\n")
       return(uniqueSynonyms)
     }
 }
