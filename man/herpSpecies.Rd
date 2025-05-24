@@ -6,7 +6,7 @@
 \usage{
 herpSpecies(url,
                    dataList = NULL, 
-                   taxonomicInfo=TRUE, 
+                   taxonomicInfo=FALSE, 
                    fullHigher=FALSE, 
                    getLink=FALSE, 
                    batches=1, 
