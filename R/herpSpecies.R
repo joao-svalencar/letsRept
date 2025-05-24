@@ -9,7 +9,7 @@
 #' 
 #' @usage herpSpecies(url,
 #'                    dataList = NULL, 
-#'                    taxonomicInfo=TRUE, 
+#'                    taxonomicInfo=FALSE, 
 #'                    fullHigher=FALSE, 
 #'                    getLink=FALSE, 
 #'                    batches=1, 
@@ -32,7 +32,7 @@
 #' 
 #' @export
 #'
-herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = TRUE, fullHigher = FALSE, getLink = FALSE, batches = 1, startBatch = 1)
+herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, batches = 1, startBatch = 1)
 {
   if(is.null(dataList))
   {
