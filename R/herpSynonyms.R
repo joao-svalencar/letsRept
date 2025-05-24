@@ -41,7 +41,7 @@ herpSynonyms <- function(x, batch_size = NULL, resume=FALSE, backup_file = NULL,
   if (is.null(backup_file) && !is.null(batch_size) && batch_size < length(x$species)) {
     stop("You must provide a valid backup_file path if batch_size is smaller than the number of species.")
   }else 
-    if(!grepl(".rds", backup_file)){
+    if(!is.null(backup_file) && !grepl(".rds", backup_file)){
       stop("Backup file path must end with 'filename.rds'")
     }
   
