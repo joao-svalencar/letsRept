@@ -125,7 +125,7 @@ herpSynonyms <- function(x, batch_size = NULL, resume=FALSE, backup_file = NULL,
       synonym_list <- c(synonym_list, synonyms)
       synonymRef_list <- c(synonymRef_list, synonym_vector)
       
-      msg <- sprintf("%s done! Progress: %.1f%%", x$species[i], (i / length(x$species)) * 100)
+      msg <- sprintf("Progress: %.1f%%  - %s done! ", (i / length(x$species)) * 100, x$species[i])
       cat("\r", format(msg, width = 60), sep = "")
       utils::flush.console()
       
@@ -133,14 +133,14 @@ herpSynonyms <- function(x, batch_size = NULL, resume=FALSE, backup_file = NULL,
       if(!is.null(batch_size)){
         if ((i %% batch_size) == 0 || i == length(x$species)) {
           backup <- data.frame(species = species_list,
-                               synonym = synonym_list,
+                               synonyms = synonym_list,
                                stringsAsFactors = FALSE)
           if(getRef==FALSE){
-            backup$combined <- paste(backup$species, backup$synonym, sep="_")
+            backup$combined <- paste(backup$species, backup$synonyms, sep="_")
             uniquerec <- data.frame(unique(backup$combined))
             
             backup_uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.backup.combined.", 
-                                              into=c("species", "synonym"), sep="_",
+                                              into=c("species", "synonyms"), sep="_",
                                               convert=TRUE)
             saveRDS(backup_uniqueSynonyms, backup_file)
           }else{

@@ -48,9 +48,6 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
   
   for(i in 1:length(xml2::xml_children(ul_element[[1]])))
   {
-    #add random sleep time
-    Sys.sleep(stats::runif(1, min = 0.3, max = 1)) # random sleep time
-    
     li_node <- xml2::xml_child(ul_element[[1]], i)
     target <- xml2::xml_child(li_node, 1)
     
