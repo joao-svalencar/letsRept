@@ -12,7 +12,6 @@ Imports:
     here,
     httr,
     rvest,
-    stats,
     stringr,
     tidyr,
     utils,

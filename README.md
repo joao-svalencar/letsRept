@@ -70,6 +70,10 @@ apo <- herpSpecies(dataList = apo, taxonomicInfo = TRUE, getLink = FALSE, batche
 
 Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`).
 
+⚠️ ATTENTION!⚠️ 
+
+The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient but still sample 0.2% of them in bad format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I (pottentially) fixed all unusual synonym formats the internal dataset `allSynonyms` (last update: 23rd May, 2025)
+
 ```{.r}
 #sample species synonyms
 apo_syn <- herpSynonyms(apo)
@@ -94,14 +98,14 @@ herpSync(apo_list, apo_syn)
 
 - The package counts with a full list of current valid species (`allReptiles` - 12,440 species) with their respective higher taxa information (updated to 23th of May, 2025);
 
-- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,143 entries - updated to 19th of May, 2025 - necessary update coming soon); 
+- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to 23th of May, 2025); 
 
-- Another synonyms dataset all entries considering their respective references (109,082 entries - updated to 19th of May, 2025 - necessary update coming soon).
+- Another synonyms dataset with all entries considering their respective references (`allSynonymsRef`110,413 entries - updated to 23rd of May, 2025).
 
 ### **Next steps**
 
 - [x] &nbsp; Implement `herpAdvancedSearch` link testing and result summary
-- [ ] &nbsp; Implement `herpSynonym` batch sampling and tryCatch() mechanism
+- [x] &nbsp; Implement `herpSynonym` batch sampling and tryCatch() mechanism
 - [ ] &nbsp; CRAN release
 - [ ] &nbsp; Paper submission
 - [ ] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
