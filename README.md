@@ -72,7 +72,7 @@ Samples species synonyms using a data frame with species names and the species l
 
 ⚠️ ATTENTION!⚠️ 
 
-The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient but still sample 0.2% of them in bad format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I (pottentially) fixed all unusual synonym formats the internal dataset `allSynonyms` (last update: 23rd May, 2025)
+The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient but still sample 0.2% of them in bad format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I fixed (pottentially) all unusual synonym formats the internal dataset `allSynonyms` (last update: 23rd May, 2025)
 
 ```{.r}
 #sample species synonyms
