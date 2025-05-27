@@ -18,7 +18,7 @@ A dataframe (download: May 23th, 2025) with 12440 rows and 8 variables:
 }
 }
 \source{
-The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function HerpNom::getSpecies() with the url obtained from an 'Advanced search' set to exclude all reptile species described to the fictional planet Arrakis (-Arrakis).
+The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function letsHerp::herpSpecies() with the url obtained from an 'Advanced search' set to exclude all reptile species described to the fictional planet Arrakis (-Arrakis).
 }
 \usage{
 allReptiles
