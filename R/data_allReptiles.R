@@ -13,6 +13,6 @@
 #'   \item{author}{The authors that described the species under the current valid name}
 #'   \item{url}{A character column with the respective url to access all reptile species cataloged in The Reptile Database website information}
 #' }
-#' @source The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function HerpNom::getSpecies() with the url obtained from an 'Advanced search' set to exclude all reptile species described to the fictional planet Arrakis (-Arrakis).
+#' @source The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function letsHerp::herpSpecies() with the url obtained from an 'Advanced search' set to exclude all reptile species described to the fictional planet Arrakis (-Arrakis).
 #' 
 "allReptiles"
