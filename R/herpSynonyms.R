@@ -8,15 +8,15 @@
 #' creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
 #' 
 #' @usage herpSynonyms(x, 
-#'                     batch_size = NULL,
+#'                     checkpoint = NULL,
 #'                     resume=FALSE,
 #'                     backup_file = NULL,
 #'                     getRef = FALSE)
 #' 
 #' @param x A data frame with columns: 'species' and 'url' (their respective Reptile Database url).
 #' Could be the output of letsHerp::herpSpecies().
-#' @param batch_size An integer representing the number of species to process before saving progress to the backup file.
-#' Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if batch_size is not NULL.
+#' @param checkpoint An integer representing the number of species to process before saving progress to the backup file.
+#' Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if checkpoint is not NULL.
 #' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them. default = *FALSE*
 #' @param resume A logical value. If TRUE, takes the path to backup_file and resume sampling from the last backup file.
 #' @param backup_file A character string with the path to access, read and save the backup file.
@@ -36,10 +36,10 @@
 #' @export
 #'
 
-herpSynonyms <- function(x, batch_size = NULL, resume=FALSE, backup_file = NULL, getRef=FALSE)
+herpSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, getRef=FALSE)
 {
-  if (is.null(backup_file) && !is.null(batch_size) && batch_size < length(x$species)) {
-    stop("You must provide a valid backup_file path if batch_size is smaller than the number of species.")
+  if (is.null(backup_file) && !is.null(checkpoint) && checkpoint < length(x$species)) {
+    stop("You must provide a valid backup_file path if checkpoint is smaller than the number of species.")
   }else 
     if(!is.null(backup_file) && !grepl(".rds", backup_file)){
       stop("Backup file path must end with 'filename.rds'")
@@ -129,9 +129,9 @@ herpSynonyms <- function(x, batch_size = NULL, resume=FALSE, backup_file = NULL,
       cat("\r", format(msg, width = 60), sep = "")
       utils::flush.console()
       
-      # Save backup every batch_size
-      if(!is.null(batch_size)){
-        if ((i %% batch_size) == 0 || i == length(x$species)) {
+      # Save backup every checkpoint
+      if(!is.null(checkpoint)){
+        if ((i %% checkpoint) == 0 || i == length(x$species)) {
           backup <- data.frame(species = species_list,
                                synonyms = synonym_list,
                                stringsAsFactors = FALSE)

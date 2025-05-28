@@ -5,7 +5,7 @@
 \title{Get reptile species synonyms}
 \usage{
 herpSynonyms(x, 
-                    batch_size = NULL,
+                    checkpoint = NULL,
                     resume=FALSE,
                     backup_file = NULL,
                     getRef = FALSE)
@@ -14,8 +14,8 @@ herpSynonyms(x,
 \item{x}{A data frame with columns: 'species' and 'url' (their respective Reptile Database url).
 Could be the output of letsHerp::herpSpecies().}
 
-\item{batch_size}{An integer representing the number of species to process before saving progress to the backup file.
-Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if batch_size is not NULL.}
+\item{checkpoint}{An integer representing the number of species to process before saving progress to the backup file.
+Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if checkpoint is not NULL.}
 
 \item{resume}{A logical value. If TRUE, takes the path to backup_file and resume sampling from the last backup file.}
 
