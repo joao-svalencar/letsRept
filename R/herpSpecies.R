@@ -12,7 +12,8 @@
 #'                    taxonomicInfo=FALSE, 
 #'                    fullHigher=FALSE, 
 #'                    getLink=FALSE, 
-#'                    batch_size=NULL, 
+#'                    batch_size=NULL,
+#'                    backup_file = NULL,
 #'                    startBatch=1)
 #'                    
 #' @param url A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.
@@ -20,7 +21,10 @@
 #' @param taxonomicInfo A logical value indicating if user wants full species taxonomic information (specifically: Order, Suborder, Family, Genus, species author and description year) for each species. default = *TRUE*
 #' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires taxonomicInfo = TRUE
 #' @param getLink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
-#' @param batch_size An integer indicating in how many batches user would like to divide data collection (good for large datasets). 
+#' @param batch_size An integer representing the number of species to process before saving progress to the backup file.
+#' Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if batch_size is not NULL. 
+#' OBS.: If set to 1, progress will be saved after every species (safe but slower).
+#' @param backup_file A character string with the Path to an `.rds` file where intermediate results will be saved if `batch_size` is not NULL. Must end in `.rds`.
 #' @param startBatch An integer indicating where to start data collection (e.g.: if failed in previous attempt).
 #'
 #' @return if taxonomicInfo = FALSE (default), the function returns a vector with the list of species
@@ -32,8 +36,15 @@
 #' 
 #' @export
 #'
-herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, batch_size = NULL, startBatch = 1)
+herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, batch_size = NULL, backup_file = NULL, startBatch = 1)
 {
+  if (is.null(backup_file) && !is.null(batch_size)) {
+    stop("You must provide a valid backup_file path if batch_size is defined.")
+  }else 
+    if(!is.null(backup_file) && !grepl(".rds", backup_file)){
+      stop("Backup file path must end with 'filename.rds'")
+    }
+  
   if(is.null(dataList))
   {
   species_list <- c()
@@ -46,11 +57,19 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
   search <- rvest::read_html(url)
   ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
   
-  for(i in 1:length(xml2::xml_children(ul_element[[1]])))
-  {
-    li_node <- xml2::xml_child(ul_element[[1]], i)
-    target <- xml2::xml_child(li_node, 1)
+  # for(i in 1:length(xml2::xml_children(ul_element[[1]])))
+  # {
+  #   li_node <- xml2::xml_child(ul_element[[1]], i)
+  #   target <- xml2::xml_child(li_node, 1)
+  #...
+  #}
+  
+  li_nodes <- xml2::xml_children(ul_element[[1]])
+  
+  for (i in seq_along(li_nodes)) {
     
+    target <- xml2::xml_child(li_nodes[[i]], 1)
+  
     species <- rvest::html_text(rvest::html_element(target, "em"), trim = TRUE)
     genus <- sub(" .*", "", species)
     href_raw <- xml2::xml_attrs(target)[["href"]]
@@ -66,6 +85,7 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
     utils::flush.console()
   }
   cat("\n")
+  n_species <- length(species_list)
   
   if(taxonomicInfo == FALSE) {
     if(getLink == TRUE){
@@ -73,23 +93,25 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
                                   url = url_list,
                                   stringsAsFactors = FALSE)
 
-      message_text <- paste0("A total of ", length(species_list), " species links retrieved.")
+      message_text <- paste0("A total of ", n_species, " species links retrieved.")
       
-    }else{
+      }else{
       searchResults <- species_list
       
-      message_text <- paste0("A total of ", length(species_list), " species retrieved.")
-    }
+      message_text <- paste0("A total of ", n_species, " species retrieved.")
+      }
     cat(" Data collection is done!\n", message_text, "\n")
     return(searchResults)
     }
+  
   }else{
     species_list <- dataList$species
     genus_list <- sub(" .*", "", species_list)
     url_list <- dataList$url
+    n_species <- length(species_list)
     }
 # taxonomicInfo == TRUE ---------------------------------------------------
-  #code with batch:
+#code with batch:
   if (taxonomicInfo == TRUE) {
     
     taxa_vector_list <- c()
@@ -113,21 +135,17 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
       }
     
     # Default values if not provided
-    if (is.null(batch_size)) batch_size <- length(species_list)
+    if (is.null(batch_size)) batch_size <- n_species
     if (is.null(startBatch)) startBatch <- 1
-    
-    total_species <- length(species_list)
-    total_batches <- ceiling(total_species / batch_size)
-    
-    success <- TRUE
+   
+    total_batches <- ceiling(n_species / batch_size)
     
     for(b in startBatch:total_batches){
       from <- ((b - 1) * batch_size) + 1
-      to <- min(b * batch_size, total_species)
+      to <- min(b * batch_size, n_species)
       
       message(sprintf("\nProcessing batch %d of %d: species %d to %d", b, total_batches, from, to))
       
-      batch_success <- TRUE
       result <- tryCatch({
         for (j in from:to) {
           sp_page <- rvest::read_html(url_list[j])
@@ -142,6 +160,12 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
           sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
           
           element <- rvest::html_element(sp_page, "table")
+          
+          if (is.na(element)) {
+            message(sprintf("Skipping %s (no table found)", species_list[j]))
+            next
+          }
+          
           taxa <- xml2::xml_child(element, 1)
           td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
           children <- xml2::xml_contents(td_taxa)
@@ -156,7 +180,6 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
           ############################## DETECTING ERROR
           if (all(is.na(c(family, order, suborder)))) {
             message(sprintf("No higher taxa information for", species_list[j]))
-            next
           }
           ##############################
           
@@ -167,80 +190,55 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
           sppAuthor_list <- c(sppAuthor_list, sppAuthor)
           sppYear_list <- c(sppYear_list, sppYear)
           
-          percent <- (j / total_species) * 100
+          percent <- (j / n_species) * 100
           cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
           flush.console()
         }
       }, error = function(e) {
-        message("Failed at ", i, ": ", conditionMessage(e))
-        message(sprintf("\nError in batch %d. Returning all successfully completed batches (%d/%d).", b, b - 1, batches))
-        success <<- FALSE
-        batch_success <<- FALSE
-        return(NULL)
+        message(sprintf("Error scraping %s: %s", species_list[j], e$message))
+        message(sprintf("Scraping next species"))
       })
-      
-      if(!batch_success) break
-      
-      if (success && !is.null(result)) {
-        backup_data <- list(
-          order = order_list,
-          suborder = suborder_list,
-          family = family_list,
-          genus = genus_list[1:length(family_list)],
-          species = species_list[1:length(family_list)],
-          author = sppAuthor_list,
-          year = sppYear_list
-        )
+        # Save backup every batch_size
+        if(!is.null(batch_size)){
+           
+            backup <- data.frame(order = order_list,
+                                 suborder = suborder_list,
+                                 family = family_list,
+                                 genus = genus_list[1:length(family_list)],
+                                 species = species_list[1:length(family_list)],
+                                 author = sppAuthor_list,
+                                 year = sppYear_list)
+            
+            # Conditionally add URL if requested
+            if(getLink==TRUE){
+              backup$url <- url_list[1:length(family_list)]
+            }
+            
+            # Conditionally add full higher taxa vector if requested
+            if(fullHigher==TRUE){
+              backup$taxa_vector <- taxa_vector_list[1:length(family_list)]
+            }
+            saveRDS(backup, file = backup_file)
+            message(sprintf("Saved progress after batch %d (%d species total).", b, length(family_list)))
+        }
+      } # closes the batch loop
+        searchResults <- data.frame(order = order_list,
+                             suborder = suborder_list,
+                             family = family_list,
+                             genus = genus_list[1:length(family_list)],
+                             species = species_list[1:length(family_list)],
+                             author = sppAuthor_list,
+                             year = sppYear_list)
         
         # Conditionally add URL if requested
-        if (getLink) {
-          backup_data$url <- url_list[1:length(family_list)]
+        if(getLink==TRUE){
+          searchResults$url <- url_list[1:length(family_list)]
         }
         
         # Conditionally add full higher taxa vector if requested
-        if (fullHigher) {
-          backup_data$taxa_vector <- taxa_vector_list[1:length(family_list)]
+        if(fullHigher==TRUE){
+          searchResults$taxa_vector <- taxa_vector_list[1:length(family_list)]
         }
-        saveRDS(backup_data, file = here::here("data", "backup_progress.rds"))
-        message(sprintf("Saved progress after batch %d (%d species total).", b, length(family_list)))
-      }
-    }
-  }
-
-    #return as much as was scrapped
-  n <- length(family_list)
-  
-  # Slice only valid entries (to match n)
-  all_vectors <- list(
-    order    = order_list[1:n],
-    suborder = suborder_list[1:n],
-    family   = family_list[1:n],
-    genus    = genus_list[1:n],
-    species  = species_list[1:n],
-    year     = sppYear_list[1:n],
-    author   = sppAuthor_list[1:n],
-    url      = if (getLink) url_list[1:n] else NULL
-  )
-  
-  # Remove NULL elements (if url is NULL)
-  all_vectors <- all_vectors[!sapply(all_vectors, is.null)]
-  
-  # Check if everything is the same length
-  lengths_vec <- sapply(all_vectors, length)
-  expected <- lengths_vec["species"]
-  
-  if (all(lengths_vec == expected)) {
-    searchResults <- as.data.frame(all_vectors, stringsAsFactors = FALSE)
-  } else {
-    message("Some vectors have different lengths! Returning list instead.")
-    print(lengths_vec)
-    diffs <- lengths_vec - expected
-    bad <- names(diffs[diffs != 0])
-    message("Mismatched vectors: ", paste(bad, collapse = ", "))
-    searchResults <- all_vectors
-  }
-  
+    } #closes taxonomicInfo == TRUE
   return(searchResults)
-  
 }
-  

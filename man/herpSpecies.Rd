@@ -9,7 +9,8 @@ herpSpecies(url,
                    taxonomicInfo=FALSE, 
                    fullHigher=FALSE, 
                    getLink=FALSE, 
-                   batches=1, 
+                   batch_size=NULL,
+                   backup_file = NULL,
                    startBatch=1)
 }
 \arguments{
@@ -23,7 +24,11 @@ herpSpecies(url,
 
 \item{getLink}{A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
 
-\item{batches}{An integer indicating in how many batches user would like to divide data collection (good for large datasets).}
+\item{batch_size}{An integer representing the number of species to process before saving progress to the backup file.
+Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if batch_size is not NULL.
+OBS.: If set to 1, progress will be saved after every species (safe but slower).}
+
+\item{backup_file}{A character string with the Path to an \code{.rds} file where intermediate results will be saved if \code{batch_size} is not NULL. Must end in \code{.rds}.}
 
 \item{startBatch}{An integer indicating where to start data collection (e.g.: if failed in previous attempt).}
 }

@@ -145,7 +145,7 @@ herpSynonyms <- function(x, batch_size = NULL, resume=FALSE, backup_file = NULL,
             saveRDS(backup_uniqueSynonyms, backup_file)
           }else{
             backup$synonymRef <- synonymRef_list
-            saveRDS(backup,backup_file)
+            saveRDS(backup, backup_file)
           }
         }else{}
       }
