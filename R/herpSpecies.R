@@ -36,6 +36,7 @@
 #' 
 #' @export
 #'
+
 herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, checkpoint = NULL, backup_file = NULL, cores = (parallel::detectCores()-1))
 {
   if (is.null(backup_file) && !is.null(checkpoint)) {
@@ -122,12 +123,12 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
 # taxonomicInfo == TRUE ---------------------------------------------------
   if (taxonomicInfo == TRUE) {
     
-    taxa_vector_list <- c()
-    order_list <- c()
-    suborder_list <- c()
-    family_list <- c()
-    sppAuthor_list <- c()
-    sppYear_list <- c()
+    # taxa_vector_list <- c()
+    # order_list <- c()
+    # suborder_list <- c()
+    # family_list <- c()
+    # sppAuthor_list <- c()
+    # sppYear_list <- c()
     
     orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines")
     suborders <- c("Sauria", "Serpentes")
@@ -143,7 +144,7 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
       }
     
     # Default values if not provided: save .rds only in the end
-    if (is.null(checkpoint)) checkpoint <- n_species
+    #if (is.null(checkpoint)) checkpoint <- n_species
     
     #for (j in seq_along(species_list)) {
     harvest_info <- function(x) {
@@ -174,79 +175,102 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
           order <- match_taxon(taxa_vector, orders)
           suborder <- match_taxon(taxa_vector, suborders)
           
-          ############################## DETECTING ERROR
-          if (all(is.na(c(family, order, suborder)))) {
-            message(sprintf("No higher taxa information for", species_list[j]))
-          }
-          ##############################
+          # ############################## DETECTING ERROR
+          # if (all(is.na(c(family, order, suborder)))) {
+          #   message(sprintf("No higher taxa information for", species_list[j]))
+          # }
+          # ##############################
+          # 
+          # taxa_vector_list <- c(taxa_vector_list, taxa_vector)
+          # order_list <- c(order_list, order)
+          # suborder_list <- c(suborder_list, suborder)
+          # family_list <- c(family_list, family)
+          # sppAuthor_list <- c(sppAuthor_list, sppAuthor)
+          # sppYear_list <- c(sppYear_list, sppYear)
+          # 
+          # percent <- (j / n_species) * 100
+          # cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
+          # flush.console()
           
-          taxa_vector_list <- c(taxa_vector_list, taxa_vector)
-          order_list <- c(order_list, order)
-          suborder_list <- c(suborder_list, suborder)
-          family_list <- c(family_list, family)
-          sppAuthor_list <- c(sppAuthor_list, sppAuthor)
-          sppYear_list <- c(sppYear_list, sppYear)
-          
-          percent <- (j / n_species) * 100
-          cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
-          flush.console()
-          
-          # Save backup every checkpoint or at the end
-          if(!is.null(backup_file) && 
-             (j %% checkpoint == 0 || j == n_species)){
-            
-              n <- length(family_list)
-              backup <- data.frame(order = order_list,
-                                   suborder = suborder_list,
-                                   family = family_list,
-                                   genus = genus_list[1:n],
-                                   species = species_list[1:n],
-                                   author = sppAuthor_list,
-                                   year = sppYear_list)
-            
-            # Conditionally add URL if requested
-            if(getLink==TRUE){
-              backup$url <- url_list[1:n]
-            }
-            
-            # Conditionally add full higher taxa vector if requested
-            if(fullHigher==TRUE){
-              backup$taxa_vector <- taxa_vector_list[1:n]
-            }
-            saveRDS(backup, file = backup_file)
-            message(sprintf("Saved progress at species %d (%d total).", j, n))
-          }
+          #back up chunk
+          # # Save backup every checkpoint or at the end
+          # if(!is.null(backup_file) && 
+          #    (j %% checkpoint == 0 || j == n_species)){
+          #   
+          #     n <- length(family_list)
+          #     backup <- data.frame(order = order_list,
+          #                          suborder = suborder_list,
+          #                          family = family_list,
+          #                          genus = genus_list[1:n],
+          #                          species = species_list[1:n],
+          #                          author = sppAuthor_list,
+          #                          year = sppYear_list)
+          #   
+          #   # Conditionally add URL if requested
+          #   if(getLink==TRUE){
+          #     backup$url <- url_list[1:n]
+          #   }
+          #   
+          #   # Conditionally add full higher taxa vector if requested
+          #   if(fullHigher==TRUE){
+          #     backup$taxa_vector <- taxa_vector_list[1:n]
+          #   }
+          #   saveRDS(backup, file = backup_file)
+          #   message(sprintf("Saved progress at species %d (%d total).", j, n))
+          # }
+          return(list(
+            order = order,
+            suborder = suborder,
+            family = family,
+            genus = genus_list[j],
+            species = species_list[j],
+            author = sppAuthor,
+            year = sppYear,
+            taxa_vector = if (fullHigher) taxa_vector else NULL,
+            url = if (getLink) url_list[j] else NULL,
+            stringsAsFactors = FALSE
+          ))
         
       }, error = function(e) {
-        message(sprintf("Error scraping %s: %s", species_list[j], e$message))
+        return(list(error = TRUE, species = species_list[j], message = e$message))
+        errors <- Filter(function(x) is.list(x) && x$error == TRUE, results_list)
+        if (length(errors) > 0) {
+          cat("The following species failed to scrape:\n")
+          for (e in errors) {
+            cat(sprintf("  - %s: %s\n", e$species, e$message))
+          }
+        }
       })
     } #closes harvest_info function
-        
-  } 
-      # n <- length(family_list)
-      # all_vectors <- list(order = order_list[1:n], suborder = suborder_list[1:n], 
-      #                     family = family_list[1:n], genus = genus_list[1:n], species = species_list[1:n], 
-      #                     year = sppYear_list[1:n], author = sppAuthor_list[1:n],
-      #                     taxa_vector = if(fullHigher) taxa_vector_list[1:n] else NULL,
-      #                     url = if (getLink) url_list[1:n] else NULL)
-      # all_vectors <- all_vectors[!sapply(all_vectors, is.null)]
-      # lengths_vec <- sapply(all_vectors, length)
-      # expected <- lengths_vec["species"]
-      # if (all(lengths_vec == expected)) {
-      #   searchResults <- as.data.frame(all_vectors, stringsAsFactors = FALSE)
-      # }
-      # else {
-      #   message("Some vectors have different lengths! Returning list instead.")
-      #   print(lengths_vec)
-      #   diffs <- lengths_vec - expected
-      #   bad <- names(diffs[diffs != 0])
-      #   message("Mismatched vectors: ", paste(bad, collapse = ", "))
-      #   searchResults <- all_vectors
-      # }
-     
-  results_list <- safeParallel(species_list, harvest_info, cores = cores)
-  
-  results_list <- Filter(Negate(is.null), results_list)
-  searchResults <- dplyr::bind_rows(results_list)
-  return(searchResults)
-}
+    
+    results_list <- safeParallel(species_list, harvest_info, cores = cores)
+    
+    results_list <- Filter(Negate(is.null), results_list)
+    searchResults <- dplyr::bind_rows(results_list)
+    return(searchResults)
+  } # <--- closes if (taxonomicInfo == TRUE)
+} # <--- closes herpSpecies function
+
+
+
+
+# n <- length(family_list)
+# all_vectors <- list(order = order_list[1:n], suborder = suborder_list[1:n], 
+#                     family = family_list[1:n], genus = genus_list[1:n], species = species_list[1:n], 
+#                     year = sppYear_list[1:n], author = sppAuthor_list[1:n],
+#                     taxa_vector = if(fullHigher) taxa_vector_list[1:n] else NULL,
+#                     url = if (getLink) url_list[1:n] else NULL)
+# all_vectors <- all_vectors[!sapply(all_vectors, is.null)]
+# lengths_vec <- sapply(all_vectors, length)
+# expected <- lengths_vec["species"]
+# if (all(lengths_vec == expected)) {
+#   searchResults <- as.data.frame(all_vectors, stringsAsFactors = FALSE)
+# }
+# else {
+#   message("Some vectors have different lengths! Returning list instead.")
+#   print(lengths_vec)
+#   diffs <- lengths_vec - expected
+#   bad <- names(diffs[diffs != 0])
+#   message("Mismatched vectors: ", paste(bad, collapse = ", "))
+#   searchResults <- all_vectors
+# }
