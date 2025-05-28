@@ -12,7 +12,7 @@
 #'                    taxonomicInfo=FALSE, 
 #'                    fullHigher=FALSE, 
 #'                    getLink=FALSE, 
-#'                    batches=1, 
+#'                    batch_size=NULL, 
 #'                    startBatch=1)
 #'                    
 #' @param url A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.
@@ -20,7 +20,7 @@
 #' @param taxonomicInfo A logical value indicating if user wants full species taxonomic information (specifically: Order, Suborder, Family, Genus, species author and description year) for each species. default = *TRUE*
 #' @param fullHigher A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = *FALSE*. OBS.: Requires taxonomicInfo = TRUE
 #' @param getLink A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = *TRUE*
-#' @param batches An integer indicating in how many batches user would like to divide data collection (good for large datasets). 
+#' @param batch_size An integer indicating in how many batches user would like to divide data collection (good for large datasets). 
 #' @param startBatch An integer indicating where to start data collection (e.g.: if failed in previous attempt).
 #'
 #' @return if taxonomicInfo = FALSE (default), the function returns a vector with the list of species
@@ -32,7 +32,7 @@
 #' 
 #' @export
 #'
-herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, batches = 1, startBatch = 1)
+herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, batch_size = NULL, startBatch = 1)
 {
   if(is.null(dataList))
   {
@@ -113,19 +113,19 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
       }
     
     # Default values if not provided
-    if (is.null(batches)) batches <- 1
+    if (is.null(batch_size)) batch_size <- length(species_list)
     if (is.null(startBatch)) startBatch <- 1
     
     total_species <- length(species_list)
-    batch_size <- ceiling(total_species / batches)
+    total_batches <- ceiling(total_species / batch_size)
     
     success <- TRUE
     
-    for(b in startBatch:batches){
+    for(b in startBatch:total_batches){
       from <- ((b - 1) * batch_size) + 1
       to <- min(b * batch_size, total_species)
       
-      message(sprintf("\nProcessing batch %d of %d: species %d to %d", b, batches, from, to))
+      message(sprintf("\nProcessing batch %d of %d: species %d to %d", b, total_batches, from, to))
       
       batch_success <- TRUE
       result <- tryCatch({
