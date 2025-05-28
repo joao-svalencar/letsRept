@@ -10,7 +10,8 @@ herpSpecies(url,
                    fullHigher=FALSE, 
                    getLink=FALSE, 
                    checkpoint=NULL,
-                   backup_file = NULL)
+                   backup_file = NULL,
+                   cores = (parallel::detectCores()-1))
 }
 \arguments{
 \item{url}{A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.}
@@ -28,6 +29,8 @@ Helps prevent data loss in case the function stops unexpectedly. Backups are sav
 OBS.: If set to 1, progress will be saved after every species (safe but slower).}
 
 \item{backup_file}{A character string with the Path to an \code{.rds} file where intermediate results will be saved if \code{checkpoint} is not NULL. Must end in \code{.rds}.}
+
+\item{cores}{An integer representing how many cores to use during parallel sampling. default is 1 less than all available cores}
 }
 \value{
 if taxonomicInfo = FALSE (default), the function returns a vector with the list of species

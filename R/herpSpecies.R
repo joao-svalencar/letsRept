@@ -13,7 +13,8 @@
 #'                    fullHigher=FALSE, 
 #'                    getLink=FALSE, 
 #'                    checkpoint=NULL,
-#'                    backup_file = NULL)
+#'                    backup_file = NULL,
+#'                    cores = (parallel::detectCores()-1))
 #'                    
 #' @param url A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.
 #' @param dataList A data frame with columns: species and url, only for sampling taxonomicInfo from already sampled species links.
@@ -23,6 +24,7 @@
 #' @param checkpoint An integer representing the number of species to process before saving progress to the backup file.
 #' Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if checkpoint is not NULL. 
 #' OBS.: If set to 1, progress will be saved after every species (safe but slower).
+#' @param cores An integer representing how many cores to use during parallel sampling. default is 1 less than all available cores
 #' @param backup_file A character string with the Path to an `.rds` file where intermediate results will be saved if `checkpoint` is not NULL. Must end in `.rds`.
 #'
 #' @return if taxonomicInfo = FALSE (default), the function returns a vector with the list of species
@@ -34,7 +36,7 @@
 #' 
 #' @export
 #'
-herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, checkpoint = NULL, backup_file = NULL)
+herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHigher = FALSE, getLink = FALSE, checkpoint = NULL, backup_file = NULL, cores = (parallel::detectCores()-1))
 {
   if (is.null(backup_file) && !is.null(checkpoint)) {
     stop("You must provide a valid backup_file path if checkpoint is defined.")
@@ -42,6 +44,16 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
     if(!is.null(backup_file) && !grepl(".rds", backup_file)){
       stop("Backup file path must end with 'filename.rds'")
     }
+  
+  safeParallel <- function(data, FUN, cores = cores) {
+    if (.Platform$OS.type == "unix") {
+      parallel::mclapply(data, FUN, mc.cores = cores)
+    } else {
+      cl <- parallel::makeCluster(cores)
+      on.exit(parallel::stopCluster(cl))
+      parallel::parLapply(cl, data, FUN)
+    }
+  }
   
   if(is.null(dataList))
   {
@@ -133,8 +145,11 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
     # Default values if not provided: save .rds only in the end
     if (is.null(checkpoint)) checkpoint <- n_species
     
-    for (j in seq_along(species_list)) {
-        result <- tryCatch({
+    #for (j in seq_along(species_list)) {
+    harvest_info <- function(x) {
+      j <- which(species_list == x)   
+      
+      tryCatch({
           sp_page <- rvest::read_html(url_list[j])
           title <- rvest::html_element(sp_page, "h1")
           
@@ -205,45 +220,33 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
       }, error = function(e) {
         message(sprintf("Error scraping %s: %s", species_list[j], e$message))
       })
+    } #closes harvest_info function
         
-    } # closes for loop
-        # searchResults <- data.frame(order = order_list,
-        #                      suborder = suborder_list,
-        #                      family = family_list,
-        #                      genus = genus_list[1:length(family_list)],
-        #                      species = species_list[1:length(family_list)],
-        #                      author = sppAuthor_list,
-        #                      year = sppYear_list)
-        # 
-        # # Conditionally add URL if requested
-        # if(getLink==TRUE){
-        #   searchResults$url <- url_list[1:length(family_list)]
-        # }
-        # 
-        # # Conditionally add full higher taxa vector if requested
-        # if(fullHigher==TRUE){
-        #   searchResults$taxa_vector <- taxa_vector_list[1:length(family_list)]
-        # }
-      n <- length(family_list)
-      all_vectors <- list(order = order_list[1:n], suborder = suborder_list[1:n], 
-                          family = family_list[1:n], genus = genus_list[1:n], species = species_list[1:n], 
-                          year = sppYear_list[1:n], author = sppAuthor_list[1:n],
-                          taxa_vector = if(fullHigher) taxa_vector_list[1:n] else NULL,
-                          url = if (getLink) url_list[1:n] else NULL)
-      all_vectors <- all_vectors[!sapply(all_vectors, is.null)]
-      lengths_vec <- sapply(all_vectors, length)
-      expected <- lengths_vec["species"]
-      if (all(lengths_vec == expected)) {
-        searchResults <- as.data.frame(all_vectors, stringsAsFactors = FALSE)
-      }
-      else {
-        message("Some vectors have different lengths! Returning list instead.")
-        print(lengths_vec)
-        diffs <- lengths_vec - expected
-        bad <- names(diffs[diffs != 0])
-        message("Mismatched vectors: ", paste(bad, collapse = ", "))
-        searchResults <- all_vectors
-      }
-    } #closes taxonomicInfo == TRUE
+  } 
+      # n <- length(family_list)
+      # all_vectors <- list(order = order_list[1:n], suborder = suborder_list[1:n], 
+      #                     family = family_list[1:n], genus = genus_list[1:n], species = species_list[1:n], 
+      #                     year = sppYear_list[1:n], author = sppAuthor_list[1:n],
+      #                     taxa_vector = if(fullHigher) taxa_vector_list[1:n] else NULL,
+      #                     url = if (getLink) url_list[1:n] else NULL)
+      # all_vectors <- all_vectors[!sapply(all_vectors, is.null)]
+      # lengths_vec <- sapply(all_vectors, length)
+      # expected <- lengths_vec["species"]
+      # if (all(lengths_vec == expected)) {
+      #   searchResults <- as.data.frame(all_vectors, stringsAsFactors = FALSE)
+      # }
+      # else {
+      #   message("Some vectors have different lengths! Returning list instead.")
+      #   print(lengths_vec)
+      #   diffs <- lengths_vec - expected
+      #   bad <- names(diffs[diffs != 0])
+      #   message("Mismatched vectors: ", paste(bad, collapse = ", "))
+      #   searchResults <- all_vectors
+      # }
+     
+  results_list <- safeParallel(species_list, harvest_info, cores = cores)
+  
+  results_list <- Filter(Negate(is.null), results_list)
+  searchResults <- dplyr::bind_rows(results_list)
   return(searchResults)
 }
