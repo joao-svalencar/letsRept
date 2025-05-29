@@ -8,6 +8,7 @@
 #'
 #' @returns A character string of matched ranks, comma-separated. Returns NA if none found.
 #' @keywords internal
+#' @noRd
 #' 
 match_taxon <- function(taxa_vector, rank_list) {
   matches <- rank_list[sapply(rank_list, function(rank) stringr::str_detect(taxa_vector, rank))]
@@ -18,9 +19,6 @@ match_taxon <- function(taxa_vector, rank_list) {
   sorted_matches <- matches[order(match_positions)]
   return(paste(sorted_matches, collapse = ", "))
 }
-
-
-
 
 #' Applying parallel sampling
 #' 
@@ -33,6 +31,7 @@ match_taxon <- function(taxa_vector, rank_list) {
 #'
 #' @returns the result of FUN performed in parallel running within user defined number of cores
 #' @keywords internal
+#' @noRd
 #' 
 # safeParallel <- function(data, FUN, cores = cores) {
 #   if (.Platform$OS.type == "unix") {
@@ -76,7 +75,7 @@ safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
 #'
 #' @return A one-row data frame with taxonomic information. Returns NULL on error.
 #' @keywords internal
-#' 
+#' @noRd
 #' 
 higherSample <- function(x, species_list, genus_list, url_list, orders = orders, suborders = suborders, fullHigher = FALSE, getLink = FALSE) {
   
@@ -121,4 +120,36 @@ higherSample <- function(x, species_list, genus_list, url_list, orders = orders,
   }, error = function(e) {
     return(list(error = TRUE, species = species_list[j], message = e$message))
   })
+}
+
+#' Clean Taxonomic Species Names
+#'
+#' Cleans and extracts species names from noisy synonym strings, removing author names,
+#' special characters, and redundant spacing.
+#'
+#' @param names_vec A character vector of raw synonyms name strings.
+#'
+#' @return A character vector of cleaned species names.
+#'
+#' @keywords internal
+#' @noRd
+clean_species_names <- function(names_vec) {
+  extracted <- sub(pattern, "\\1", names_vec, perl = TRUE)
+  
+  cleaned <- sub(
+    "\\s+((?:\\p{Lu}{2,}|\\p{Lu}{1})\\s*(?:and|&)?\\s*)+\\b(in|et al\\.|et al|and|&)?\\b.*$",
+    "",
+    extracted,
+    perl = TRUE
+  )
+  
+  cleaned <- sub("^\\?\\s*", "", cleaned, perl = TRUE)
+  
+  cleaned <- sub(paste0("\\s*[-", endash, emdash, "-]\\s*$"), "", cleaned, perl = TRUE)
+  
+  # Final cleanup: collapse multiple spaces and trim
+  cleaned <- gsub("\\s{2,}", " ", cleaned)
+  cleaned <- trimws(gsub("\\s+", " ", cleaned))
+  
+  return(cleaned)
 }
