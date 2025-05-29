@@ -46,16 +46,6 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
       stop("Backup file path must end with 'filename.rds'")
     }
   
-  safeParallel <- function(data, FUN, cores = cores) {
-    if (.Platform$OS.type == "unix") {
-      parallel::mclapply(data, FUN, mc.cores = cores)
-    } else {
-      cl <- parallel::makeCluster(cores)
-      on.exit(parallel::stopCluster(cl))
-      parallel::parLapply(cl, data, FUN)
-    }
-  }
-  
   if(is.null(dataList))
   {
   species_list <- c()
@@ -67,16 +57,8 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
     }
     search <- rvest::read_html(url)
     ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
-    
-    # for(i in 1:length(xml2::xml_children(ul_element[[1]])))
-    # {
-    #   li_node <- xml2::xml_child(ul_element[[1]], i)
-    #   target <- xml2::xml_child(li_node, 1)
-    #...
-    #}
-    
+
     li_nodes <- xml2::xml_children(ul_element[[1]])
-    
     for (i in seq_along(li_nodes)) {
       
       target <- xml2::xml_child(li_nodes[[i]], 1)
@@ -132,122 +114,129 @@ herpSpecies <- function(url=NULL, dataList = NULL, taxonomicInfo = FALSE, fullHi
     
     orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines")
     suborders <- c("Sauria", "Serpentes")
-
-    match_taxon <- function(taxa_vector, rank_list) {
-      matches <- rank_list[sapply(rank_list, function(rank) stringr::str_detect(taxa_vector, rank))]
-      if(length(matches)==0){
-        return(NA)
-      }
-      match_positions <- sapply(matches, function(rank) stringr::str_locate(taxa_vector, rank)[1])
-      sorted_matches <- matches[order(match_positions)]
-      return(paste(sorted_matches, collapse = ", "))
-      }
     
     # Default values if not provided: save .rds only in the end
     #if (is.null(checkpoint)) checkpoint <- n_species
     
     #for (j in seq_along(species_list)) {
-    harvest_info <- function(x) {
-      j <- which(species_list == x)   
-      
-      tryCatch({
-          sp_page <- rvest::read_html(url_list[j])
-          title <- rvest::html_element(sp_page, "h1")
-          
-          sppAuthor <- rvest::html_text(title, trim = TRUE)
-          sppAuthor <- gsub("^([A-Z][a-z]+\\s+[a-z\\-]+)\\s*", "", sppAuthor)
-          sppAuthor <- gsub("\\s{2,}", " ", sppAuthor)
-          
-          sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
-          
-          sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
-          
-          element <- rvest::html_element(sp_page, "table")
-          
-          taxa <- xml2::xml_child(element, 1)
-          td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
-          children <- xml2::xml_contents(td_taxa)
-          
-          taxa_vector <- rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE)
-          taxa_vector <- paste(taxa_vector, collapse = ", ")
-          
-          family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
-          order <- match_taxon(taxa_vector, orders)
-          suborder <- match_taxon(taxa_vector, suborders)
-          
-          # ############################## DETECTING ERROR
-          # if (all(is.na(c(family, order, suborder)))) {
-          #   message(sprintf("No higher taxa information for", species_list[j]))
-          # }
-          # ##############################
-          # 
-          # taxa_vector_list <- c(taxa_vector_list, taxa_vector)
-          # order_list <- c(order_list, order)
-          # suborder_list <- c(suborder_list, suborder)
-          # family_list <- c(family_list, family)
-          # sppAuthor_list <- c(sppAuthor_list, sppAuthor)
-          # sppYear_list <- c(sppYear_list, sppYear)
-          # 
-          # percent <- (j / n_species) * 100
-          # cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
-          # flush.console()
-          
-          #back up chunk
-          # # Save backup every checkpoint or at the end
-          # if(!is.null(backup_file) && 
-          #    (j %% checkpoint == 0 || j == n_species)){
-          #   
-          #     n <- length(family_list)
-          #     backup <- data.frame(order = order_list,
-          #                          suborder = suborder_list,
-          #                          family = family_list,
-          #                          genus = genus_list[1:n],
-          #                          species = species_list[1:n],
-          #                          author = sppAuthor_list,
-          #                          year = sppYear_list)
-          #   
-          #   # Conditionally add URL if requested
-          #   if(getLink==TRUE){
-          #     backup$url <- url_list[1:n]
-          #   }
-          #   
-          #   # Conditionally add full higher taxa vector if requested
-          #   if(fullHigher==TRUE){
-          #     backup$taxa_vector <- taxa_vector_list[1:n]
-          #   }
-          #   saveRDS(backup, file = backup_file)
-          #   message(sprintf("Saved progress at species %d (%d total).", j, n))
-          # }
-          return(list(
-            order = order,
-            suborder = suborder,
-            family = family,
-            genus = genus_list[j],
-            species = species_list[j],
-            author = sppAuthor,
-            year = sppYear,
-            taxa_vector = if (fullHigher) taxa_vector else NULL,
-            url = if (getLink) url_list[j] else NULL,
-            stringsAsFactors = FALSE
-          ))
-        
-      }, error = function(e) {
-        return(list(error = TRUE, species = species_list[j], message = e$message))
-        errors <- Filter(function(x) is.list(x) && x$error == TRUE, results_list)
-        if (length(errors) > 0) {
-          cat("The following species failed to scrape:\n")
-          for (e in errors) {
-            cat(sprintf("  - %s: %s\n", e$species, e$message))
-          }
-        }
-      })
-    } #closes harvest_info function
+    # #############################SILENT INTERNAL TO TEST########################
+    # higherSample <- function(x) {
+    #   j <- which(species_list == x)   
+    #   
+    #   tryCatch({
+    #       sp_page <- rvest::read_html(url_list[j])
+    #       title <- rvest::html_element(sp_page, "h1")
+    #       
+    #       sppAuthor <- rvest::html_text(title, trim = TRUE)
+    #       sppAuthor <- gsub("^([A-Z][a-z]+\\s+[a-z\\-]+)\\s*", "", sppAuthor)
+    #       sppAuthor <- gsub("\\s{2,}", " ", sppAuthor)
+    #       
+    #       sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
+    #       
+    #       sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
+    #       
+    #       element <- rvest::html_element(sp_page, "table")
+    #       
+    #       taxa <- xml2::xml_child(element, 1)
+    #       td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
+    #       children <- xml2::xml_contents(td_taxa)
+    #       
+    #       taxa_vector <- rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE)
+    #       taxa_vector <- paste(taxa_vector, collapse = ", ")
+    #       
+    #       family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
+    #       order <- match_taxon(taxa_vector, orders)
+    #       suborder <- match_taxon(taxa_vector, suborders)
+    #       
+    #       # ############################## DETECTING ERROR
+    #       # if (all(is.na(c(family, order, suborder)))) {
+    #       #   message(sprintf("No higher taxa information for", species_list[j]))
+    #       # }
+    #       # ##############################
+    #       # 
+    #       # taxa_vector_list <- c(taxa_vector_list, taxa_vector)
+    #       # order_list <- c(order_list, order)
+    #       # suborder_list <- c(suborder_list, suborder)
+    #       # family_list <- c(family_list, family)
+    #       # sppAuthor_list <- c(sppAuthor_list, sppAuthor)
+    #       # sppYear_list <- c(sppYear_list, sppYear)
+    #       # 
+    #       # percent <- (j / n_species) * 100
+    #       # cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
+    #       # flush.console()
+    #       
+    #       #back up chunk
+    #       # # Save backup every checkpoint or at the end
+    #       # if(!is.null(backup_file) && 
+    #       #    (j %% checkpoint == 0 || j == n_species)){
+    #       #   
+    #       #     n <- length(family_list)
+    #       #     backup <- data.frame(order = order_list,
+    #       #                          suborder = suborder_list,
+    #       #                          family = family_list,
+    #       #                          genus = genus_list[1:n],
+    #       #                          species = species_list[1:n],
+    #       #                          author = sppAuthor_list,
+    #       #                          year = sppYear_list)
+    #       #   
+    #       #   # Conditionally add URL if requested
+    #       #   if(getLink==TRUE){
+    #       #     backup$url <- url_list[1:n]
+    #       #   }
+    #       #   
+    #       #   # Conditionally add full higher taxa vector if requested
+    #       #   if(fullHigher==TRUE){
+    #       #     backup$taxa_vector <- taxa_vector_list[1:n]
+    #       #   }
+    #       #   saveRDS(backup, file = backup_file)
+    #       #   message(sprintf("Saved progress at species %d (%d total).", j, n))
+    #       # }
+    #       
+    #       return(list(
+    #         order = order,
+    #         suborder = suborder,
+    #         family = family,
+    #         genus = genus_list[j],
+    #         species = species_list[j],
+    #         author = sppAuthor,
+    #         year = sppYear,
+    #         taxa_vector = if (fullHigher) taxa_vector else NULL,
+    #         url = if (getLink) url_list[j] else NULL,
+    #         stringsAsFactors = FALSE
+    #       ))
+    #     
+    #   }, error = function(e) {
+    #     return(list(error = TRUE, species = species_list[j], message = e$message))
+    #     errors <- Filter(function(x) is.list(x) && x$error == TRUE, results_list)
+    #     if (length(errors) > 0) {
+    #       cat("The following species failed to scrape:\n")
+    #       for (e in errors) {
+    #         cat(sprintf("  - %s: %s\n", e$species, e$message))
+    #       }
+    #     }
+    #   })
+    # } #closes higherSample function
+    # #############################SILENT INTERNAL TO TEST########################
     
-    results_list <- safeParallel(species_list, harvest_info, cores = cores)
+    results_list <- safeParallel(
+      data = species_list,
+      FUN = function(x) higherSample(
+        x,
+        species_list = species_list,
+        genus_list = genus_list,
+        url_list = url_list,
+        orders = orders,
+        suborders = suborders,
+        fullHigher = fullHigher,
+        getLink = getLink
+      ),
+      cores = cores
+    )
     
     results_list <- Filter(Negate(is.null), results_list)
-    searchResults <- dplyr::bind_rows(results_list)
+    searchResults <- as.data.frame(dplyr::bind_rows(results_list))
     return(searchResults)
+    
   } # <--- closes if (taxonomicInfo == TRUE)
 } # <--- closes herpSpecies function
 
