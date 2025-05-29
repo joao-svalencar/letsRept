@@ -34,16 +34,32 @@ match_taxon <- function(taxa_vector, rank_list) {
 #' @returns the result of FUN performed in parallel running within user defined number of cores
 #' @keywords internal
 #' 
-safeParallel <- function(data, FUN, cores = cores) {
+# safeParallel <- function(data, FUN, cores = cores) {
+#   if (.Platform$OS.type == "unix") {
+#     parallel::mclapply(data, FUN, mc.cores = cores)
+#   } else {
+#     cl <- parallel::makeCluster(cores)
+#     on.exit(parallel::stopCluster(cl))
+#     parallel::parLapply(cl, data, FUN)
+#   }
+# }
+safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
   if (.Platform$OS.type == "unix") {
-    parallel::mclapply(data, FUN, mc.cores = cores)
+    if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
+      pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
+    } else {
+      parallel::mclapply(data, FUN, mc.cores = cores)
+    }
   } else {
     cl <- parallel::makeCluster(cores)
     on.exit(parallel::stopCluster(cl))
-    parallel::parLapply(cl, data, FUN)
+    if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
+      pbapply::pblapply(data, FUN, cl = cl)
+    } else {
+      parallel::parLapply(cl, data, FUN)
+    }
   }
 }
-
 
 #' Scrape taxonomic info from the Reptile Database for one species
 #'
@@ -96,11 +112,10 @@ higherSample <- function(x, species_list, genus_list, url_list, orders = orders,
               family = family,
               genus = genus_list[j],
               species = species_list[j],
-              author = sppAuthor,
               year = sppYear,
+              author = sppAuthor,
               taxa_vector = if (fullHigher) taxa_vector else NULL,
-              url = if (getLink) url_list[j] else NULL,
-              stringsAsFactors = FALSE
+              url = if (getLink) url_list[j] else NULL
               ))
     
   }, error = function(e) {

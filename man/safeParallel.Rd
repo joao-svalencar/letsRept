@@ -4,7 +4,7 @@
 \alias{safeParallel}
 \title{Applying parallel sampling}
 \usage{
-safeParallel(data, FUN, cores = cores)
+safeParallel(data, FUN, cores = 1, showProgress = TRUE)
 }
 \arguments{
 \item{data}{species_list to be sampled}

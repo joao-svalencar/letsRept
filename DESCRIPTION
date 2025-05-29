@@ -12,6 +12,8 @@ Imports:
     dplyr,
     httr,
     parallel,
+    pbapply,
+    pbmcapply,
     rvest,
     stringr,
     tidyr,
