@@ -142,6 +142,21 @@ if(!is.null(binomial))
               cat(" -", item, "\n")
             }
             cat("\n")
+            }else
+              if(i == 10)
+              {
+                li_nodes <- rvest::html_elements(cells[[2]], "li")
+                xml2::xml_remove(xml2::xml_find_all(li_nodes, ".//a"))
+                
+                ref_list <- trimws(rvest::html_text(li_nodes, trim = TRUE))
+                ref_list <- sub("\\s*-\\s*$", "", ref_list)
+                ref_list <- ref_list[nzchar(ref_list)]
+                
+                cat("References:\n")
+                for (item in ref_list) {
+                  cat(" -", item, "\n")
+                }
+                cat("\n")
           }else{
             content <- rvest::html_text(cells[2], trim = TRUE)
             cat(paste0(title,":"),"\n")

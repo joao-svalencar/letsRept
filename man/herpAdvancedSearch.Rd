@@ -4,7 +4,12 @@
 \alias{herpAdvancedSearch}
 \title{Search The Reptile Database website (TRD): Advanced}
 \usage{
-herpAdvancedSearch(higher=NULL, genus=NULL, year=NULL, synonym=NULL, location=NULL)
+herpAdvancedSearch(higher=NULL,
+                          genus=NULL,
+                          year=NULL,
+                          common_name=NULL,
+                          synonym=NULL,
+                          location=NULL)
 }
 \arguments{
 \item{higher}{A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
@@ -12,6 +17,8 @@ herpAdvancedSearch(higher=NULL, genus=NULL, year=NULL, synonym=NULL, location=NU
 \item{genus}{A character string with the current valid name of a given reptile genus (e.g.: "\emph{Apostolepis}")}
 
 \item{year}{A character string to be used as a filter for the year of description of the searched species (e.g.: "2025")}
+
+\item{common_name}{A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "\emph{Boa diviniloqua}")}
 
 \item{synonym}{A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "\emph{Boa diviniloqua}")}
 
@@ -26,5 +33,7 @@ Creates the link for multiple species sampling by herpSpecies()
 \examples{
 herpAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
 herpAdvancedSearch(higher = "Sauria", location = "Argentina")
+herpAdvancedSearch(location = "Brazil", genus = "Atractus OR Apostolepis")
+herpAdvancedSearch(year = "2010 OR 2011 OR 2012")
 
 }
