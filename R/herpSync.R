@@ -23,7 +23,7 @@
 #' @examples
 #' boaLink <- herpAdvancedSearch(genus = "Boa")
 #' boa <- herpSpecies(boaLink, getLink=TRUE, taxonomicInfo = FALSE)
-#' boa_syn <- herpSynonyms(boa, getRef = FALSE)
+#' boa_syn <- herpSynonyms(boa, getRef = FALSE, cores = 1)
 #' query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
 #' herpSync(query, boa_syn)
 #' 
