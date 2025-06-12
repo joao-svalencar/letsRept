@@ -107,7 +107,7 @@ herpSync(apo_list, apo_syn)
 - [x] &nbsp; Implement `herpAdvancedSearch` link testing and result summary
 - [x] &nbsp; Implement `herpSynonym` batch sampling and tryCatch() mechanism
 - [x] &nbsp; herpSpecies() with parallel sampling
-- [ ] &nbsp; herpSynonyms() with parallel sampling
+- [x] &nbsp; herpSynonyms() with parallel sampling
 - [ ] &nbsp; CRAN release
 - [ ] &nbsp; Paper submission
 - [ ] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
