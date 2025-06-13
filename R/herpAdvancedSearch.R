@@ -80,14 +80,15 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
     title <- rvest::html_element(test, "h1")
     binomial <- rvest::html_text(rvest::html_element(title, "em"), trim = TRUE)
     herpSearch(binomial=binomial)
+    return()
   }else if (grepl("^Species found:", msg)) {
     cat(msg, "\nProceed to herpSpecies() with the returned link")
     return(url)
   } else if (grepl("No species were found", msg)) {
     cat("No species were found. Please verify the search arguments.\n")
-    return(NULL)
+    return()
   } else {
     cat("Unexpected page content. Investigate manually.\n")
-    return(NULL)
+    return()
   }
 }

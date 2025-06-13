@@ -1,14 +1,4 @@
 # letsHerp
-### **Author:**
-
-Vieira-Alencar, João Paulo dos Santos (joaopaulo.valencar@gmail.com)
-
-[Orcid](https://orcid.org/0000-0001-6894-6773) | [Research Gate](https://www.researchgate.net/profile/Joao-Paulo-Alencar)
-
-Ph.D in Ecology at USP
-
-Post-Doc at:
-Laboratório de Evolução e Diversidade I  - "LED 1" - Centro de Ciências Naturais e Humanas, Universidade Federal do ABC, São Bernardo do Campo, SP – Brazil
 
 ### **An R Interface to the Reptile Database**
 
@@ -110,7 +100,26 @@ herpSync(apo_list, apo_syn)
 - [ ] &nbsp; Implement adapted version of `AmphiNom::synonym_report()` (Liedtke, 2018)
 - [ ] &nbsp; Implement IUCN match
 
+### **How to Cite**
+
+To cite this package in publications, run:
+
+```r
+citation("letsHerp")
+```
+
 ### **References**
 Liedtke, H. C. (2018). AmphiNom: an amphibian systematic tool. Systematics and Biodiversity, 17(1) 1-6. https://doi.org/10.1080/14772000.2018.1518935
 
 Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database. http://www.reptile-database.org
+
+### **Author:**
+
+Vieira-Alencar, João Paulo dos Santos (joaopaulo.valencar@gmail.com)
+
+[Orcid](https://orcid.org/0000-0001-6894-6773) | [Research Gate](https://www.researchgate.net/profile/Joao-Paulo-Alencar)
+
+Ph.D in Ecology at USP
+
+Post-Doc at:
+Laboratório de Evolução e Diversidade I  - "LED 1" - Centro de Ciências Naturais e Humanas, Universidade Federal do ABC, São Bernardo do Campo, SP – Brazil

@@ -28,18 +28,22 @@ Any feedback, suggestion or request are welcome!
 
 ### **Download**
 
+A CRAN submission is in progress; until then, the development version can be installed from GitHub.
+
 To install the stable version of this package user must run:
 
 ```{.r}
+# Install development version from GitHub
 # install.packages("devtools")
-devtools::install_github("joao-svalencar/letsHerp", ref="main")
+devtools::install_github("joao-svalencar/letsHerp")
+
 library(letsHerp)
 ```
 
 ### **List of functions and examples**
 **Function `herpSearch`:**
 
-Prints species information sampled from the respective species page in RD:
+Retrieves species information from The Reptile Database using a binomial name.
 ```{.r}
 # single species:
 herpSearch(binomial = "Apostolepis adhara")
@@ -56,7 +60,9 @@ herpSearch(binomial = "Apostolepis adhara", ref=TRUE)
 Creates a link for a page as derived from an Advanced Search in RD (multiple species in a page):
 ```{.r}
 # create multiple species link:
-link <- herpAdvancedSearch(genus = "Apostolepis") #returns a link to access a list of all Apostolepis species
+link_boa <- herpAdvancedSearch(genus = "Boa") #returns a link to access a list of all Boa species
+
+link_apo <- herpAdvancedSearch(genus = "Apostolepis") #returns a link to access a list of all Apostolepis species
 
 link <- herpAdvancedSearch(higher = "snakes", location = "Brazil") #returns a link to access a list of all snake species in Brazil
 
@@ -65,29 +71,33 @@ link <- herpAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to acc
 
 **Function `herpSpecies`:**
 
-Sample species data from the species link created by `herpAdvancedSearch`. User can also copy and paste the url from a RD webpage containing the list of species derived from an advanced search. It includes higher taxa information, authors, year of description, and the species url. By default this function uses parallel processing, with default set to leave just one core available. ⚠️ Be aware that other computer applications functioning may be compromised, set the number of cores dedicated to species information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
+Retrieve species data from the species link created by `herpAdvancedSearch`. User can also copy and paste the url from a RD webpage containing the list of species derived from an advanced search. It includes higher taxa information, authors, year of description, and the species url. By default this function uses parallel processing, with default set to leave just one core available. **NOTE:** Be aware that system performance may be affected, set the number of cores dedicated to species information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
 
-- Returns higher taxa information and species url:
 ```{.r}
 # sample multiple species data:
-apo <- herpSpecies(link, taxonomicInfo = TRUE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
-```
+#Returns higher taxa information and species url:
+boa <- herpSpecies(link_boa, taxonomicInfo = TRUE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Boa")
 
-- Returns only species url - Faster and recommended for large datasets:
-```{.r}
-# sample multiple species data:
-apo <- herpSpecies(link, taxonomicInfo = FALSE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
+apo <- herpSpecies(link_apo, taxonomicInfo = TRUE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
 
+#Returns only species url - Faster and recommended for large datasets:
+boa <- herpSpecies(link_boa, taxonomicInfo = FALSE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Boa")
+
+apo <- herpSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
+
+#With checkpoint and backups (only without parallel sampling: a lot slower but safer):
 path <- "path/to/save/backup_file.rds" #not to run just example 
-apo <- herpSpecies(link, taxonomicInfo = FALSE, getLink = TRUE, checkpoint=6, backup_file=path) #link from herpAdvancedSearch(genus = "Apostolepis")
+apo <- herpSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE, checkpoint=6, backup_file=path) #link from herpAdvancedSearch(genus = "Apostolepis")
 ```
 
 **Function `herpSynonyms`:**
 
-Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to leave just one core available. ⚠️ Be aware that other computer applications functioning may be compromised, set the number of cores dedicated to synonym information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
+Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to leave just one core available. **NOTE:** Be aware that system performance may be affected, set the number of cores dedicated to synonym information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
 
 ```{.r}
 # sample species synonyms
+boa_syn <- herpSynonyms(boa)
+
 apo_syn <- herpSynonyms(apo)
 ```
 
@@ -101,6 +111,14 @@ Inspired in function aswSync from package [AmphiNom](https://github.com/hcliedtk
 
 ```{.r}
 # comparing synonyms:
+boa_list <- c("Vieira-Alencar authoristicus",
+              "Boa atlantica",
+              "Boa diviniloqua",
+              "Boa imperator",
+              "Boa constrictor longicauda")
+
+herpSync(boa_list, boa_syn)
+
 apo_list <- c("Vieira-Alencar authorisensis",
               "Apostolepis ambiniger",
               "Apostolepis cerradoensis",
@@ -111,11 +129,33 @@ apo_list <- c("Vieira-Alencar authorisensis",
 herpSync(apo_list, apo_syn)
 ```
 
+The column "Reptile_Database" shows current valid name according to The Reptile Database.
+
+Special attention is needed to columns "status" and "warnings":
+
+**status:**
+
+- "up_to_date" -  Species name provided is the current valid name found in The Reptile Database
+ 
+- "updated" - Species name provided is a synonym, and the current valid name is reported unambiguously.
+
+- "ambiguous" - Species name provided is considered a synonym of more than one current valid species, likely from a split in taxonomy. The synonym from query might also be found in the list of the current valid names, and can be assigned as valid "on the go" with `interactive = TRUE` but see the example above for *Boa diviniloqua*.
+
+- "name_not_found" - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
+
+**warnings:**
+
+- "duplicated" - Currently, this is the only warning the user will get from `herpSync`. It means that two or more names provided in the query are now under a single current valid name, likely from a synonymization. In the example above both *Boa diviniloqua* and *Boa constrictor longicauda* are considered synonyms of *Boa constrictor*.
+
+⚠️ ATTENTION!⚠️ 
+
+`letsHerp` does not make taxonomic decisions. The package sample species current valid names and known synonyms but the decision upon which nomenclature to use relies on user expertise.
+
 ### **Internal datasets**
 
 - The package counts with a full list of current valid species (`allReptiles` - 12,440 species) with their respective higher taxa information (updated to 23rd of May, 2025);
 
-- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to 23th of May, 2025); 
+- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to 23rd of May, 2025); 
 
 - Another synonyms dataset with all entries considering their respective references (`allSynonymsRef`110,413 entries - updated to 23rd of May, 2025).
 
