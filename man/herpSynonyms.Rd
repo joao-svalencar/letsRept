@@ -35,10 +35,8 @@ OBS.: backup_file are not created under parallel processing, if mandatory choose
 creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
 }
 \examples{
-boaLink <- herpAdvancedSearch(genus = "Boa") #creates advanced search link
-boa <- herpSpecies(boaLink, getLink=TRUE)
-boa_syn <- herpSynonyms(boa, getRef = TRUE, cores=1) #synonyms with respective references
-boa_syn <- herpSynonyms(boa, getRef = FALSE, cores=1) #only synonyms
+boa <- letsHerp::allReptiles[grep("^Boa\\\\s", allReptiles$species),]
+boa_syn <- herpSynonyms(boa, getRef = FALSE, cores=2) #only synonyms
 
 }
 \references{

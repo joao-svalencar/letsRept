@@ -32,8 +32,6 @@ Creates the link for multiple species sampling by herpSpecies()
 }
 \examples{
 herpAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
-herpAdvancedSearch(higher = "Sauria", location = "Argentina")
-herpAdvancedSearch(location = "Brazil", genus = "Atractus OR Apostolepis")
 herpAdvancedSearch(year = "2010 OR 2011 OR 2012")
 herpAdvancedSearch(genus = "Apostolepis OR \"Boa\" OR Atractus") #to quote one
 

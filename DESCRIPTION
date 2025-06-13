@@ -1,9 +1,9 @@
 Package: letsHerp
 Title: An R Interface to the Reptile Database
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Joao Paulo", "dos Santos Vieira-Alencar", , "joaopaulo.valencar@gmail.com", role = c("aut", "cre"))
-Description: The package compiles reptile species informatino from The Reptile Dabase website and summarizes species taxonomy and synonyms in dataframes.
+Description: Provides tools to retrieve and summarize taxonomic information and synonymy data for reptile species using data scraped from The Reptile Database website. Outputs include clean and structured data frames useful for ecological, evolutionary, and conservation research.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

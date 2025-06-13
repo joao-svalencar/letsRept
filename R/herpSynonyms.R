@@ -32,10 +32,8 @@
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
 #' 
 #' @examples
-#' boaLink <- herpAdvancedSearch(genus = "Boa") #creates advanced search link
-#' boa <- herpSpecies(boaLink, getLink=TRUE)
-#' boa_syn <- herpSynonyms(boa, getRef = TRUE, cores=1) #synonyms with respective references
-#' boa_syn <- herpSynonyms(boa, getRef = FALSE, cores=1) #only synonyms
+#' boa <- letsHerp::allReptiles[grep("^Boa\\s", allReptiles$species),]
+#' boa_syn <- herpSynonyms(boa, getRef = FALSE, cores=2) #only synonyms
 #' 
 #' @export
 #'
