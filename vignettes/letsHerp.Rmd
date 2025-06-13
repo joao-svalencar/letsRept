@@ -1,0 +1,138 @@
+yaml
+
+---
+title: "letsHerp: An R Interface to the Reptile Database"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{letsHerp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+### **An R Interface to the Reptile Database**
+
+This package was developed to facilitate the processes of reptile nomenclature update based on a search for species synonyms according to [The Reptile Database](https://reptile-database.reptarium.cz) website (Uetz et al., 2025).
+
+Currently, the package accesses many species information from The Reptile Database using R interface.
+
+I hope it to be useful, to people trying to match databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species information directly in R.
+
+Any feedback, suggestion or request are welcome!
+
+### **Download**
+
+To install the stable version of this package user must run:
+
+```{.r}
+# install.packages("devtools")
+devtools::install_github("joao-svalencar/letsHerp", ref="main")
+library(letsHerp)
+```
+
+### **List of functions and examples**
+**Function `herpSearch`:**
+
+Prints species information sampled from the respective species page in RD:
+```{.r}
+# single species:
+herpSearch(binomial = "Apostolepis adhara")
+```
+
+If user wants to check the list of references related to species, as listed in RD:
+```{.r}
+# single species:
+herpSearch(binomial = "Apostolepis adhara", ref=TRUE)
+```
+
+**Function `herpAdvancedSearch`:**
+
+Creates a link for a page as derived from an Advanced Search in RD (multiple species in a page):
+```{.r}
+# create multiple species link:
+link <- herpAdvancedSearch(genus = "Apostolepis") #returns a link to access a list of all Apostolepis species
+
+link <- herpAdvancedSearch(higher = "snakes", location = "Brazil") #returns a link to access a list of all snake species in Brazil
+
+link <- herpAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to access a list of all species described from 2010 to 2012
+```
+
+**Function `herpSpecies`:**
+
+Sample species data from the species link created by `herpAdvancedSearch`. User can also copy and paste the url from a RD webpage containing the list of species derived from an advanced search. It includes higher taxa information, authors, year of description, and the species url. By default this function uses parallel processing, with default set to leave just one core available. ⚠️ Be aware that other computer applications functioning may be compromised, set the number of cores dedicated to species information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
+
+- Returns higher taxa information and species url:
+```{.r}
+# sample multiple species data:
+apo <- herpSpecies(link, taxonomicInfo = TRUE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
+```
+
+- Returns only species url - Faster and recommended for large datasets:
+```{.r}
+# sample multiple species data:
+apo <- herpSpecies(link, taxonomicInfo = FALSE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
+
+path <- "path/to/save/backup_file.rds" #not to run just example 
+apo <- herpSpecies(link, taxonomicInfo = FALSE, getLink = TRUE, checkpoint=6, backup_file=path) #link from herpAdvancedSearch(genus = "Apostolepis")
+```
+
+**Function `herpSynonyms`:**
+
+Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to leave just one core available. ⚠️ Be aware that other computer applications functioning may be compromised, set the number of cores dedicated to synonym information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
+
+```{.r}
+# sample species synonyms
+apo_syn <- herpSynonyms(apo)
+```
+
+⚠️ ATTENTION!⚠️ 
+
+The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient but still sample 0.2% of them in bad format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I fixed (potentially) all unusual synonym formats in the internal dataset `allSynonyms` (last update: 23rd May, 2025)
+
+**Function `herpSync`:**
+
+Inspired in function aswSync from package [AmphiNom](https://github.com/hcliedtke/AmphiNom) (Liedtke, 2018), this function compares a given list of species (e.g.: IUCN, or a regional list) with the list of species synonyms and returns a tidy comparison allowing faster nomenclature check.
+
+```{.r}
+# comparing synonyms:
+apo_list <- c("Vieira-Alencar authorisensis",
+              "Apostolepis ambiniger",
+              "Apostolepis cerradoensis",
+              "Elapomorphus assimilis",
+              "Apostolepis tertulianobeui",
+              "Apostolepis goiasensis")
+
+herpSync(apo_list, apo_syn)
+```
+
+### **Internal datasets**
+
+- The package counts with a full list of current valid species (`allReptiles` - 12,440 species) with their respective higher taxa information (updated to 23rd of May, 2025);
+
+- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to 23th of May, 2025); 
+
+- Another synonyms dataset with all entries considering their respective references (`allSynonymsRef`110,413 entries - updated to 23rd of May, 2025).
+
+### **How to Cite**
+
+To cite this package in publications, run:
+
+```r
+citation("letsHerp")
+```
+
+### **References**
+Liedtke, H. C. (2018). AmphiNom: an amphibian systematic tool. Systematics and Biodiversity, 17(1) 1-6. https://doi.org/10.1080/14772000.2018.1518935
+
+Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database. http://www.reptile-database.org
+
+### **Author:**
+João Paulo dos Santos Vieira de Alencar
+Email: joaopaulo.valencar@gmail.com
+[Orcid](https://orcid.org/0000-0001-6894-6773) | [ResearchGate](https://www.researchgate.net/profile/Joao-Paulo-Alencar)

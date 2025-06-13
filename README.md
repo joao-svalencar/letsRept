@@ -61,10 +61,6 @@ apo <- herpSpecies(link, taxonomicInfo = TRUE, getLink = TRUE)
 ```{.r}
 apo <- herpSpecies(link, taxonomicInfo = FALSE, getLink = TRUE)
 ```
-- Returns species higher taxa from an user provided file with species url, divides sampling in 3 batches (recommended for large datasets):
-```{.r}
-apo <- herpSpecies(dataList = apo, taxonomicInfo = TRUE, getLink = FALSE, batches = 3)
-```
 
 **Function `herpSynonyms`:**
 
