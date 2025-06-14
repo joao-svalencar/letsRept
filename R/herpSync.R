@@ -2,29 +2,40 @@
 ################### function herpSync by:  HC LIEDTKE & JP VIEIRA-ALENCAR  ##############################
 ##########################################################################################################
 
-#' Submit query to find updates in nomenclature
+#' Synchronize species names using synonym reference table
 #'
-#' This function takes a query (a list of taxon names to be assessed) and the amphibian species of the world synonym table (preferably generated with the function get_synonyms(), or loaded from the data set stored internally) as input and returns an updated list of names.
+#' @description
+#' Compares a user-provided list of reptile taxon names against a synonym table from The Reptile Database and returns an updated list of valid names.
+#' Particularly useful to standardize names before analyses or when integrating heterogeneous taxonomic sources.
 #'
+#' Supports interactive disambiguation in cases where multiple valid names are found for a given synonym. Optionally, unmatched names can be retained or returned as blank.
 #'
-#' Two logical arguments can be turned on to a) allow an "on the fly" decision to be made on what name to take if synonym matches multiple names (if not, it will return all possible names) and to b) return the original query name if no match is found
-#' @usage herpSync(query, synonym, interactive = FALSE, return.no.matches = FALSE)
-#' 
-#' @param query vector of taxon names to be processed (can also be tip labels of a phylogeny for example)
-#' @param synonym Reptile Database synonym reference table on which to base new names on Default setting will use the internally stored data set that may not be the most up-to-date.
-#' @param interactive logical argument (default=FALSE) of whether to allow an "on the fly" decision to be made on what name to take if synonym matches multiple names. FALSE will return all possible names for a given query as a string, TRUE will ask the user to select one.
-#' @param return.no.matches logical argument (default=FALSE) of whether to leave taxa not found in the reference table blank or whether to fill in the names provided by the query.
-#' 
-#' @return this function returns a data frame with the following information/columns: original/input names, "stripped" names with no formatting, status of what action has been taken, updated names as recommended by the reference table
+#' @usage
+#' herpSync(query, synonym, interactive = FALSE, return.no.matches = FALSE)
+#'
+#' @param query A character vector of taxon names to be processed (e.g., species list, phylogenetic tip labels, or trait table entries).
+#' @param synonym A data frame with a synonym reference table (e.g., output from \code{\link{herpSynonyms}}). If not provided, the function uses the internal dataset \code{letsHerp::allSynonyms}, which may not be the most up-to-date.
+#' @param interactive Logical. If \code{TRUE}, the function allows real-time selection when a synonym matches multiple valid names. If \code{FALSE} (default), all possible matches are returned as concatenated strings.
+#' @param return.no.matches Logical. If \code{TRUE}, species not found in the synonym table will be returned as originally provided in the query. If \code{FALSE} (default), unmatched entries will be left blank.
+#'
+#' @return A data frame with the following columns:
+#' \itemize{
+#'   \item \code{input}: original input names from the query.
+#'   \item \code{stripped}: standardized versions of the input names (e.g., without authors or formatting).
+#'   \item \code{status}: description of the outcome (e.g., \code{"updated"}, \code{"not found"}, \code{"multiple matches"}).
+#'   \item \code{updated}: best-matching valid names according to the synonym table.
+#' }
+#' @note
+#' The internally stored synonym table \code{letsHerp::allSynonyms} was last updated on May 23rd, 2025.
 #' 
 #' @references
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
-#' 
+#'
 #' @examples
-#' boa_syn <- letsHerp::allSynonyms[grep("^Boa\\s", allSynonyms$species),]
+#' boa_syn <- letsHerp::allSynonyms[grep("^Boa\\s", allSynonyms$species), ]
 #' query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
 #' herpSync(query, boa_syn)
-#' 
+#'
 #' @export
 #' 
 

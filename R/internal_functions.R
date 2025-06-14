@@ -1,12 +1,12 @@
-#' Matching higher taxa information
-#' 
-#' @description
-#' A helper function to herpSpecies(). Identify species orders or suborders from taxa_vector
-#' 
-#' @param taxa_vector A character vector containing taxonomic information.
-#' @param rank_list A character vector of taxonomic rank names to match.
+#' Match higher taxonomic ranks
 #'
-#' @returns A character string of matched ranks, comma-separated. Returns NA if none found.
+#' Helper for \code{herpSpecies()}. Matches known taxonomic ranks (e.g., orders or suborders) from a character vector of taxonomic information.
+#'
+#' @param taxa_vector A character vector containing taxonomic strings.
+#' @param rank_list A character vector of known rank names to match (e.g., \code{c("Squamata", "Serpentes")}).
+#'
+#' @return A single character string with matched ranks, comma-separated. Returns \code{NA} if none are found.
+#' 
 #' @keywords internal
 #' @noRd
 #' 
@@ -20,20 +20,19 @@ match_taxon <- function(taxa_vector, rank_list) {
   return(paste(sorted_matches, collapse = ", "))
 }
 
-#' Applying parallel sampling
+#' Safe parallel execution
+#'
+#' Helper for functions like \code{herpSpecies()} and \code{herpSynonyms()}. Selects a safe parallel backend depending on the user's OS and optionally shows progress bars.
+#'
+#' @param data A list or vector of items to process in parallel.
+#' @param FUN A function to be applied to each element of \code{data}.
+#' @param cores Integer. Number of processor cores to use.
+#' @param showProgress Logical. Whether to display a progress bar if supported. Default is \code{TRUE}.
+#'
+#' @return A list containing the results of applying \code{FUN} to each element of \code{data}.
 #' 
-#' @description
-#' A helper function to herpSpecies(). Decides which parallel template to follow according to user OS
-#'
-#' @param data species_list to be sampled
-#' @param FUN function to be sampled in parallel
-#' @param cores number of cores passed to main function 
-#'
-#' @returns the result of FUN performed in parallel running within user defined number of cores
 #' @keywords internal
 #' @noRd
-#' 
-
 safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
   if (.Platform$OS.type == "unix") {
     if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
@@ -52,21 +51,25 @@ safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
   }
 }
 
-
-#' Scrape taxonomic info from the Reptile Database for one species
+#' Extract taxonomic info for one species (parallel worker)
 #'
-#' Internal helper to extract order, suborder, family, and author info from a species page.
+#' Internal function used by \code{herpSpecies()} to scrape taxonomic data for multiple species in parallel.
+#' This function handles a single species per call and is designed to be mapped over a vector of species using parallel execution.
 #'
-#' @param x Species name to match.
-#' @param species_list Vector of species names.
-#' @param genus_list Vector of genus names.
-#' @param url_list Vector of corresponding species URLs.
-#' @param orders Vector with orders to be matched with taxa_vector
-#' @param suborders Vector with suborders to be matched with taxa_vector
-#' @param fullHigher Logical, whether to return full taxonomic string.
-#' @param getLink Logical, whether to include the species page URL.
+#' @param x A species name to match.
+#' @param species_list Character vector of species names.
+#' @param genus_list Character vector of genus names.
+#' @param url_list Character vector of corresponding species URLs.
+#' @param orders Character vector of order names to match.
+#' @param suborders Character vector of suborder names to match.
+#' @param fullHigher Logical. Whether to return the full higher taxonomic string.
+#' @param getLink Logical. Whether to include the species URL.
 #'
-#' @return A one-row data frame with taxonomic information. Returns NULL on error.
+#' @return A named list with taxonomic information (e.g., order, suborder, family, genus, species, author, year).
+#' Returns a list with an error message on failure.
+#'
+#' @note Called once per species as part of a parallelized taxonomic sampling routine. Not intended for standalone use.
+#' 
 #' @keywords internal
 #' @noRd
 #' 
@@ -115,24 +118,27 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
   })
 }
 
-
-#' Scrape taxonomic info from the Reptile Database using single core and backup
+#' Extract taxonomic info from the Reptile Database (single-core with backup)
 #'
-#' Internal helper to extract order, suborder, family, and author info from a species page.
+#' Internal function used by \code{herpSpecies()} when \code{cores = 1}. Loops over species pages and extracts
+#' taxonomic information (order, suborder, family, author, etc.). Supports progress printing and checkpoint-based backups.
 #'
-#' @param species_list Vector of species names.
-#' @param genus_list Vector of genus names.
-#' @param url_list Vector of corresponding species URLs.
-#' @param orders Vector with orders to be matched with taxa_vector
-#' @param suborders Vector with suborders to be matched with taxa_vector
-#' @param fullHigher Logical, whether to return full taxonomic string.
-#' @param getLink Logical, whether to include the species page URL.
+#' @param species_list Character vector of species names.
+#' @param genus_list Character vector of genus names.
+#' @param url_list Character vector of corresponding species URLs.
+#' @param orders Character vector of order names to match.
+#' @param suborders Character vector of suborder names to match.
+#' @param fullHigher Logical. Whether to return the full higher taxonomic string (default is \code{FALSE}).
+#' @param getLink Logical. Whether to include the species URL in the output (default is \code{FALSE}).
+#' @param backup_file Optional. File path to save periodic backup using \code{saveRDS()}.
+#' @param checkpoint Optional. Integer specifying how often (in number of species) to save backup. If \code{NULL}, saves only once at the end.
 #'
-#' @return dataframe with species higher taxa information with user defined backup step
+#' @return A data frame containing the scraped taxonomic information. If vector lengths mismatch, returns a named list instead.
+#'
+#' @note Intended for internal use only. Called by \code{herpSpecies()} when not using parallelization.
+#'
 #' @keywords internal
 #' @noRd
-#' 
-
 higherSample <- function(species_list,
                          genus_list,
                          url_list,
@@ -253,19 +259,17 @@ higherSample <- function(species_list,
   }
 }
 
-
-#' Clean Taxonomic Species Names
+#' Clean taxonomic species names from synonym strings
 #'
-#' Cleans and extracts species names from noisy synonym strings, removing author names,
-#' special characters, and redundant spacing.
+#' Helper function for \code{herpSynonyms()}. Extracts and cleans species names from raw synonym strings,
+#' removing authorship, special characters, Unicode quotes, and redundant elements.
 #'
-#' @param names_vec A character vector of raw synonyms name strings.
+#' @param names_vec Character vector of raw synonym name strings.
 #'
 #' @return A character vector of cleaned species names.
 #'
 #' @keywords internal
 #' @noRd
-
 clean_species_names <- function(names_vec) {
   # Build Unicode chars dynamically
   left_quote   <- intToUtf8(0x2018)
@@ -305,20 +309,64 @@ clean_species_names <- function(names_vec) {
   return(cleaned)
 }
 
+#' Get reptile species synonyms with parallel processing
+#' 
+#' Internal helper to retrieve synonyms for reptile species from The Reptile Database.
+#' Designed to be called in parallel over a data frame of species and URLs.
+#' 
+#' @param i Integer index for the species to process (used internally by parallel loops).
+#' @param x Data frame with columns \code{species} and \code{url} (e.g., output from \code{herpSpecies()}).
+#' @param getRef Logical; if \code{TRUE}, returns synonyms along with their source references. Default \code{FALSE}.
+#' 
+#' @return A data frame with columns \code{species}, \code{synonyms}, and optionally \code{ref}.
+#'         Returns a row with \code{"failed"} if an error occurs.
+#' 
+#' @keywords internal
+#' @noRd
+getSynonymsParallel <- function(i, x, getRef) {
+  tryCatch({
+    url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
+    element <- rvest::html_element(url, "table")
+    
+    syn <- xml2::xml_child(element, 4)
+    td2 <- rvest::html_element(syn, "td:nth-child(2)")
+    children <- xml2::xml_contents(td2)
+    
+    synonyms_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
+    synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
+    
+    synonyms <- clean_species_names(synonyms_vector)
+    species <- rep(x$species[i], times = length(synonyms))
+    
+    if (getRef) {
+      return(data.frame(species = species, synonyms = synonyms, ref = synonyms_vector, stringsAsFactors = FALSE))
+    } else {
+      return(data.frame(species = species, synonyms = synonyms, stringsAsFactors = FALSE))
+    }
+  }, error = function(e) {
+    warning(sprintf("Error scraping %s: %s", x$species[i], e$message))
+    if (getRef) {
+      return(data.frame(species = x$species[i], synonyms = "failed", ref = "failed", stringsAsFactors = FALSE))
+    } else {
+      return(data.frame(species = x$species[i], synonyms = "failed", stringsAsFactors = FALSE))
+    }
+  })
+}
 
 #' Get reptile species synonyms
 #' 
-#' Creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
+#' Scrapes synonyms of reptile species from The Reptile Database.
 #' 
-#' @param x A data frame with columns: 'species' and 'url' (their respective Reptile Database url).
-#' Could be the output of letsHerp::herpSpecies().
-#' @param checkpoint An integer representing the number of species to process before saving progress to the backup file.
-#' Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if checkpoint is not NULL.
-#' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them. default = *FALSE*
-#' @param resume A logical value. If TRUE, takes the path to backup_file and resume sampling from the last backup file.
-#' @param backup_file A character string with the path to access, read and save the backup file.
+#' @param x A data frame with columns \code{species} and \code{url} (the respective Reptile Database URLs).  
+#'   Typically, the output of \code{letsHerp::herpSpecies()}.
+#' @param checkpoint Integer specifying how many species to process before saving progress to \code{backup_file}.  
+#'   Helps avoid data loss if the function stops unexpectedly. Backups are saved only if \code{checkpoint} is not \code{NULL}.
+#' @param resume Logical; if \code{TRUE}, resumes processing from a previous backup saved at \code{backup_file}.
+#' @param backup_file Character string path to save or load the backup file.
+#' @param getRef Logical; if \code{TRUE}, returns synonyms along with the references mentioning them. Default is \code{FALSE}.
 #' 
-#' @returns 'getSynonyms' returns a data frame with columns: species and their respective synonyms according to the version of Reptile Database. Optionally, returns the references that mentioned each synonym.
+#' @return A data frame with columns \code{species} and \code{synonyms}, optionally \code{ref} if \code{getRef = TRUE},  
+#'   containing the synonyms for each species scraped from The Reptile Database.
 #' 
 #' @keywords internal
 #' @noRd
@@ -334,9 +382,9 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
   if (resume && file.exists(backup_file)) {
     x <- readRDS(backup_file)
     species <- x$species
-    synonym <- x$synonym
+    synonyms <- x$synonyms
     if ("synonymRef" %in% names(backup_file)) {
-      synonymRef <- backup_file$synonymRef
+      synonymsRef <- backup_file$synonymsRef
     }
     
     start_index <- length(species_list) + 1
@@ -353,15 +401,15 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
       td2 <- rvest::html_element(syn, "td:nth-child(2)")
       children <- xml2::xml_contents(td2)
       
-      synonym_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
-      synonym_vector <- synonym_vector[!is.na(synonym_vector) & trimws(synonym_vector) != ""]
+      synonyms_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
+      synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
       
-      synonyms <- clean_species_names(synonym_vector)
+      synonyms <- clean_species_names(synonyms_vector)
       species <- rep(x$species[i], times = length(synonyms))
       
       species_list <- c(species_list, species)
-      synonym_list <- c(synonym_list, synonyms)
-      synonymRef_list <- c(synonymRef_list, synonym_vector)
+      synonyms_list <- c(synonyms_list, synonyms)
+      synonymsRef_list <- c(synonymsRef_list, synonyms_vector)
       
       msg <- sprintf("Progress: %.1f%%  - %s done! ", (i / length(x$species)) * 100, x$species[i])
       cat("\r", format(msg, width = 60), sep = "")
@@ -371,7 +419,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
       if(!is.null(checkpoint)){
         if ((i %% checkpoint) == 0 || i == length(x$species)) {
           backup <- data.frame(species = species_list,
-                               synonyms = synonym_list,
+                               synonyms = synonyms_list,
                                stringsAsFactors = FALSE)
           if(getRef==FALSE){
             backup$combined <- paste(backup$species, backup$synonyms, sep="_")
@@ -382,7 +430,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
                                                      convert=TRUE)
             saveRDS(backup_uniqueSynonyms, backup_file)
           }else{
-            backup$synonymRef <- synonymRef_list
+            backup$synonymsRef <- synonymsRef_list
             saveRDS(backup, backup_file)
           }
         }else{}
@@ -390,28 +438,28 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
     }, error = function(e) {
       message(sprintf("Error scraping %s: %s", x$species[i], e$message))
       species_list <<- c(species_list, x$species[i])
-      synonym_list <<- c(synonym_list, "failed")
-      synonymRef_list <<- c(synonymRef_list, "failed")
+      synonyms_list <<- c(synonyms_list, "failed")
+      synonymsRef_list <<- c(synonymsRef_list, "failed")
     })
   }
   
   if(getRef==TRUE){
-    synonymResults <- data.frame(species = species_list,
-                                 synonyms = synonym_list,
-                                 ref = synonymRef_list,
-                                 stringsAsFactors = FALSE)
-    return(synonymResults)
+    synonymsResults <- data.frame(species = species_list,
+                                  synonyms = synonyms_list,
+                                  ref = synonymsRef_list,
+                                  stringsAsFactors = FALSE)
+    return(synonymsResults)
   }else{
-    synonymResults <- data.frame(species = species_list,
-                                 synonyms = synonym_list,
-                                 stringsAsFactors = FALSE)
+    synonymsResults <- data.frame(species = species_list,
+                                  synonyms = synonyms_list,
+                                  stringsAsFactors = FALSE)
     
-    synonymResults$combined <- paste((synonymResults)$species, (synonymResults)$synonyms, sep="_")
+    synonymsResults$combined <- paste((synonymsResults)$species, (synonymsResults)$synonyms, sep="_")
     
-    uniquerec <- data.frame(unique(synonymResults$combined))
+    uniquerec <- data.frame(unique(synonymsResults$combined))
     
-    uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymResults.combined.", 
-                                      into=c("species", "synonym"), sep="_",
+    uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymsResults.combined.", 
+                                      into=c("species", "synonyms"), sep="_",
                                       convert=TRUE)
     
     cat("\nSynonyms sampling complete!\n")
@@ -419,45 +467,4 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
   }
 }
 
-#' Get reptile species synonyms with parallel processing
-#' 
-#' Creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
-#' 
-#' @param x A data frame with columns: 'species' and 'url' (their respective Reptile Database url).
-#' Could be the output of letsHerp::herpSpecies().
-#' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them. default = *FALSE*
-#' 
-#' @returns 'getSynonymsParallel' returns a data frame with columns: species and their respective synonyms according to the version of Reptile Database. Optionally, returns the references that mentioned each synonym.
-#' 
-#' @keywords internal
-#' @noRd
-#' 
-getSynonymsParallel <- function(i, x, getRef) {
-  tryCatch({
-    url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
-    element <- rvest::html_element(url, "table")
-    
-    syn <- xml2::xml_child(element, 4)
-    td2 <- rvest::html_element(syn, "td:nth-child(2)")
-    children <- xml2::xml_contents(td2)
-    
-    synonym_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
-    synonym_vector <- synonym_vector[!is.na(synonym_vector) & trimws(synonym_vector) != ""]
-    
-    synonyms <- clean_species_names(synonym_vector)
-    species <- rep(x$species[i], times = length(synonyms))
-    
-    if (getRef) {
-      return(data.frame(species = species, synonyms = synonyms, ref = synonym_vector, stringsAsFactors = FALSE))
-    } else {
-      return(data.frame(species = species, synonyms = synonyms, stringsAsFactors = FALSE))
-    }
-  }, error = function(e) {
-    warning(sprintf("Error scraping %s: %s", x$species[i], e$message))
-    if (getRef) {
-      return(data.frame(species = x$species[i], synonyms = "failed", ref = "failed", stringsAsFactors = FALSE))
-    } else {
-      return(data.frame(species = x$species[i], synonyms = "failed", stringsAsFactors = FALSE))
-    }
-  })
-}
+# End of internal functions -----------------------------------------------

@@ -2,41 +2,54 @@
 ####################### function herpSynonyms by:  JP VIEIRA-ALENCAR  ####################################
 ##########################################################################################################
 
-#' Get reptile species synonyms
+#' Retrieve Synonyms for Reptile Species from TRD
 #' 
 #' @description
-#' creates a data frame containing a list of reptile species current valid names according to The Reptile Database alongside with all their recognized synonyms
+#' Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (TRD). 
+#' Optionally, the references citing each synonym can also be included.
 #' 
 #' @usage herpSynonyms(x,
 #'                     getRef = FALSE,
 #'                     checkpoint = NULL,
 #'                     backup_file = NULL,
-#'                     resume=FALSE,
+#'                     resume = FALSE,
 #'                     cores = max(1, parallel::detectCores() - 1))
 #' 
-#' @param x A data frame with columns: 'species' and 'url' (their respective Reptile Database url).
-#' Could be the output of letsHerp::herpSpecies().
-#' @param getRef A logical value. If TRUE, returns synonyms with the respective references that mention them. default = *FALSE*
-#' @param checkpoint An integer representing the number of species to process before saving progress to the backup file.
-#' Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if checkpoint is not NULL.
-#' OBS.: checkpoint are not used under parallel processing, if mandatory choose cores = 1 (safe, but decreases processing performance).
-#' @param backup_file A character string with the path to access, read and save the backup file.
-#' @param resume A logical value. If TRUE, takes the path to backup_file and resume sampling from the last backup file.
-#' OBS.: backup_file are not created under parallel processing, if mandatory choose cores = 1 (safe, but decreases processing performance).
-#' @param cores number of cores dedicated to parallel processing
-#' 
-#' @returns 'herpSynonyms' returns a data frame with columns: species and their respective synonyms according to the version of Reptile Database. Optionally, returns the references that mentioned each synonym.
-#' 
-#' @references 
-#' Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database, http://www.reptile-database.org
-#' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
-#' 
-#' @examples
-#' boa <- letsHerp::allReptiles[grep("^Boa\\s", allReptiles$species),]
-#' boa_syn <- herpSynonyms(boa, getRef = FALSE, cores=2) #only synonyms
-#' 
-#' @export
+#' @param x A data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.
+#' @param getRef Logical. If \code{TRUE}, includes the reference(s) in which each synonym was mentioned. Default is \code{FALSE}.
+#' @param checkpoint Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).
+#' @param backup_file Optional. Character string specifying the path to an \code{.rds} file used to save or resume intermediate results. Required if using \code{checkpoint} or \code{resume}.
+#' @param resume Logical. If \code{TRUE}, resumes sampling from a previous run using the file provided in \code{backup_file}. Only works when \code{cores = 1}.
+#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is one less than the total available cores.
 #'
+#' @return
+#' A data frame with columns:
+#' \itemize{
+#'   \item \code{species}: The valid species name according to TRD.
+#'   \item \code{synonym}: A recognized synonym for the species.
+#'   \item \code{reference} (optional): If \code{getRef = TRUE}, the citation where the synonym was reported.
+#' }
+#' 
+#' @note
+#' To enable safe resuming or backup progress saving, set \code{cores = 1}. Parallel processing does not support backups.
+#'
+#' @references 
+#' Uetz, P., Freed, P., Aguilar, R., Reyes, F., Kudera, J., & Hošek, J. (eds.) (2025). The Reptile Database. Retrieved from \url{http://www.reptile-database.org}  
+#' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. \emph{Systematics and Biodiversity}, 17(1), 1–6. \doi{10.1080/14772000.2018.1518935}
+#'
+#' @examples
+#' # Filter species belonging to genus Boa
+#' boa <- letsHerp::allReptiles[grep("^Boa\\s", letsHerp::allReptiles$species), ]
+#' 
+#' \donttest{
+#' # Retrieve synonyms (without references)
+#' boa_syn <- herpSynonyms(boa, getRef = FALSE, cores = 2)
+#' }
+#' 
+#' @seealso \code{\link{herpSpecies}}, \code{\link{herpAdvancedSearch}}
+#'
+#' @export
+
 
 herpSynonyms <- function(x, getRef=FALSE, checkpoint = NULL, backup_file = NULL, resume=FALSE, cores = max(1, parallel::detectCores() - 1))
 {
@@ -62,7 +75,7 @@ herpSynonyms <- function(x, getRef=FALSE, checkpoint = NULL, backup_file = NULL,
     if (!getRef) {
       df$combined <- paste(df$species, df$synonyms, sep = "_")
       df <- data.frame(unique(df$combined))
-      df <- tidyr::separate(df, col = "unique.df.combined.", into = c("species", "synonym"), sep = "_", convert = TRUE)
+      df <- tidyr::separate(df, col = "unique.df.combined.", into = c("species", "synonyms"), sep = "_", convert = TRUE)
       cat("\nSynonyms sampling complete!\n")
     }
     return(df)

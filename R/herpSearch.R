@@ -2,217 +2,111 @@
 ######################### function herpSearch by:  JP VIEIRA-ALENCAR  ####################################
 ##########################################################################################################
 
-#' Search The Reptile Database website (TRD): Simple
+#' Search for a Single Reptile Species in The Reptile Database (TRD)
 #' 
 #' @description
-#' Searches The Reptile Database website and provides the data of a single species
+#' Queries The Reptile Database (TRD) for information about a single reptile species using its binomial name.
 #' 
 #' @usage herpSearch(binomial=NULL, ref=FALSE)
 #' 
-#' @param binomial A character string with the current valid binomial name of a given reptile species.
-#' @param ref Logical. If TRUE, returns the list of references related to the searched species as listed in The Reptile Database. Default = FALSE
+#' @param binomial Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").
+#' @param ref Logical. If \code{TRUE}, returns the list of references from TRD associated with the species. Default is \code{FALSE}.
 #'
-#' @returns
-#' Returns species information as provided by The Reptile Database.
+#' @return
+#' A list containing species information retrieved from The Reptile Database. If \code{ref = TRUE}, returns references related to the species.
 #' 
 #' @examples
+#' \donttest{
 #' herpSearch("Boa constrictor")
+#' herpSearch("Boa constrictor", ref = TRUE)
+#' }
+#' 
+#' @seealso \code{\link{herpSynonyms}}, \code{\link{herpSpecies}} for related species data functions.
+#' @references
+#' Uetz, P., Freed, P., & Hošek, J. (Eds.). (2025). The Reptile Database. Retrieved from \url{http://www.reptile-database.org}
 #' 
 #' @export
-#' 
 
-herpSearch <- function(binomial=NULL, ref=FALSE){
-
-if(!is.null(binomial))
-{
-  base_url <- "https://reptile-database.reptarium.cz/species"
-  gen <- strsplit(binomial, " ")[[1]][1]
-  species <- strsplit(binomial, " ")[[1]][2]
-  query <- paste0("?genus=", gen, "&species=", species)
-  sppLink <- paste0(base_url, query) #url for direct species search
-  
-  url <- rvest::read_html(sppLink)
-  element <- rvest::html_element(url, "table") #get the content table for each species
-  
-  if(is.na(element))
-  {
-  cat(" Species not found.", "\n",
-        "Check the spelling or try an advanced search for synonyms.")
-    return(invisible(NULL))
-  }
-  
-#Printing species information from The Reptile Database
-      for(i in if(ref==TRUE){1:11}else{1:10})
-      {
-        row <- xml2::xml_child(element, i)
-        cells <- xml2::xml_children(row)
-        
-        if(length(cells) >= 2)
-        {
-          title <- rvest::html_text(cells[1], trim = TRUE)
-          content_raw <- rvest::html_text(cells[2], trim = TRUE)
-          
-          if(content_raw == "")next
-          
-          if(i == 2)
-          {
-            br_items <- xml2::xml_add_sibling(
-              rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-            
-            syn_text <- rvest::html_text(cells[2], trim = TRUE)
-            syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-            syn_list <- trimws(syn_list[syn_list != ""])
-            
-            cat("Common Names:\n")
-            for (item in syn_list) {
-              cat(" -", item, "\n")
-            }
-            cat("\n")
-          }else
-            if(i == 3)
-          {
-            br_items <- xml2::xml_add_sibling(
-              rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-            
-            syn_text <- rvest::html_text(cells[2], trim = TRUE)
-            syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-            syn_list <- trimws(syn_list[syn_list != ""])
-            
-            cat("Common Names:\n")
-            for (item in syn_list) {
-              cat(" -", item, "\n")
-            }
-            cat("\n")
-          }else
-            if(i == 4)
-          {
-            br_items <- xml2::xml_add_sibling(
-              rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-            
-            syn_text <- rvest::html_text(cells[2], trim = TRUE)
-            syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-            syn_list <- trimws(syn_list[syn_list != ""])
-            
-            cat("Synonyms:\n")
-            for (item in syn_list) {
-              cat(" -", item, "\n")
-            }
-            cat("\n")
-          }else 
-            if(i == 5)
-          {
-            br_items <- xml2::xml_add_sibling(
-              rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-            
-            syn_text <- rvest::html_text(cells[2], trim = TRUE)
-            syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-            syn_list <- trimws(syn_list[syn_list != ""])
-            
-            cat("Distribution:\n")
-            for (item in syn_list) {
-              cat(" -", item, "\n")
-            }
-            cat("\n")
-          }else 
-            if(i == 6)
-            {
-              br_items <- xml2::xml_add_sibling(
-                rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-              
-              syn_text <- rvest::html_text(cells[2], trim = TRUE)
-              syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-              syn_list <- trimws(syn_list[syn_list != ""])
-              
-              cat("Reproduction:\n")
-              for (item in syn_list) {
-                cat(" -", item, "\n")
-              }
-              cat("\n")
-          }else
-            if(i == 7)
-          {
-            br_items <- xml2::xml_add_sibling(
-              rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-            
-            syn_text <- rvest::html_text(cells[2], trim = TRUE)
-            syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-            syn_list <- trimws(syn_list[syn_list != ""])
-            
-            cat("Types:\n")
-            for (item in syn_list) {
-              cat(" -", item, "\n")
-            }
-            cat("\n")
-          }else 
-            if(i == 8)
-            {
-              br_items <- xml2::xml_add_sibling(
-                rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-              
-              syn_text <- rvest::html_text(cells[2], trim = TRUE)
-              syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-              syn_list <- trimws(syn_list[syn_list != ""])
-              
-              cat("Diagnosis:\n")
-              for (item in syn_list) {
-                cat(" -", item, "\n")
-              }
-              cat("\n")
-          }else
-            if(i == 9)
-          {
-            br_items <- xml2::xml_add_sibling(
-              rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-            
-            syn_text <- rvest::html_text(cells[2], trim = TRUE)
-            syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-            syn_list <- trimws(syn_list[syn_list != ""])
-            
-            cat("Comment:\n")
-            for (item in syn_list) {
-              cat(" -", item, "\n")
-            }
-            cat("\n")
-          }else
-            if(i == 10)
-            {
-              br_items <- xml2::xml_add_sibling(
-                rvest::html_nodes(cells[[2]], "br"), "marker","<SPLIT>")
-              
-              syn_text <- rvest::html_text(cells[2], trim = TRUE)
-              syn_list <- unlist(strsplit(syn_text, "<SPLIT>"))
-              syn_list <- trimws(syn_list[syn_list != ""])
-              
-              cat("Etymology:\n")
-              for (item in syn_list) {
-                cat(" -", item, "\n")
-              }
-              cat("\n")
-          }else
-            if(i == 11)
-            {
-              li_nodes <- rvest::html_elements(cells[[2]], "li")
-              xml2::xml_remove(xml2::xml_find_all(li_nodes, ".//a"))
-              
-              ref_list <- trimws(rvest::html_text(li_nodes, trim = TRUE))
-              ref_list <- sub("\\s*-\\s*$", "", ref_list)
-              ref_list <- ref_list[nzchar(ref_list)]
-              
-              cat("References:\n")
-              for (item in ref_list) {
-                cat(" -", item, "\n")
-              }
-              cat("\n")
-          }else{
-            content <- rvest::html_text(cells[2], trim = TRUE)
-            cat(paste0(title,":"),"\n")
-            cat(content,"\n\n")
+herpSearch <- function(binomial = NULL, ref = FALSE) {
+  if (!is.null(binomial)) {
+    output_list <- list()
+    base_url <- "https://reptile-database.reptarium.cz/species"
+    gen <- strsplit(binomial, " ")[[1]][1]
+    species <- strsplit(binomial, " ")[[1]][2]
+    query <- paste0("?genus=", gen, "&species=", species)
+    sppLink <- paste0(base_url, query)
+    
+    url <- rvest::read_html(sppLink)
+    element <- rvest::html_element(url, "table")
+    
+    if (is.na(element)) {
+      cat(" Species not found.\nCheck the spelling or try an advanced search for synonyms.\n")
+      return(invisible(NULL))
+    }
+    
+    rows <- xml2::xml_children(element)
+    
+    ref_list <- NULL  # We'll store references here if needed
+    
+    cat("Species:", binomial, "\n\n")
+    output_list[["species"]] <- binomial
+    
+    for (row in rows) {
+      cells <- xml2::xml_children(row)
+      if (length(cells) < 2) next
+      
+      title <- rvest::html_text(cells[1], trim = TRUE)
+      title_clean <- gsub(":$", "", title)
+      
+      if (tolower(title_clean) == "external links") {
+        next  # Always skip external links
+      }
+      
+      if (title_clean == "References") {
+        if (ref) {
+          li_nodes <- rvest::html_elements(cells[[2]], "li")
+          xml2::xml_remove(xml2::xml_find_all(li_nodes, ".//a"))
+          ref_list <- trimws(rvest::html_text(li_nodes, trim = TRUE))
+          ref_list <- sub("\\s*-\\s*$", "", ref_list)
+          ref_list <- ref_list[nzchar(ref_list)]
+        }
+        next  # Handle references later
+      }
+      
+      # General case: inject <SPLIT> after <br> and split
+      xml2::xml_add_sibling(
+        rvest::html_nodes(cells[[2]], "br"), "marker", "<SPLIT>"
+      )
+      content_raw <- rvest::html_text(cells[2], trim = TRUE)
+      content_split <- trimws(unlist(strsplit(content_raw, "<SPLIT>")))
+      content_split <- content_split[nzchar(content_split)]
+      
+      if (length(content_split) > 0 && any(nzchar(content_split))) {
+        cat(paste0(title_clean, ":\n"))
+        for (item in content_split) {
+          if (nzchar(item)) {
+            cat(" -", item, "\n")
           }
         }
+        cat("\n")
+        output_list[[title_clean]] <- content_split
+      } else if (nzchar(content_raw)) {
+        cat(paste0(title_clean, ":\n", content_raw, "\n\n"))
+        output_list[[title_clean]] <- content_raw
       }
-  }else
-  {
-  cat(" Species current valid binomial not provided.")
+      # else: content is empty, skip printing and don't add to output_list
+      
+    }
+    
+    # Print and add references only at the end, if requested
+    if (ref && !is.null(ref_list)) {
+      cat("References:\n")
+      for (item in ref_list) cat(" -", item, "\n")
+      cat("\n")
+      output_list[["References"]] <- ref_list
+    }
+    
+    return(invisible(output_list))
   }
-  return(invisible(NULL))
 }
+

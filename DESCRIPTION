@@ -2,7 +2,9 @@ Package: letsHerp
 Title: An R Interface to the Reptile Database
 Version: 0.1.0
 Authors@R: 
-    person("Joao Paulo", "dos Santos Vieira-Alencar", , "joaopaulo.valencar@gmail.com", role = c("aut", "cre"))
+    person("Joao Paulo", "dos Santos Vieira-Alencar", email = "joaopaulo.valencar@gmail.com", role = c("aut", "cre"))
+URL: https://github.com/joao-svalencar/letsHerp
+BugReports: https://github.com/joao-svalencar/letsHerp/issues
 Description: Provides tools to retrieve and summarize taxonomic information and synonymy data for reptile species using data scraped from The Reptile Database website. Outputs include clean and structured data frames useful for ecological, evolutionary, and conservation research.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -24,5 +26,7 @@ Depends:
 LazyData: true
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3

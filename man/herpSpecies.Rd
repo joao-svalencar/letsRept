@@ -2,7 +2,7 @@
 % Please edit documentation in R/herpSpecies.R
 \name{herpSpecies}
 \alias{herpSpecies}
-\title{Reptile species summary}
+\title{Retrieve Reptile Species and Taxonomic Information from TRD}
 \usage{
 herpSpecies(url,
                    dataList = NULL, 
@@ -15,31 +15,47 @@ herpSpecies(url,
                    )
 }
 \arguments{
-\item{url}{A character string with the url from an advanced search in Reptile Database website or from letsHerp::herpAdvancedSearch.}
+\item{url}{Character string. A search URL generated via an advanced search on the TRD website or with \code{\link{herpAdvancedSearch}}.}
 
-\item{dataList}{A data frame with columns: species and url, only for sampling taxonomicInfo from already sampled species links.}
+\item{dataList}{Optional. A data frame with columns \code{species} and \code{url}, used to extract taxonomic information from previously sampled species links.}
 
-\item{taxonomicInfo}{A logical value indicating if user wants full species taxonomic information (specifically: Order, Suborder, Family, Genus, species author and description year) for each species. default = \emph{TRUE}}
+\item{taxonomicInfo}{Logical. If \code{TRUE}, returns taxonomic information for each species, including order, suborder, family, genus, author, and year. Default is \code{FALSE}.}
 
-\item{fullHigher}{A logical value indicating if user wants the full higher taxa information (including e.g.: subfamily) for each species, as available in The Reptile Database website (e.g. single character string). default = \emph{FALSE}. OBS.: Requires taxonomicInfo = TRUE}
+\item{fullHigher}{Logical. If \code{TRUE}, includes the full higher taxonomic hierarchy as reported by TRD (e.g., including subfamilies). Requires \code{taxonomicInfo = TRUE}. Default is \code{FALSE}.}
 
-\item{getLink}{A logical value indicating if user wants the url that provides access to each species information (e.g: to use with herpSynonyms()). default = \emph{TRUE}}
+\item{getLink}{Logical. If \code{TRUE}, includes the TRD URL for each species (useful for follow-up functions like \code{\link{herpSynonyms}}). Default is \code{FALSE}.}
 
-\item{cores}{An integer representing how many cores to use during parallel sampling. default is 1 less than all available cores}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.}
 
-\item{checkpoint}{An integer representing the number of species to process before saving progress to the backup file.
-Helps prevent data loss in case the function stops unexpectedly. Backups are saved only if cores = 1 and if checkpoint is not NULL.
-OBS.: If set to 1, progress will be saved after every species (safe but slower).}
+\item{checkpoint}{Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).}
 
-\item{backup_file}{A character string with the Path to an \code{.rds} file where intermediate results will be saved if \code{checkpoint} is not NULL. Must end in \code{.rds}.}
+\item{backup_file}{Optional. Character string specifying the path to an \code{.rds} file for saving intermediate results when \code{checkpoint} is set. Must end in \code{.rds}.}
 }
 \value{
-if taxonomicInfo = FALSE (default), the function returns a vector with the list of species
+If \code{taxonomicInfo = FALSE} (default), returns a character vector of species names.
 
-if taxonomicInfo = TRUE, the function returns a data frame with columns: order, suborder (e.g.: Sauria or Serpentes only; when available), family, genus, species, author and year
+If \code{taxonomicInfo = TRUE}, returns a data frame with columns:
+\code{order}, \code{suborder} (if available), \code{family}, \code{genus}, \code{species}, \code{author}, and \code{year}.
 
-Optionally, the function might return a data frame with a column with the full higher taxa information as reported in The Reptile Database, and the species respective url (necessary if looking for synonyms afterwards)
+If \code{fullHigher = TRUE}, includes an additional column with the full higher taxa classification.
+
+If \code{getLink = TRUE}, includes a column with the URL for each species’ page on TRD.
 }
 \description{
-Creates a data frame containing higher taxa information for a list of reptile species based on a Reptile Database advanced search optionally with their respective url.
+Retrieves a list of reptile species from The Reptile Database (TRD) based on a search URL, and optionally returns detailed taxonomic information for each species.
+This function can also save progress to disk during sampling and extract species-specific URLs for further use.
+}
+\note{
+If \code{checkpoint} is used, progress will only be saved when \code{cores = 1}. This prevents potential write conflicts in parallel mode.
+}
+\examples{
+\donttest{
+boa <- herpSpecies(herpAdvancedSearch(genus = "Boa"),
+                                      taxonomicInfo = TRUE, 
+                                      cores = 2)
+}
+
+}
+\seealso{
+\code{\link{herpAdvancedSearch}}, \code{\link{herpSynonyms}}, \code{\link{herpSearch}}
 }

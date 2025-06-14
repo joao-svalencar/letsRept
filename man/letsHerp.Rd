@@ -10,6 +10,14 @@ The letsHerp package provides functions to interact with and extract taxonomic a
 from the Reptile Database (https://reptile-database.reptarium.cz). It supports advanced search queries,
 extraction of species names, synonyms, higher taxa, and related metadata for herpetological research.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/joao-svalencar/letsHerp}
+  \item Report bugs at \url{https://github.com/joao-svalencar/letsHerp/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Joao Paulo dos Santos Vieira-Alencar \email{joaopaulo.valencar@gmail.com}
 

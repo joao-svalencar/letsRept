@@ -22,7 +22,7 @@ This package was developed to facilitate the processes of reptile nomenclature u
 
 Currently, the package accesses many species information from The Reptile Database using R interface.
 
-I hope it to be useful, to people trying to match databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species information directly in R.
+I hope it to be useful to people trying to match databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species information directly in R.
 
 Any feedback, suggestion or request are welcome!
 
@@ -30,7 +30,7 @@ Any feedback, suggestion or request are welcome!
 
 A CRAN submission is in progress; until then, the development version can be installed from GitHub.
 
-To install the stable version of this package user must run:
+To install the stable version of this package, users must run:
 
 ```{.r}
 # Install development version from GitHub
@@ -60,18 +60,18 @@ herpSearch(binomial = "Apostolepis adhara", ref=TRUE)
 Creates a link for a page as derived from an Advanced Search in RD (multiple species in a page):
 ```{.r}
 # create multiple species link:
-link_boa <- herpAdvancedSearch(genus = "Boa") #returns a link to access a list of all Boa species
+link_boa <- herpAdvancedSearch(genus = "Boa") #returns a link to a list of all Boa species
 
-link_apo <- herpAdvancedSearch(genus = "Apostolepis") #returns a link to access a list of all Apostolepis species
+link_apo <- herpAdvancedSearch(genus = "Apostolepis") #returns a link to a list of all Apostolepis species
 
-link <- herpAdvancedSearch(higher = "snakes", location = "Brazil") #returns a link to access a list of all snake species in Brazil
+link <- herpAdvancedSearch(higher = "snakes", location = "Brazil") #returns a link to a list of all snake species in Brazil
 
-link <- herpAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to access a list of all species described from 2010 to 2012
+link <- herpAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to a list of all species described from 2010 to 2012
 ```
 
 **Function `herpSpecies`:**
 
-Retrieve species data from the species link created by `herpAdvancedSearch`. User can also copy and paste the url from a RD webpage containing the list of species derived from an advanced search. It includes higher taxa information, authors, year of description, and the species url. By default this function uses parallel processing, with default set to leave just one core available. **NOTE:** Be aware that system performance may be affected, set the number of cores dedicated to species information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
+Retrieve species data from the species link created by `herpAdvancedSearch`. User can also copy and paste the url from a RD webpage containing the list of species derived from an advanced search. It includes higher taxa information, authors, year of description, and the species url. By default this function uses parallel processing, with default set to leave just one core available. **NOTE:** Parallel processing may affect system performance. Adjust the number of cores according to your needs. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
 
 ```{.r}
 # sample multiple species data:
@@ -92,7 +92,7 @@ apo <- herpSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE, checkpoint=6
 
 **Function `herpSynonyms`:**
 
-Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to leave just one core available. **NOTE:** Be aware that system performance may be affected, set the number of cores dedicated to synonym information sampling accordingly. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
+Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to leave just one core available. **NOTE:** Parallel processing may affect system performance. Adjust the number of cores according to your needs. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
 
 ```{.r}
 # sample species synonyms
@@ -101,9 +101,9 @@ boa_syn <- herpSynonyms(boa)
 apo_syn <- herpSynonyms(apo)
 ```
 
-⚠️ ATTENTION!⚠️ 
+⚠️ **Note:**
 
-The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient but still sample 0.2% of them in bad format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I fixed (potentially) all unusual synonym formats in the internal dataset `allSynonyms` (last update: 23rd May, 2025)
+The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient, but still samples about 0.2% in an incorrect format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I fixed (potentially) all unusual synonym formats in the internal dataset `allSynonyms` (last update: 23rd May, 2025)
 
 **Function `herpSync`:**
 
@@ -139,25 +139,25 @@ Special attention is needed to columns "status" and "warnings":
  
 - "updated" - Species name provided is a synonym, and the current valid name is reported unambiguously.
 
-- "ambiguous" - Species name provided is considered a synonym of more than one current valid species, likely from a split in taxonomy. The synonym from query might also be found in the list of the current valid names, and can be assigned as valid "on the go" with `interactive = TRUE` but see the example above for *Boa diviniloqua*.
+- "ambiguous" - Species name provided is considered a synonym of more than one current valid species, likely from a split in taxonomy. The synonym from query might also be found in the list of the current valid names, and can be assigned as valid on the fly using `interactive = TRUE` but see the example above for *Boa diviniloqua*.
 
 - "name_not_found" - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
 
 **warnings:**
 
-- "duplicated" - Currently, this is the only warning the user will get from `herpSync`. It means that two or more names provided in the query are now under a single current valid name, likely from a synonymization. In the example above both *Boa diviniloqua* and *Boa constrictor longicauda* are considered synonyms of *Boa constrictor*.
+- "duplicated" - Currently, this is the only warning the user will get from `herpSync`. It means that multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization. In the example above both *Boa diviniloqua* and *Boa constrictor longicauda* are considered synonyms of *Boa constrictor*.
 
-⚠️ ATTENTION!⚠️ 
+⚠️ **ATTENTION!**⚠️ 
 
 `letsHerp` does not make taxonomic decisions. The package sample species current valid names and known synonyms but the decision upon which nomenclature to use relies on user expertise.
 
 ### **Internal datasets**
 
-- The package counts with a full list of current valid species (`allReptiles` - 12,440 species) with their respective higher taxa information (updated to 23rd of May, 2025);
+- The package counts with a full list of current valid species (`allReptiles` - 12,440 species) with their respective higher taxa information (updated to May 23rd, 2025);
 
-- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to 23rd of May, 2025); 
+- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to May 23rd, 2025); 
 
-- Another synonyms dataset with all entries considering their respective references (`allSynonymsRef`110,413 entries - updated to 23rd of May, 2025).
+- Another synonyms dataset with all entries considering their respective references (`allSynonymsRef` - 110,413 entries - updated to May 23rd, 2025).
 
 ### **How to Cite**
 
@@ -170,9 +170,11 @@ citation("letsHerp")
 ### **References**
 Liedtke, H. C. (2018). AmphiNom: an amphibian systematic tool. Systematics and Biodiversity, 17(1) 1-6. https://doi.org/10.1080/14772000.2018.1518935
 
-Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database. http://www.reptile-database.org
+Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025). [The Reptile Database](http://www.reptile-database.org)
 
 ### **Author:**
 João Paulo dos Santos Vieira de Alencar
+
 Email: joaopaulo.valencar@gmail.com
+
 [Orcid](https://orcid.org/0000-0001-6894-6773) | [ResearchGate](https://www.researchgate.net/profile/Joao-Paulo-Alencar)

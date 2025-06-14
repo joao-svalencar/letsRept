@@ -2,22 +2,31 @@
 % Please edit documentation in R/herpSearch.R
 \name{herpSearch}
 \alias{herpSearch}
-\title{Search The Reptile Database website (TRD): Simple}
+\title{Search for a Single Reptile Species in The Reptile Database (TRD)}
 \usage{
 herpSearch(binomial=NULL, ref=FALSE)
 }
 \arguments{
-\item{binomial}{A character string with the current valid binomial name of a given reptile species.}
+\item{binomial}{Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").}
 
-\item{ref}{Logical. If TRUE, returns the list of references related to the searched species as listed in The Reptile Database. Default = FALSE}
+\item{ref}{Logical. If \code{TRUE}, returns the list of references from TRD associated with the species. Default is \code{FALSE}.}
 }
 \value{
-Returns species information as provided by The Reptile Database.
+A list containing species information retrieved from The Reptile Database. If \code{ref = TRUE}, returns references related to the species.
 }
 \description{
-Searches The Reptile Database website and provides the data of a single species
+Queries The Reptile Database (TRD) for information about a single reptile species using its binomial name.
 }
 \examples{
+\donttest{
 herpSearch("Boa constrictor")
+herpSearch("Boa constrictor", ref = TRUE)
+}
 
+}
+\references{
+Uetz, P., Freed, P., & Hošek, J. (Eds.). (2025). The Reptile Database. Retrieved from \url{http://www.reptile-database.org}
+}
+\seealso{
+\code{\link{herpSynonyms}}, \code{\link{herpSpecies}} for related species data functions.
 }

@@ -12,27 +12,42 @@ herpAdvancedSearch(higher=NULL,
                           location=NULL)
 }
 \arguments{
-\item{higher}{A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")}
+\item{higher}{Character string. A higher-level reptile taxon above genus (e.g., \code{"snakes"} or \code{"Boidae"}).}
 
-\item{genus}{A character string with the current valid name of a given reptile genus (e.g.: "\emph{Apostolepis}")}
+\item{genus}{Character string. The current valid name of a reptile genus (e.g., \code{"Apostolepis"}).}
 
-\item{year}{A character string to be used as a filter for the year of description of the searched species (e.g.: "2025")}
+\item{year}{Character string. Filters the search by year of species description (e.g., \code{"2025"}).}
 
-\item{common_name}{A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "\emph{Boa diviniloqua}")}
+\item{common_name}{Character string. A common name potentially linked to a species or genus (e.g., \code{"tree boa"}).}
 
-\item{synonym}{A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "\emph{Boa diviniloqua}")}
+\item{synonym}{Character string. A name potentially regarded as a synonym of a valid taxon (e.g., \code{"Boa diviniloqua"}).}
 
-\item{location}{A character string with a location from which the user wants the list of species expected to occur}
+\item{location}{Character string. A country or region name used to list species expected to occur there.}
 }
 \value{
-the url to be used in herpSpecies()
+A character string containing the URL to be used in \code{\link{herpSpecies}}.
+
+If a provided synonym corresponds unambiguously to a valid species, the function also prints species information retrieved from TRD to the console.
 }
 \description{
-Creates the link for multiple species sampling by herpSpecies()
+Creates a search URL for retrieving species lists from TRD based on multiple filters.
+This URL is primarily used by \code{\link{herpSpecies}}, but can also be used manually for advanced queries.
+
+If a synonym is provided and can be unambiguously matched to a valid species, the function also prints detailed information for that species.
+}
+\note{
+This function does not automatically quote input values. If you want to force an exact match (e.g., \code{"Boa"} as a phrase),
+you must manually include quotes in the input string, e.g., \code{"\"Boa\""}.
+
+Logical operators (e.g., \code{OR}, \code{AND}) are supported and will be properly formatted in the search.
+To exclude terms, use a leading minus sign (e.g., \code{higher = "-snakes"}) following TRD's query syntax, instead of using \code{NOT}.
+
+When a synonym is matched to a single valid species, the function will also display the species' full information as a side effect.
 }
 \examples{
+\donttest{
 herpAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
 herpAdvancedSearch(year = "2010 OR 2011 OR 2012")
-herpAdvancedSearch(genus = "Apostolepis OR \"Boa\" OR Atractus") #to quote one
-
+herpAdvancedSearch(genus = "Apostolepis OR \"Boa\" OR Atractus") #quotes "Boa"
+}
 }

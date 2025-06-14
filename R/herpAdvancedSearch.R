@@ -5,7 +5,10 @@
 #' Search The Reptile Database website (TRD): Advanced
 #'
 #' @description
-#' Creates the link for multiple species sampling by herpSpecies()
+#' Creates a search URL for retrieving species lists from TRD based on multiple filters.
+#' This URL is primarily used by \code{\link{herpSpecies}}, but can also be used manually for advanced queries.
+#' 
+#' If a synonym is provided and can be unambiguously matched to a valid species, the function also prints detailed information for that species.
 #' 
 #' @usage herpAdvancedSearch(higher=NULL,
 #'                           genus=NULL,
@@ -14,20 +17,33 @@
 #'                           synonym=NULL,
 #'                           location=NULL)
 #' 
-#' @param higher A character string with the current valid name of a given reptile higher taxa above genus (e.g.: "snake" or "Boidae")
-#' @param genus A character string with the current valid name of a given reptile genus (e.g.: "_Apostolepis_")
-#' @param year A character string to be used as a filter for the year of description of the searched species (e.g.: "2025")
-#' @param common_name A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "_Boa diviniloqua_")
-#' @param synonym A character string with name potentially regarded as a synonym of a given reptile genus (e.g.: "_Boa diviniloqua_")
-#' @param location A character string with a location from which the user wants the list of species expected to occur
+#' @param higher Character string. A higher-level reptile taxon above genus (e.g., \code{"snakes"} or \code{"Boidae"}).
+#' @param genus Character string. The current valid name of a reptile genus (e.g., \code{"Apostolepis"}).
+#' @param year Character string. Filters the search by year of species description (e.g., \code{"2025"}).
+#' @param common_name Character string. A common name potentially linked to a species or genus (e.g., \code{"tree boa"}).
+#' @param synonym Character string. A name potentially regarded as a synonym of a valid taxon (e.g., \code{"Boa diviniloqua"}).
+#' @param location Character string. A country or region name used to list species expected to occur there.
+#'
+#' @return A character string containing the URL to be used in \code{\link{herpSpecies}}.
 #' 
-#' @returns the url to be used in herpSpecies()
+#' If a provided synonym corresponds unambiguously to a valid species, the function also prints species information retrieved from TRD to the console.
+#' 
+#' @note
+#' 
+#' This function does not automatically quote input values. If you want to force an exact match (e.g., \code{"Boa"} as a phrase),
+#' you must manually include quotes in the input string, e.g., \code{"\"Boa\""}.
+#' 
+#' Logical operators (e.g., \code{OR}, \code{AND}) are supported and will be properly formatted in the search.
+#' To exclude terms, use a leading minus sign (e.g., \code{higher = "-snakes"}) following TRD's query syntax, instead of using \code{NOT}.
+#' 
+#' When a synonym is matched to a single valid species, the function will also display the species' full information as a side effect.
 #' 
 #' @examples
+#' \donttest{
 #' herpAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
 #' herpAdvancedSearch(year = "2010 OR 2011 OR 2012")
-#' herpAdvancedSearch(genus = "Apostolepis OR \"Boa\" OR Atractus") #to quote one
-#' 
+#' herpAdvancedSearch(genus = "Apostolepis OR \"Boa\" OR Atractus") #quotes "Boa"
+#' }
 #' @export
 #'
 herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_name = NULL, synonym = NULL, location = NULL) {
@@ -45,8 +61,8 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
       # Logical query: replace spaces with +
       gsub(" ", "+", x)
     } else {
-      # Exact match: wrap in quotes, then encode
-      utils::URLencode(paste0('"', x, '"'), reserved = FALSE)
+      # No logical operators: encode as is (do NOT add quotes)
+      utils::URLencode(x, reserved = FALSE)
     }
   }
   
@@ -73,22 +89,29 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
   
   # implement link test:
   test <- rvest::read_html(url)#
-  ul_element <- rvest::html_elements(test, "#content > p:nth-child(5)")
-  msg <- rvest::html_text(ul_element[[1]])
+  title_node <- rvest::html_element(test, "h1")
+  title_text <- rvest::html_text(title_node, trim = TRUE)
   
-  if (grepl("Find more photos by Google images search:", msg)){
-    title <- rvest::html_element(test, "h1")
-    binomial <- rvest::html_text(rvest::html_element(title, "em"), trim = TRUE)
-    herpSearch(binomial=binomial)
-    return()
-  }else if (grepl("^Species found:", msg)) {
-    cat(msg, "\nProceed to herpSpecies() with the returned link")
-    return(url)
-  } else if (grepl("No species were found", msg)) {
-    cat("No species were found. Please verify the search arguments.\n")
-    return()
+  if (grepl("^Search results", title_text)) {
+    # This is a multi-species search results page
+    ul_element <- rvest::html_element(test, "#content > p:nth-child(5)")
+    msg <- rvest::html_text(ul_element)
+    
+    if (grepl("^Species found:", msg)) {
+      cat(msg, "\nProceed to herpSpecies() with the returned link")
+      return(url)
+    } else if (grepl("No species were found", msg)) {
+      cat("No species were found. Please verify the search arguments.\n")
+      return(invisible(NULL))
+    } else {
+      cat("Unexpected content in a search results page.\n")
+      return(invisible(NULL))
+    }
+    
   } else {
-    cat("Unexpected page content. Investigate manually.\n")
-    return()
+    # Presumably this is a direct species page
+    binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
+    herpSearch(binomial = binomial)
+    return(invisible(NULL))
   }
 }
