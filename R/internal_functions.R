@@ -114,7 +114,10 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
               ))
     
   }, error = function(e) {
-    return(list(error = TRUE, species = species_list[j], message = e$message))
+    return(list(error = TRUE,
+                species = species_list[j],
+                message = e$message,
+                url = url_list[j]))
   })
 }
 
@@ -233,7 +236,10 @@ higherSample <- function(species_list,
       # Immediately print a concise error message for this species
       message(sprintf("Error scraping '%s': %s", species_list[j], e$message))
       # Return an error list so that you can filter or handle later
-      return(list(error = TRUE, species = species_list[j], message = e$message))
+      return(list(error = TRUE,
+                  species = species_list[j],
+                  message = e$message,
+                  url=url_list[j]))
     })
   }
   n <- length(family_list)
