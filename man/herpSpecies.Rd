@@ -5,6 +5,7 @@
 \title{Retrieve Reptile Species and Taxonomic Information from TRD}
 \usage{
 herpSpecies(url,
+                   showProgress = TRUE,
                    dataList = NULL, 
                    taxonomicInfo=FALSE, 
                    fullHigher=FALSE, 
@@ -16,6 +17,8 @@ herpSpecies(url,
 }
 \arguments{
 \item{url}{Character string. A search URL generated via an advanced search on the TRD website or with \code{\link{herpAdvancedSearch}}.}
+
+\item{showProgress}{Logical. If \code{TRUE}, prints sampling progress in the console. Default is \code{FALSE}.}
 
 \item{dataList}{Optional. A data frame with columns \code{species} and \code{url}, used to extract taxonomic information from previously sampled species links.}
 
