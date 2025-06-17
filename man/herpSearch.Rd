@@ -4,12 +4,14 @@
 \alias{herpSearch}
 \title{Search for a Single Reptile Species in The Reptile Database (TRD)}
 \usage{
-herpSearch(binomial=NULL, ref=FALSE)
+herpSearch(binomial=NULL, ref=FALSE, verbose=TRUE)
 }
 \arguments{
 \item{binomial}{Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").}
 
 \item{ref}{Logical. If \code{TRUE}, returns the list of references from TRD associated with the species. Default is \code{FALSE}.}
+
+\item{verbose}{Logical. If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.}
 }
 \value{
 A list containing species information retrieved from The Reptile Database. If \code{ref = TRUE}, returns references related to the species.
