@@ -1,16 +1,13 @@
-##########################################################################################################
-######################### function herpSearch by:  JP VIEIRA-ALENCAR  ####################################
-##########################################################################################################
-
 #' Search for a Single Reptile Species in The Reptile Database (TRD)
 #' 
 #' @description
 #' Queries The Reptile Database (TRD) for information about a single reptile species using its binomial name.
 #' 
-#' @usage herpSearch(binomial=NULL, ref=FALSE)
+#' @usage herpSearch(binomial=NULL, ref=FALSE, verbose=TRUE)
 #' 
 #' @param binomial Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").
 #' @param ref Logical. If \code{TRUE}, returns the list of references from TRD associated with the species. Default is \code{FALSE}.
+#' @param verbose Logical. If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.
 #'
 #' @return
 #' A list containing species information retrieved from The Reptile Database. If \code{ref = TRUE}, returns references related to the species.
@@ -40,8 +37,10 @@ herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
     element <- rvest::html_element(url, "table") # full table
     
     if (is.na(element)) {
-      message("Species not found.\nCheck the spelling or try an advanced search for synonyms.\n")
-      return(invisible(NULL))
+      message("Species not found.\nSearching as synonym in advanced search.\n")
+      link <- letsHerp::herpAdvancedSearch(synonym = binomial)
+      return(link)
+      #return(invisible(NULL))
     }
     
     output_list[["species"]] <- binomial
@@ -72,6 +71,7 @@ herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
           ref_list <- trimws(rvest::html_text(li_nodes, trim = TRUE))
           ref_list <- sub("\\s*-\\s*$", "", ref_list)
           ref_list <- ref_list[nzchar(ref_list)]
+          output_list[["References"]] <- ref_list
         }
         next  # Handle references later
       }
@@ -109,7 +109,6 @@ herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
       cat("References:\n")
       for (item in ref_list) cat(" -", item, "\n")
       cat("\n")
-      output_list[["References"]] <- ref_list
     }
     return(invisible(output_list))
   }

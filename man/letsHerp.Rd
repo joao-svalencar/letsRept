@@ -19,7 +19,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Joao Paulo dos Santos Vieira-Alencar \email{joaopaulo.valencar@gmail.com}
+\strong{Maintainer}: João Paulo dos Santos Vieira-Alencar \email{joaopaulo.valencar@gmail.com} (\href{https://orcid.org/0000-0001-6894-6773}{ORCID})
 
 }
 \keyword{internal}

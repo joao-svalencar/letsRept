@@ -1,7 +1,3 @@
-##########################################################################################################
-################### function herpAdvancedSearch by:  JP VIEIRA-ALENCAR  ##################################
-##########################################################################################################
-
 #' Search The Reptile Database website (TRD): Advanced
 #'
 #' @description
@@ -50,7 +46,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
   
   # Check if all arguments are NULL
   if (all(sapply(list(higher, genus, year, common_name, synonym, location), is.null))) {
-    cat("\n No query parameters provided. Please supply at least one.\n")
+    stop("\n No query parameters provided. Please supply at least one.\n")
     return(NULL)
   }
   
@@ -98,20 +94,20 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
     msg <- rvest::html_text(ul_element)
     
     if (grepl("^Species found:", msg)) {
-      cat(msg, "\nProceed to herpSpecies() with the returned link")
+      message(msg, "\nProceed to herpSpecies() with the returned link")
       return(url)
     } else if (grepl("No species were found", msg)) {
-      cat("No species were found. Please verify the search arguments.\n")
+      stop("No species were found. Please verify the search arguments.\n")
       return(invisible(NULL))
     } else {
-      cat("Unexpected content in a search results page.\n")
+      stop("Unexpected content in a search results page.\n")
       return(invisible(NULL))
     }
     
   } else {
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
-    herpSearch(binomial = binomial)
-    return(invisible(NULL))
+    search <- herpSearch(binomial = binomial)
+    return(search)
   }
 }
