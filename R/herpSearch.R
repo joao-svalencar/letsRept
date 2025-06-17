@@ -27,7 +27,7 @@
 #' 
 #' @export
 
-herpSearch <- function(binomial = NULL, ref = FALSE) {
+herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
   if (!is.null(binomial)) {
     output_list <- list()
     base_url <- "https://reptile-database.reptarium.cz/species"
@@ -37,20 +37,22 @@ herpSearch <- function(binomial = NULL, ref = FALSE) {
     sppLink <- paste0(base_url, query)
     
     url <- rvest::read_html(sppLink)
-    element <- rvest::html_element(url, "table")
+    element <- rvest::html_element(url, "table") # full table
     
     if (is.na(element)) {
-      cat(" Species not found.\nCheck the spelling or try an advanced search for synonyms.\n")
+      message("Species not found.\nCheck the spelling or try an advanced search for synonyms.\n")
       return(invisible(NULL))
     }
     
-    rows <- xml2::xml_children(element)
-    
-    ref_list <- NULL  # We'll store references here if needed
-    
-    cat("Species:", binomial, "\n\n")
     output_list[["species"]] <- binomial
     
+    if(verbose==TRUE){
+    title_node <- rvest::html_element(url, "h1") #species + authors
+    title_text <- rvest::html_text(title_node, trim = TRUE) #species + authors
+    cat("Species:\n -", title_text, "\n\n")  #improve with author names
+    }
+    
+    rows <- xml2::xml_children(element)
     for (row in rows) {
       cells <- xml2::xml_children(row)
       if (length(cells) < 2) next
@@ -64,6 +66,7 @@ herpSearch <- function(binomial = NULL, ref = FALSE) {
       
       if (title_clean == "References") {
         if (ref) {
+          ref_list <- NULL
           li_nodes <- rvest::html_elements(cells[[2]], "li")
           xml2::xml_remove(xml2::xml_find_all(li_nodes, ".//a"))
           ref_list <- trimws(rvest::html_text(li_nodes, trim = TRUE))
@@ -82,30 +85,32 @@ herpSearch <- function(binomial = NULL, ref = FALSE) {
       content_split <- content_split[nzchar(content_split)]
       
       if (length(content_split) > 0 && any(nzchar(content_split))) {
+        output_list[[title_clean]] <- content_split
+        if(verbose == TRUE){
         cat(paste0(title_clean, ":\n"))
         for (item in content_split) {
           if (nzchar(item)) {
             cat(" -", item, "\n")
+            }
           }
-        }
         cat("\n")
-        output_list[[title_clean]] <- content_split
+        }
       } else if (nzchar(content_raw)) {
-        cat(paste0(title_clean, ":\n", content_raw, "\n\n"))
         output_list[[title_clean]] <- content_raw
+        if(verbose == TRUE){
+        cat(paste0(title_clean, ":\n", content_raw, "\n\n"))
+        }
       }
       # else: content is empty, skip printing and don't add to output_list
-      
     }
     
     # Print and add references only at the end, if requested
-    if (ref && !is.null(ref_list)) {
+    if (verbose==TRUE && ref && !is.null(ref_list)) {
       cat("References:\n")
       for (item in ref_list) cat(" -", item, "\n")
       cat("\n")
       output_list[["References"]] <- ref_list
     }
-    
     return(invisible(output_list))
   }
 }
