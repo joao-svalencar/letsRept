@@ -1,15 +1,21 @@
 Package: letsHerp
 Title: An Interface to the Reptile Database
 Version: 0.1.0
-Authors@R: 
-    person(given="João Paulo",
+Authors@R:
+    c(
+    person(given="João Paulo dos Santos",
            family="Vieira-Alencar",
-           middle="dos Santos",
            email = "joaopaulo.valencar@gmail.com",
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-6894-6773"))
-URL: <https://github.com/joao-svalencar/letsHerp>
-BugReports: <https://github.com/joao-svalencar/letsHerp/issues>
+           comment = c(ORCID = "0000-0001-6894-6773")),
+    person(given="Christoph",
+           family="Liedtke",
+           email = "christoph.liedtke@ebd.csic.es",
+           role = c("aut"),
+           comment = c(ORCID = "0000-0002-6221-8043"))
+           )
+URL: https://github.com/joao-svalencar/letsHerp
+BugReports: https://github.com/joao-svalencar/letsHerp/issues
 Description: Provides tools to retrieve and summarize taxonomic information and synonymy data for reptile species using data scraped from The Reptile Database website (<https://reptile-database.reptarium.cz/>). Outputs include clean and structured data frames useful for ecological, evolutionary, and conservation research.
 License: MIT + file LICENSE
 Encoding: UTF-8
