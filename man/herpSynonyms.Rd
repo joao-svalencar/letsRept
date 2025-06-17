@@ -6,6 +6,7 @@
 \usage{
 herpSynonyms(x,
                     getRef = FALSE,
+                    showProgress = TRUE,
                     checkpoint = NULL,
                     backup_file = NULL,
                     resume = FALSE,
@@ -15,6 +16,8 @@ herpSynonyms(x,
 \item{x}{A data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.}
 
 \item{getRef}{Logical. If \code{TRUE}, includes the reference(s) in which each synonym was mentioned. Default is \code{FALSE}.}
+
+\item{showProgress}{Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.}
 
 \item{checkpoint}{Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).}
 

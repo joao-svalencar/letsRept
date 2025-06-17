@@ -1,3 +1,5 @@
+# match_taxon -------------------------------------------------------------
+
 #' Match higher taxonomic ranks
 #'
 #' Helper for \code{herpSpecies()}. Matches known taxonomic ranks (e.g., orders or suborders) from a character vector of taxonomic information.
@@ -19,6 +21,9 @@ match_taxon <- function(taxa_vector, rank_list) {
   sorted_matches <- matches[order(match_positions)]
   return(paste(sorted_matches, collapse = ", "))
 }
+
+
+# safeParallel ------------------------------------------------------------
 
 #' Safe parallel execution
 #'
@@ -50,6 +55,9 @@ safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
     }
   }
 }
+
+# higherSampleParallel ----------------------------------------------------
+
 
 #' Extract taxonomic info for one species (parallel worker)
 #'
@@ -121,6 +129,9 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
   })
 }
 
+# higherSample ------------------------------------------------------------
+
+
 #' Extract taxonomic info from the Reptile Database (single-core with backup)
 #'
 #' Internal function used by \code{herpSpecies()} when \code{cores = 1}. Loops over species pages and extracts
@@ -135,6 +146,7 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
 #' @param getLink Logical. Whether to include the species URL in the output (default is \code{FALSE}).
 #' @param backup_file Optional. File path to save periodic backup using \code{saveRDS()}.
 #' @param checkpoint Optional. Integer specifying how often (in number of species) to save backup. If \code{NULL}, saves only once at the end.
+#' @param showProgress Logical. if \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
 #'
 #' @return A data frame containing the scraped taxonomic information. If vector lengths mismatch, returns a named list instead.
 #'
@@ -150,7 +162,8 @@ higherSample <- function(species_list,
                          fullHigher = FALSE,
                          getLink = FALSE,
                          backup_file = NULL,
-                         checkpoint = NULL)
+                         checkpoint = NULL,
+                         showProgress = TRUE)
 {
   taxa_vector_list <- c()
   order_list <- c()
@@ -201,9 +214,11 @@ higherSample <- function(species_list,
       sppAuthor_list <- c(sppAuthor_list, sppAuthor)
       sppYear_list <- c(sppYear_list, sppYear)
       
+      if(showProgress == TRUE){
       percent <- (j / n_species) * 100
       cat(sprintf("\rGetting higher taxa progress: %.1f%%", percent))
       flush.console()
+      }
       
       # back up chunk
       # Save backup every checkpoint or at the end
@@ -265,6 +280,8 @@ higherSample <- function(species_list,
   }
 }
 
+# clean_species_names -----------------------------------------------------
+
 #' Clean taxonomic species names from synonym strings
 #'
 #' Helper function for \code{herpSynonyms()}. Extracts and cleans species names from raw synonym strings,
@@ -315,6 +332,8 @@ clean_species_names <- function(names_vec) {
   return(cleaned)
 }
 
+# getSynonymsParallel -----------------------------------------------------
+
 #' Get reptile species synonyms with parallel processing
 #' 
 #' Internal helper to retrieve synonyms for reptile species from The Reptile Database.
@@ -359,6 +378,9 @@ getSynonymsParallel <- function(i, x, getRef) {
   })
 }
 
+
+# getSynonyms -------------------------------------------------------------
+
 #' Get reptile species synonyms
 #' 
 #' Scrapes synonyms of reptile species from The Reptile Database.
@@ -367,9 +389,10 @@ getSynonymsParallel <- function(i, x, getRef) {
 #'   Typically, the output of \code{letsHerp::herpSpecies()}.
 #' @param checkpoint Integer specifying how many species to process before saving progress to \code{backup_file}.  
 #'   Helps avoid data loss if the function stops unexpectedly. Backups are saved only if \code{checkpoint} is not \code{NULL}.
-#' @param resume Logical; if \code{TRUE}, resumes processing from a previous backup saved at \code{backup_file}.
+#' @param resume Logical. If \code{TRUE}, resumes processing from a previous backup saved at \code{backup_file}.
 #' @param backup_file Character string path to save or load the backup file.
-#' @param getRef Logical; if \code{TRUE}, returns synonyms along with the references mentioning them. Default is \code{FALSE}.
+#' @param getRef Logical. If \code{TRUE}, returns synonyms along with the references mentioning them. Default is \code{FALSE}.
+#' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
 #' 
 #' @return A data frame with columns \code{species} and \code{synonyms}, optionally \code{ref} if \code{getRef = TRUE},  
 #'   containing the synonyms for each species scraped from The Reptile Database.
@@ -377,11 +400,11 @@ getSynonymsParallel <- function(i, x, getRef) {
 #' @keywords internal
 #' @noRd
 #' 
-getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, getRef=FALSE){
+getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, getRef=FALSE, showProgress=TRUE){
   
   species_list <- c()
-  synonym_list <- c()
-  synonymRef_list <- c()
+  synonyms_list <- c()
+  synonymsRef_list <- c()
   
   start_index <- 1
   # Load backup if resuming
@@ -417,10 +440,11 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
       synonyms_list <- c(synonyms_list, synonyms)
       synonymsRef_list <- c(synonymsRef_list, synonyms_vector)
       
+      if(showProgress == TRUE){
       msg <- sprintf("Progress: %.1f%%  - %s done! ", (i / length(x$species)) * 100, x$species[i])
       cat("\r", format(msg, width = 60), sep = "")
       utils::flush.console()
-      
+      }
       # Save backup every checkpoint
       if(!is.null(checkpoint)){
         if ((i %% checkpoint) == 0 || i == length(x$species)) {
@@ -468,7 +492,9 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
                                       into=c("species", "synonyms"), sep="_",
                                       convert=TRUE)
     
+    if(showProgress == TRUE){
     cat("\nSynonyms sampling complete!\n")
+    }
     return(uniqueSynonyms)
   }
 }
