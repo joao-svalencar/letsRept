@@ -1,7 +1,3 @@
-##########################################################################################################
-######################## function herpSpecies by:  JP VIEIRA-ALENCAR  ####################################
-##########################################################################################################
-
 #' Retrieve Reptile Species and Taxonomic Information from TRD
 #'
 #' @description 
@@ -9,6 +5,7 @@
 #' This function can also save progress to disk during sampling and extract species-specific URLs for further use.
 #' 
 #' @usage herpSpecies(url,
+#'                    showProgress = TRUE,
 #'                    dataList = NULL, 
 #'                    taxonomicInfo=FALSE, 
 #'                    fullHigher=FALSE, 
@@ -19,6 +16,7 @@
 #'                    )
 #'                    
 #' @param url Character string. A search URL generated via an advanced search on the TRD website or with \code{\link{herpAdvancedSearch}}.
+#' @param showProgress Logical. If \code{TRUE}, prints sampling progress in the console. Default is \code{FALSE}.
 #' @param dataList Optional. A data frame with columns \code{species} and \code{url}, used to extract taxonomic information from previously sampled species links.
 #' @param taxonomicInfo Logical. If \code{TRUE}, returns taxonomic information for each species, including order, suborder, family, genus, author, and year. Default is \code{FALSE}.
 #' @param fullHigher Logical. If \code{TRUE}, includes the full higher taxonomic hierarchy as reported by TRD (e.g., including subfamilies). Requires \code{taxonomicInfo = TRUE}. Default is \code{FALSE}.
@@ -53,6 +51,7 @@
 #'
 
 herpSpecies <- function(url=NULL,
+                        showProgress=TRUE,
                         dataList = NULL,
                         taxonomicInfo = FALSE,
                         fullHigher = FALSE,
@@ -95,11 +94,13 @@ herpSpecies <- function(url=NULL,
       genus_list <- c(genus_list, genus)
       url_list <- c(url_list, sppLink)
       
+      if(showProgress == TRUE){
       percent <- (i/length(xml2::xml_children(ul_element[[1]]))) * 100
       cat(sprintf("\rGetting species links progress: %.1f%%", percent))
       utils::flush.console()
+      }
     }
-    cat("\n")
+    
     n_species <- length(species_list)
     
     if(taxonomicInfo == FALSE) {
@@ -112,10 +113,9 @@ herpSpecies <- function(url=NULL,
         
       }else{
         searchResults <- species_list
-        
         message_text <- paste0("A total of ", n_species, " species retrieved.")
       }
-      cat(" Data collection is done!\n", message_text, "\n")
+      message("Data collection is done!\n", message_text, "\n")
       return(searchResults)
     }
   }else{
@@ -127,8 +127,9 @@ herpSpecies <- function(url=NULL,
   
   # taxonomicInfo == TRUE ---------------------------------------------------
   if (taxonomicInfo == TRUE) {
-    cat("Sampling species higher taxa progress:\n")
-    
+    if(showProgress == TRUE){
+    message("Sampling species higher taxa progress:\n")
+    }
     orders <- c("Squamata", "Crocodylia", "Rhychocephalia", "Testudines")
     suborders <- c("Sauria", "Serpentes")
     
@@ -146,10 +147,40 @@ herpSpecies <- function(url=NULL,
           fullHigher = fullHigher,
           getLink = getLink
         ),
-        cores = cores
+        cores = cores,
+        showProgress = showProgress
       )
       results_list <- Filter(Negate(is.null), results_list)
       searchResults <- as.data.frame(dplyr::bind_rows(results_list))
+      
+# testing and warning for error messages ----------------------------------
+      # Check which rows have errors flagged TRUE
+      error_rows <- which(!is.na(searchResults$error) & searchResults$error == TRUE)
+      
+      if (length(error_rows) > 0) {
+        # Extract species names and error messages for those rows
+        species_with_errors <- searchResults$species[error_rows]
+        messages <- searchResults$message[error_rows]
+        
+        n_errors <- length(species_with_errors)
+        max_show <- 5
+        
+        # Construct warning message
+        species_msgs <- paste0("- ", species_with_errors[1:min(max_show, n_errors)], ": ",
+                              messages[1:min(max_show, n_errors)])
+        
+        if (n_errors > max_show) {
+          species_msgs <- c(species_msgs, paste0("... and ", n_errors - max_show, " others"))
+        }
+          warning_msg <-paste0(
+          "Data sampling completed with errors for the following species:\n",
+          paste0(species_msgs, collapse = "\n"),
+          "\n\nTo extract failed species from your original data, use:\n",
+          "failed_spp <- df[df$species %in% df$species[df$error == TRUE], c('species', 'url')]\n",
+          "Then ran herpSpecies(dataList = failed_spp)."
+        )
+        warning(warning_msg)
+      }
       return(searchResults)
     }else{
       searchResults <-higherSample(
@@ -163,6 +194,34 @@ herpSpecies <- function(url=NULL,
                       backup_file = backup_file,
                       checkpoint = checkpoint
       )
+      # testing and warning for error messages ----------------------------------
+      # Check which rows have errors flagged TRUE
+      error_rows <- which(!is.na(searchResults$error) & searchResults$error == TRUE)
+      
+      if (length(error_rows) > 0) {
+        # Extract species names and error messages for those rows
+        species_with_errors <- searchResults$species[error_rows]
+        messages <- searchResults$message[error_rows]
+        
+        n_errors <- length(species_with_errors)
+        max_show <- 5
+        
+        # Construct warning message
+        species_msgs <- paste0("- ", species_with_errors[1:min(max_show, n_errors)], ": ",
+                              messages[1:min(max_show, n_errors)])
+        
+        if (n_errors > max_show) {
+          species_msgs <- c(species_msgs, paste0("... and ", n_errors - max_show, " others"))
+        }
+        warning_msg <-paste0(
+          "Data sampling completed with errors for the following species:\n",
+          paste0(species_msgs, collapse = "\n"),
+          "\n\nTo extract failed species from your original data, use:\n",
+          "failed_spp <- df[df$species %in% df$species[df$error == TRUE], c('species', 'url')]\n",
+          "Then ran herpSpecies(dataList = failed_spp)."
+        )
+        warning(warning_msg)
+      }
       return(searchResults)
     }
     
