@@ -91,10 +91,10 @@ herpSync<-function(query, synonym=NULL, interactive=FALSE, return.no.matches=FAL
   }
   
   ### update the status column to show which query names were actually already up to date (i.e. matching The Reptile Database)
-  trd.stripped <- tolower(query$Reptile_Database)
-  trd.stripped<-gsub(trd.stripped, pattern=" ",replacement="_")
+  rdb.stripped <- tolower(query$Reptile_Database)
+  rdb.stripped<-gsub(rdb.stripped, pattern=" ",replacement="_")
   for(i in 1:nrow(query)){
-    if(!is.na(trd.stripped[i]) & query$stripped[i]==trd.stripped[i]){
+    if(!is.na(rdb.stripped[i]) & query$stripped[i]==rdb.stripped[i]){
       query$status[i]<-"up_to_date"
     }
   }

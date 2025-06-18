@@ -2,14 +2,14 @@
 % Please edit documentation in R/herpSearch.R
 \name{herpSearch}
 \alias{herpSearch}
-\title{Search for a Single Reptile Species in The Reptile Database (TRD)}
+\title{Search for a Single Reptile Species in The Reptile Database (RDB)}
 \usage{
 herpSearch(binomial=NULL, ref=FALSE, verbose=TRUE)
 }
 \arguments{
 \item{binomial}{Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").}
 
-\item{ref}{Logical. If \code{TRUE}, returns the list of references from TRD associated with the species. Default is \code{FALSE}.}
+\item{ref}{Logical. If \code{TRUE}, returns the list of references from RDB associated with the species. Default is \code{FALSE}.}
 
 \item{verbose}{Logical. If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.}
 }
@@ -17,7 +17,7 @@ herpSearch(binomial=NULL, ref=FALSE, verbose=TRUE)
 A list containing species information retrieved from The Reptile Database. If \code{ref = TRUE}, returns references related to the species.
 }
 \description{
-Queries The Reptile Database (TRD) for information about a single reptile species using its binomial name.
+Queries The Reptile Database (RDB) for information about a single reptile species using its binomial name.
 }
 \examples{
 \donttest{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/herpSynonyms.R
 \name{herpSynonyms}
 \alias{herpSynonyms}
-\title{Retrieve Synonyms for Reptile Species from TRD}
+\title{Retrieve Synonyms for Reptile Species from RDB}
 \usage{
 herpSynonyms(x,
                     getRef = FALSE,
@@ -30,13 +30,13 @@ herpSynonyms(x,
 \value{
 A data frame with columns:
 \itemize{
-\item \code{species}: The valid species name according to TRD.
+\item \code{species}: The valid species name according to RDB.
 \item \code{synonym}: A recognized synonym for the species.
 \item \code{reference} (optional): If \code{getRef = TRUE}, the citation where the synonym was reported.
 }
 }
 \description{
-Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (TRD).
+Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (RDB).
 Optionally, the references citing each synonym can also be included.
 }
 \note{

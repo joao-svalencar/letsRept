@@ -1,7 +1,7 @@
-#' Retrieve Reptile Species and Taxonomic Information from TRD
+#' Retrieve Reptile Species and Taxonomic Information from RDB
 #'
 #' @description 
-#' Retrieves a list of reptile species from The Reptile Database (TRD) based on a search URL, and optionally returns detailed taxonomic information for each species. 
+#' Retrieves a list of reptile species from The Reptile Database (RDB) based on a search URL, and optionally returns detailed taxonomic information for each species. 
 #' This function can also save progress to disk during sampling and extract species-specific URLs for further use.
 #' 
 #' @usage herpSpecies(url,
@@ -15,12 +15,12 @@
 #'                    backup_file = NULL
 #'                    )
 #'                    
-#' @param url Character string. A search URL generated via an advanced search on the TRD website or with \code{\link{herpAdvancedSearch}}.
+#' @param url Character string. A search URL generated via an advanced search on the RDB website or with \code{\link{herpAdvancedSearch}}.
 #' @param showProgress Logical. If \code{TRUE}, prints sampling progress in the console. Default is \code{FALSE}.
 #' @param dataList Optional. A data frame with columns \code{species} and \code{url}, used to extract taxonomic information from previously sampled species links.
 #' @param taxonomicInfo Logical. If \code{TRUE}, returns taxonomic information for each species, including order, suborder, family, genus, author, and year. Default is \code{FALSE}.
-#' @param fullHigher Logical. If \code{TRUE}, includes the full higher taxonomic hierarchy as reported by TRD (e.g., including subfamilies). Requires \code{taxonomicInfo = TRUE}. Default is \code{FALSE}.
-#' @param getLink Logical. If \code{TRUE}, includes the TRD URL for each species (useful for follow-up functions like \code{\link{herpSynonyms}}). Default is \code{FALSE}.
+#' @param fullHigher Logical. If \code{TRUE}, includes the full higher taxonomic hierarchy as reported by RDB (e.g., including subfamilies). Requires \code{taxonomicInfo = TRUE}. Default is \code{FALSE}.
+#' @param getLink Logical. If \code{TRUE}, includes the RDB URL for each species (useful for follow-up functions like \code{\link{herpSynonyms}}). Default is \code{FALSE}.
 #' @param cores Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.
 #' @param checkpoint Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).
 #' @param backup_file Optional. Character string specifying the path to an \code{.rds} file for saving intermediate results when \code{checkpoint} is set. Must end in \code{.rds}.
@@ -33,7 +33,7 @@
 #'  
 #' If \code{fullHigher = TRUE}, includes an additional column with the full higher taxa classification.  
 #'  
-#' If \code{getLink = TRUE}, includes a column with the URL for each species’ page on TRD.
+#' If \code{getLink = TRUE}, includes a column with the URL for each species’ page on RDB.
 #'
 #' @note
 #' If \code{checkpoint} is used, progress will only be saved when \code{cores = 1}. This prevents potential write conflicts in parallel mode.

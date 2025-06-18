@@ -2,7 +2,7 @@
 % Please edit documentation in R/herpAdvancedSearch.R
 \name{herpAdvancedSearch}
 \alias{herpAdvancedSearch}
-\title{Search The Reptile Database website (TRD): Advanced}
+\title{Search The Reptile Database website (RDB): Advanced}
 \usage{
 herpAdvancedSearch(higher=NULL,
                           genus=NULL,
@@ -27,10 +27,10 @@ herpAdvancedSearch(higher=NULL,
 \value{
 A character string containing the URL to be used in \code{\link{herpSpecies}}.
 
-If a provided synonym corresponds unambiguously to a valid species, the function also prints species information retrieved from TRD to the console.
+If a provided synonym corresponds unambiguously to a valid species, the function also prints species information retrieved from RDB to the console.
 }
 \description{
-Creates a search URL for retrieving species lists from TRD based on multiple filters.
+Creates a search URL for retrieving species lists from RDB based on multiple filters.
 This URL is primarily used by \code{\link{herpSpecies}}, but can also be used manually for advanced queries.
 
 If a synonym is provided and can be unambiguously matched to a valid species, the function also prints detailed information for that species.
@@ -40,7 +40,7 @@ This function does not automatically quote input values. If you want to force an
 you must manually include quotes in the input string, e.g., \code{"\"Boa\""}.
 
 Logical operators (e.g., \code{OR}, \code{AND}) are supported and will be properly formatted in the search.
-To exclude terms, use a leading minus sign (e.g., \code{higher = "-snakes"}) following TRD's query syntax, instead of using \code{NOT}.
+To exclude terms, use a leading minus sign (e.g., \code{higher = "-snakes"}) following RDB's query syntax, instead of using \code{NOT}.
 
 When a synonym is matched to a single valid species, the function will also display the species' full information as a side effect.
 }

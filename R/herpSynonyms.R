@@ -1,7 +1,7 @@
-#' Retrieve Synonyms for Reptile Species from TRD
+#' Retrieve Synonyms for Reptile Species from RDB
 #' 
 #' @description
-#' Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (TRD). 
+#' Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (RDB). 
 #' Optionally, the references citing each synonym can also be included.
 #' 
 #' @usage herpSynonyms(x,
@@ -23,7 +23,7 @@
 #' @return
 #' A data frame with columns:
 #' \itemize{
-#'   \item \code{species}: The valid species name according to TRD.
+#'   \item \code{species}: The valid species name according to RDB.
 #'   \item \code{synonym}: A recognized synonym for the species.
 #'   \item \code{reference} (optional): If \code{getRef = TRUE}, the citation where the synonym was reported.
 #' }
@@ -78,18 +78,44 @@ herpSynonyms <- function(x, getRef=FALSE, showProgress = TRUE, checkpoint = NULL
       df$combined <- paste(df$species, df$synonyms, sep = "_")
       df <- data.frame(unique(df$combined))
       df <- tidyr::separate(df, col = "unique.df.combined.", into = c("species", "synonyms"), sep = "_", convert = TRUE)
+      
+      # warning for failed species
+      n_failed <- sum(df$synonyms == "failed")
+      
+      if (n_failed > 0) {
+        failed_spp <- unique(df$species[df$synonyms == "failed"])
+        msg <- sprintf(
+          "%d species failed. Retrieve failed species and URLs using:\nx[x$species %%in%% c(%s), c(\"species\", \"url\")]",
+          n_failed,
+          paste(shQuote(failed_spp), collapse = ", ")
+        )
+        warning(msg, call. = FALSE)
+      }
       if(showProgress == TRUE){
       cat("\nSynonyms sampling complete!\n")
       }
     }
     return(df)
   }else{
-    synonyms <- getSynonyms(x=x,
-                        checkpoint = checkpoint,
-                        resume = resume,
-                        backup_file = backup_file,
-                        getRef = getRef,
-                        showProgress = showProgress)
+    df <- getSynonyms(x=x,
+                      checkpoint = checkpoint,
+                      resume = resume,
+                      backup_file = backup_file,
+                      getRef = getRef,
+                      showProgress = showProgress)
+    
+    # warning for failed species
+    n_failed <- sum(df$synonyms == "failed")
+    
+    if (n_failed > 0) {
+      failed_spp <- unique(df$species[df$synonyms == "failed"])
+      msg <- sprintf(
+        "%d species failed. Retrieve failed species and URLs using:\nx[x$species %%in%% c(%s), c(\"species\", \"url\")]",
+        n_failed,
+        paste(shQuote(failed_spp), collapse = ", ")
+      )
+      warning(msg, call. = FALSE)
+    }
+    return(df)
   }
-  return(synonyms)
 }

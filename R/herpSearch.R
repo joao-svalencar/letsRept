@@ -1,12 +1,12 @@
-#' Search for a Single Reptile Species in The Reptile Database (TRD)
+#' Search for a Single Reptile Species in The Reptile Database (RDB)
 #' 
 #' @description
-#' Queries The Reptile Database (TRD) for information about a single reptile species using its binomial name.
+#' Queries The Reptile Database (RDB) for information about a single reptile species using its binomial name.
 #' 
 #' @usage herpSearch(binomial=NULL, ref=FALSE, verbose=TRUE)
 #' 
 #' @param binomial Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").
-#' @param ref Logical. If \code{TRUE}, returns the list of references from TRD associated with the species. Default is \code{FALSE}.
+#' @param ref Logical. If \code{TRUE}, returns the list of references from RDB associated with the species. Default is \code{FALSE}.
 #' @param verbose Logical. If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.
 #'
 #' @return

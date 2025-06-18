@@ -2,7 +2,7 @@
 % Please edit documentation in R/herpSpecies.R
 \name{herpSpecies}
 \alias{herpSpecies}
-\title{Retrieve Reptile Species and Taxonomic Information from TRD}
+\title{Retrieve Reptile Species and Taxonomic Information from RDB}
 \usage{
 herpSpecies(url,
                    showProgress = TRUE,
@@ -16,7 +16,7 @@ herpSpecies(url,
                    )
 }
 \arguments{
-\item{url}{Character string. A search URL generated via an advanced search on the TRD website or with \code{\link{herpAdvancedSearch}}.}
+\item{url}{Character string. A search URL generated via an advanced search on the RDB website or with \code{\link{herpAdvancedSearch}}.}
 
 \item{showProgress}{Logical. If \code{TRUE}, prints sampling progress in the console. Default is \code{FALSE}.}
 
@@ -24,9 +24,9 @@ herpSpecies(url,
 
 \item{taxonomicInfo}{Logical. If \code{TRUE}, returns taxonomic information for each species, including order, suborder, family, genus, author, and year. Default is \code{FALSE}.}
 
-\item{fullHigher}{Logical. If \code{TRUE}, includes the full higher taxonomic hierarchy as reported by TRD (e.g., including subfamilies). Requires \code{taxonomicInfo = TRUE}. Default is \code{FALSE}.}
+\item{fullHigher}{Logical. If \code{TRUE}, includes the full higher taxonomic hierarchy as reported by RDB (e.g., including subfamilies). Requires \code{taxonomicInfo = TRUE}. Default is \code{FALSE}.}
 
-\item{getLink}{Logical. If \code{TRUE}, includes the TRD URL for each species (useful for follow-up functions like \code{\link{herpSynonyms}}). Default is \code{FALSE}.}
+\item{getLink}{Logical. If \code{TRUE}, includes the RDB URL for each species (useful for follow-up functions like \code{\link{herpSynonyms}}). Default is \code{FALSE}.}
 
 \item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.}
 
@@ -42,10 +42,10 @@ If \code{taxonomicInfo = TRUE}, returns a data frame with columns:
 
 If \code{fullHigher = TRUE}, includes an additional column with the full higher taxa classification.
 
-If \code{getLink = TRUE}, includes a column with the URL for each species’ page on TRD.
+If \code{getLink = TRUE}, includes a column with the URL for each species’ page on RDB.
 }
 \description{
-Retrieves a list of reptile species from The Reptile Database (TRD) based on a search URL, and optionally returns detailed taxonomic information for each species.
+Retrieves a list of reptile species from The Reptile Database (RDB) based on a search URL, and optionally returns detailed taxonomic information for each species.
 This function can also save progress to disk during sampling and extract species-specific URLs for further use.
 }
 \note{
