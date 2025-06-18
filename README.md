@@ -95,8 +95,10 @@ herpSync(apo_list, apo_syn)
 - [x] &nbsp; `herpSpecies()` with parallel sampling
 - [x] &nbsp; `herpSynonyms()` with parallel sampling
 - [x] &nbsp; CRAN submission (June 14th, 2025)
+- [x] &nbsp; CRAN reviewed submission (June 18th, 2025)
 - [ ] &nbsp; CRAN release
-- [ ] &nbsp; Paper submission
+- [ ] &nbsp; Paper submission (ongoing)
+- [ ] &nbsp; `herpSycn` upgrade (ongoing)
 - [ ] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
 - [ ] &nbsp; Implement adapted version of `AmphiNom::synonym_report()` (Liedtke, 2018)
 - [ ] &nbsp; Implement IUCN match
