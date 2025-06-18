@@ -16,11 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-### **An R Interface to the Reptile Database**
+### **An Interface to the Reptile Database**
 
 This package was developed to facilitate the processes of reptile nomenclature update based on a search for species synonyms according to [The Reptile Database](https://reptile-database.reptarium.cz) website (Uetz et al., 2025).
 
-Currently, the package accesses many species information from The Reptile Database using R interface.
+Currently, the package accesses many species information from the Reptile Database using R interface.
 
 I hope it to be useful to people trying to match databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species information directly in R.
 
@@ -47,13 +47,12 @@ Retrieves species information from The Reptile Database using a binomial name.
 ```{.r}
 # single species:
 herpSearch(binomial = "Apostolepis adhara")
+
+# If user wants to check the list of references related to species, as listed in RDB:
+herpSearch(binomial = "Bothrops pauloensis", ref=TRUE)
 ```
 
-If user wants to check the list of references related to species, as listed in RD:
-```{.r}
-# single species:
-herpSearch(binomial = "Apostolepis adhara", ref=TRUE)
-```
+`herpSearch()` supports synonym-based queries. If the provided binomial does not match any currently valid species name, the function automatically passes the query to `herpAdvancedSearch(synonym = binomial)`. In such cases, if the synonym can be unambiguously resolved to a valid species, the function will return the corresponding species information. Otherwise, it provides a link to a list of all species that include the queried synonym in their synonymy (which can be accessed using `herpSpecies(link)`)
 
 **Function `herpAdvancedSearch`:**
 
@@ -69,6 +68,8 @@ link <- herpAdvancedSearch(higher = "snakes", location = "Brazil") #returns a li
 link <- herpAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to a list of all species described from 2010 to 2012
 ```
 
+`herpAdvancedSearch(synonym = "example")` will return the species information directly (via `herpSearch("example")`) if the synonym uniquely matches a single valid species.
+
 **Function `herpSpecies`:**
 
 Retrieve species data from the species link created by `herpAdvancedSearch`. User can also copy and paste the url from a RD webpage containing the list of species derived from an advanced search. It includes higher taxa information, authors, year of description, and the species url. By default this function uses parallel processing, with default set to leave just one core available. **NOTE:** Parallel processing may affect system performance. Adjust the number of cores according to your needs. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
@@ -78,17 +79,23 @@ Retrieve species data from the species link created by `herpAdvancedSearch`. Use
 #Returns higher taxa information and species url:
 boa <- herpSpecies(link_boa, taxonomicInfo = TRUE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Boa")
 
+#example 2
 apo <- herpSpecies(link_apo, taxonomicInfo = TRUE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
 
 #Returns only species url - Faster and recommended for large datasets:
 boa <- herpSpecies(link_boa, taxonomicInfo = FALSE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Boa")
 
+#example 2
 apo <- herpSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE) #link from herpAdvancedSearch(genus = "Apostolepis")
 
 #With checkpoint and backups (only without parallel sampling: a lot slower but safer):
 path <- "path/to/save/backup_file.rds" #not to run just example 
 apo <- herpSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE, checkpoint=6, backup_file=path) #link from herpAdvancedSearch(genus = "Apostolepis")
 ```
+
+⚠️ **Note:**
+
+All console messages, warnings, and progress updates can be silenced. However, `herpSpecies()` issues a helpful warning if any species information fails to be retrieved, along with instructions on how to access those entries from the function output.
 
 **Function `herpSynonyms`:**
 
@@ -98,10 +105,13 @@ Samples species synonyms using a data frame with species names and the species l
 # sample species synonyms
 boa_syn <- herpSynonyms(boa)
 
+#example 2
 apo_syn <- herpSynonyms(apo)
 ```
 
 ⚠️ **Note:**
+
+All console messages, warnings, and progress updates can be silenced. However, `herpSynonyms()` issues a helpful warning if any species information fails to be retrieved, along with instructions on how to access those entries from the original data frame.
 
 The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient, but still samples about 0.2% in an incorrect format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I fixed (potentially) all unusual synonym formats in the internal dataset `allSynonyms` (last update: 23rd May, 2025)
 
@@ -119,6 +129,7 @@ boa_list <- c("Vieira-Alencar authoristicus",
 
 herpSync(boa_list, boa_syn)
 
+#example 2:
 apo_list <- c("Vieira-Alencar authorisensis",
               "Apostolepis ambiniger",
               "Apostolepis cerradoensis",
