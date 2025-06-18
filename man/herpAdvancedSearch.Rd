@@ -9,7 +9,8 @@ herpAdvancedSearch(higher=NULL,
                           year=NULL,
                           common_name=NULL,
                           synonym=NULL,
-                          location=NULL)
+                          location=NULL,
+                          verbose = TRUE)
 }
 \arguments{
 \item{higher}{Character string. A higher-level reptile taxon above genus (e.g., \code{"snakes"} or \code{"Boidae"}).}
@@ -23,6 +24,9 @@ herpAdvancedSearch(higher=NULL,
 \item{synonym}{Character string. A name potentially regarded as a synonym of a valid taxon (e.g., \code{"Boa diviniloqua"}).}
 
 \item{location}{Character string. A country or region name used to list species expected to occur there.}
+
+\item{verbose}{Logical. To be passed to \code{herpSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
+If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.}
 }
 \value{
 A character string containing the URL to be used in \code{\link{herpSpecies}}.
