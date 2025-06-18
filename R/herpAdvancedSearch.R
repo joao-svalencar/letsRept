@@ -21,7 +21,7 @@
 #' @param synonym Character string. A name potentially regarded as a synonym of a valid taxon (e.g., \code{"Boa diviniloqua"}).
 #' @param location Character string. A country or region name used to list species expected to occur there.
 #' @param verbose Logical. To be passed to \code{herpSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
-#' If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.
+#' If \code{TRUE}, prints status messages and species information in the console. Default is \code{TRUE}.
 #'
 #' @return A character string containing the URL to be used in \code{\link{herpSpecies}}.
 #' 
@@ -97,7 +97,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
     msg <- rvest::html_text(ul_element)
     
     if (grepl("^Species found:", msg)) {
-      message(msg, "\nProceed to herpSpecies() with the returned link\n")
+      if(verbose) message(msg, "\nProceed to herpSpecies() with the returned link\n")
       return(url)
     } else if (grepl("No species were found", msg)) {
       stop("No species were found. Please verify the search arguments.\n")
@@ -110,7 +110,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
   } else {
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
-    message("Searched synonym is currently:\n", binomial, "\n")
+    if(verbose) message("Searched synonym is currently:\n", binomial, "\n")
     search <- herpSearch(binomial = binomial, verbose = verbose)
     return(search)
   }

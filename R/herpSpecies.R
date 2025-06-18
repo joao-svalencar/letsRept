@@ -65,7 +65,7 @@ herpSpecies <- function(url=NULL,
     stop("You must provide a valid backup_file path if checkpoint is defined.")
   }else 
     if(!is.null(backup_file) && !grepl(".rds", backup_file)){
-      stop("Backup file path must end with 'filename.rds'")
+    stop("Backup file path must end with 'filename.rds'")
     }
   if(is.null(dataList))
   {
@@ -74,7 +74,7 @@ herpSpecies <- function(url=NULL,
     url_list <- c()
     
     if(is.null(url)){
-      stop("\n No search url provided")
+    stop("\n No search url provided")
     }
     search <- rvest::read_html(url)
     ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
@@ -115,7 +115,7 @@ herpSpecies <- function(url=NULL,
         searchResults <- species_list
         message_text <- paste0("A total of ", n_species, " species retrieved.")
       }
-      message("Data collection is done!\n", message_text, "\n")
+      if (showProgress) message("Data collection is done!\n", message_text, "\n")
       return(searchResults)
     }
   }else{

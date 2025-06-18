@@ -26,7 +26,7 @@ herpAdvancedSearch(higher=NULL,
 \item{location}{Character string. A country or region name used to list species expected to occur there.}
 
 \item{verbose}{Logical. To be passed to \code{herpSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
-If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.}
+If \code{TRUE}, prints status messages and species information in the console. Default is \code{TRUE}.}
 }
 \value{
 A character string containing the URL to be used in \code{\link{herpSpecies}}.

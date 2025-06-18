@@ -37,10 +37,9 @@ herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
     element <- rvest::html_element(url, "table") # full table
     
     if (is.na(element)) {
-      message("Species not found: ", binomial, "\nSearching as synonym in advanced search.\n")
+      if(verbose) message("Species not found: ", binomial, "\nSearching as synonym in advanced search.\n")
       link <- letsHerp::herpAdvancedSearch(synonym = binomial, verbose = verbose)
       return(link)
-      #return(invisible(NULL))
     }
     
     output_list[["species"]] <- binomial

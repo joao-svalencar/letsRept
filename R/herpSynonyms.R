@@ -55,7 +55,7 @@ herpSynonyms <- function(x, getRef=FALSE, showProgress = TRUE, checkpoint = NULL
     stop("You must provide a valid backup_file path if checkpoint is smaller than the number of species.")
   }else 
     if(!is.null(backup_file) && !grepl(".rds", backup_file)){
-      stop("Backup file path must end with 'filename.rds'")
+    stop("Backup file path must end with 'filename.rds'")
     }
   if (!"url" %in% names(x) || all(is.na(x$url))) {
     stop("No valid species URL found in x")
