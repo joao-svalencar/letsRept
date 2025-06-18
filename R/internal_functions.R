@@ -349,9 +349,6 @@ clean_species_names <- function(names_vec) {
 #' @keywords internal
 #' @noRd
 getSynonymsParallel <- function(i, x, getRef) {
-  spp_failed <- c()
-  error_list <- c()
-  message_list <- c()
   tryCatch({
     url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
     element <- rvest::html_element(url, "table")
@@ -372,9 +369,6 @@ getSynonymsParallel <- function(i, x, getRef) {
       return(data.frame(species = species, synonyms = synonyms, stringsAsFactors = FALSE))
     }
   }, error = function(e) {
-    spp_failed <- c(spp_failed, x$species[i])
-    error_list <- c(error_list, error)
-    message_list <- c(message_list, message)
     warning(sprintf("Error scraping %s: %s", x$species[i], e$message))
     if (getRef) {
       df <- data.frame(species = x$species[i], synonyms = "failed", ref = "failed", stringsAsFactors = FALSE)
