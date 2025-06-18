@@ -11,7 +11,8 @@
 #'                           year=NULL,
 #'                           common_name=NULL,
 #'                           synonym=NULL,
-#'                           location=NULL)
+#'                           location=NULL,
+#'                           verbose = TRUE)
 #' 
 #' @param higher Character string. A higher-level reptile taxon above genus (e.g., \code{"snakes"} or \code{"Boidae"}).
 #' @param genus Character string. The current valid name of a reptile genus (e.g., \code{"Apostolepis"}).
@@ -19,6 +20,8 @@
 #' @param common_name Character string. A common name potentially linked to a species or genus (e.g., \code{"tree boa"}).
 #' @param synonym Character string. A name potentially regarded as a synonym of a valid taxon (e.g., \code{"Boa diviniloqua"}).
 #' @param location Character string. A country or region name used to list species expected to occur there.
+#' @param verbose Logical. To be passed to \code{herpSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
+#' If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.
 #'
 #' @return A character string containing the URL to be used in \code{\link{herpSpecies}}.
 #' 
@@ -42,7 +45,7 @@
 #' }
 #' @export
 #'
-herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_name = NULL, synonym = NULL, location = NULL) {
+herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_name = NULL, synonym = NULL, location = NULL, verbose = TRUE) {
   
   # Check if all arguments are NULL
   if (all(sapply(list(higher, genus, year, common_name, synonym, location), is.null))) {
@@ -94,7 +97,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
     msg <- rvest::html_text(ul_element)
     
     if (grepl("^Species found:", msg)) {
-      message(msg, "\nProceed to herpSpecies() with the returned link")
+      message(msg, "\nProceed to herpSpecies() with the returned link\n")
       return(url)
     } else if (grepl("No species were found", msg)) {
       stop("No species were found. Please verify the search arguments.\n")
@@ -107,7 +110,8 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
   } else {
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
-    search <- herpSearch(binomial = binomial)
+    message("Searched synonym is currently:\n", binomial, "\n")
+    search <- herpSearch(binomial = binomial, verbose = verbose)
     return(search)
   }
 }
