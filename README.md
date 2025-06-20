@@ -98,7 +98,8 @@ herpSync(apo_list, apo_syn)
 - [x] &nbsp; CRAN reviewed submission (June 18th, 2025)
 - [ ] &nbsp; CRAN release
 - [ ] &nbsp; Paper submission (ongoing)
-- [ ] &nbsp; `herpSycn` upgrade (ongoing)
+- [x] &nbsp; `herpSycn` upgrade
+- [ ] &nbsp; Implement "up_to_date" check
 - [ ] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
 - [ ] &nbsp; Implement adapted version of `AmphiNom::synonym_report()` (Liedtke, 2018)
 - [ ] &nbsp; Implement IUCN match

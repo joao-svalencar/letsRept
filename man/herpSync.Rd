@@ -2,41 +2,46 @@
 % Please edit documentation in R/herpSync.R
 \name{herpSync}
 \alias{herpSync}
-\title{Synchronize species names using synonym reference table}
+\title{Synchronize species names using The Reptile Database}
 \usage{
-herpSync(query, synonym, interactive = FALSE, return.no.matches = FALSE)
+herpSync(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCores() - 1), verbose = TRUE, showProgress = TRUE, getLink = FALSE)
 }
 \arguments{
-\item{query}{A character vector of taxon names to be processed (e.g., species list, phylogenetic tip labels, or trait table entries).}
+\item{x}{A character vector of taxon names to be processed (e.g., species list, phylogenetic tip labels, or trait table entries).}
 
-\item{synonym}{A data frame with a synonym reference table (e.g., output from \code{\link{herpSynonyms}}). If not provided, the function uses the internal dataset \code{letsHerp::allSynonyms}, which may not be the most up-to-date.}
+\item{solveAmbiguity}{Logical. If \code{TRUE}, samples the synonyms of species with ambiguous nomenclature}
 
-\item{interactive}{Logical. If \code{TRUE}, the function allows real-time selection when a synonym matches multiple valid names. If \code{FALSE} (default), all possible matches are returned as concatenated strings.}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.}
 
-\item{return.no.matches}{Logical. If \code{TRUE}, species not found in the synonym table will be returned as originally provided in the query. If \code{FALSE} (default), unmatched entries will be left blank.}
+\item{verbose}{Logical. If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.}
+
+\item{showProgress}{Logical. If \code{TRUE}, prints sampling progress in the console. Default is \code{FALSE}.}
+
+\item{getLink}{Logical. If \code{TRUE}, includes the RDB URL for each valid species names detected Default is \code{FALSE}.}
 }
 \value{
 A data frame with the following columns:
 \itemize{
-\item \code{input}: original input names from the query.
-\item \code{stripped}: standardized versions of the input names (e.g., without authors or formatting).
-\item \code{status}: description of the outcome (e.g., \code{"updated"}, \code{"not found"}, \code{"multiple matches"}).
-\item \code{updated}: best-matching valid names according to the synonym table.
+\item \code{query}: original input names from the query.
+\item \code{RDB}: best-matching valid names according to the RDB.
+\item \code{status}: description of the outcome (e.g., \code{up_to_date}, \code{"updated"}, \code{"ambiguous"},  \code{"not_found"}).
+\item \code{url}: the url searched for each querried species. The urls of species with ambiguous nomenclature returns a list of species of which the querried species is considered a synonym
 }
 }
 \description{
-Compares a user-provided list of reptile taxon names against a synonym table from The Reptile Database and returns an updated list of valid names.
-Particularly useful to standardize names before analyses or when integrating heterogeneous taxonomic sources.
-
-Supports interactive disambiguation in cases where multiple valid names are found for a given synonym. Optionally, unmatched names can be retained or returned as blank.
+Queries a list of species parsed to \code{herpSearch} and returns a data frame with current valid names for queried species
 }
 \note{
-The internally stored synonym table \code{letsHerp::allSynonyms} was last updated on May 23rd, 2025.
+\code{herpSync} does not make taxonomic claims.
+The function compares queried species with valid species names and returns "up_to_date" for any binomial that is considered valid,
+regardless of if it has been split and the name applies only to a specific population.
 }
 \examples{
-boa_syn <- letsHerp::allSynonyms[grep("^Boa\\\\s", allSynonyms$species), ]
 query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
-herpSync(query, boa_syn)
+\donttest{
+herpSync(x=query)
+}
+
 
 }
 \references{

@@ -87,7 +87,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
   url <- paste0(base_url, query)
   
   # implement link test:
-  test <- rvest::read_html(url)#
+  test <- rvest::read_html(url)
   title_node <- rvest::html_element(test, "h1")
   title_text <- rvest::html_text(title_node, trim = TRUE)
   
@@ -100,10 +100,10 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
       if(verbose) message(msg, "\nProceed to herpSpecies() with the returned link\n")
       return(url)
     } else if (grepl("No species were found", msg)) {
-      stop("No species were found. Please verify the search arguments.\n")
-      return(invisible(NULL))
+      warning("No species were found. Please verify the search arguments.\n")
+      return("Not found")
     } else {
-      stop("Unexpected content in a search results page.\n")
+      warning("Unexpected content in a search results page.\n")
       return(invisible(NULL))
     }
     
@@ -111,7 +111,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
     if(verbose) message("Searched synonym is currently:\n", binomial, "\n")
-    search <- herpSearch(binomial = binomial, verbose = verbose)
+    search <- herpSearch(binomial = binomial, verbose = FALSE)
     return(search)
   }
 }

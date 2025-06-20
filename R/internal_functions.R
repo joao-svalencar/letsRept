@@ -22,7 +22,6 @@ match_taxon <- function(taxa_vector, rank_list) {
   return(paste(sorted_matches, collapse = ", "))
 }
 
-
 # safeParallel ------------------------------------------------------------
 
 #' Safe parallel execution
@@ -57,7 +56,6 @@ safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
 }
 
 # higherSampleParallel ----------------------------------------------------
-
 
 #' Extract taxonomic info for one species (parallel worker)
 #'

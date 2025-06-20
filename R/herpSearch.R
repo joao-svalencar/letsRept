@@ -42,6 +42,7 @@ herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
       return(link)
     }
     
+    output_list[["url"]] <- sppLink
     output_list[["species"]] <- binomial
     
     if(verbose==TRUE){
