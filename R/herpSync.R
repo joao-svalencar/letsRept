@@ -4,7 +4,12 @@
 #' Queries a list of species parsed to \code{herpSearch} and returns a data frame with current valid names for queried species
 #'
 #' @usage
-#' herpSync(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCores() - 1), verbose = TRUE, showProgress = TRUE, getLink = FALSE)
+#' herpSync(x,
+#'          solveAmbiguity = TRUE,
+#'          cores = max(1, parallel::detectCores() - 1),
+#'          verbose = TRUE,
+#'          showProgress = TRUE,
+#'          getLink = FALSE)
 #'
 #' @param x A character vector of taxon names to be processed (e.g., species list, phylogenetic tip labels, or trait table entries).
 #' @param solveAmbiguity Logical. If \code{TRUE}, samples the synonyms of species with ambiguous nomenclature
@@ -32,7 +37,7 @@
 #' @examples
 #' query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
 #' \donttest{
-#' herpSync(x=query)
+#' herpSync(x=query, cores = 2)
 #' }
 #' 
 #'
@@ -74,7 +79,7 @@ herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCo
     if (nrow(synSample) > 0) {
       ambiguity_results <- safeParallel(1:nrow(synSample), FUN = function(i) {
         # For each species, resolve ambiguity using herpSynonyms
-        spp_syn <- herpSynonyms(herpSpecies(synSample$url[i], getLink = TRUE, showProgress = FALSE), showProgress = FALSE)
+        spp_syn <- herpSynonyms(herpSpecies(synSample$url[i], getLink = TRUE, showProgress = FALSE, cores = cores), cores = cores, showProgress = FALSE)
         synonyms <- spp_syn$species[synSample$query[i] == spp_syn$synonyms]
         
         if (length(synonyms) == 1) {

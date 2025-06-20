@@ -4,7 +4,12 @@
 \alias{herpSync}
 \title{Synchronize species names using The Reptile Database}
 \usage{
-herpSync(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCores() - 1), verbose = TRUE, showProgress = TRUE, getLink = FALSE)
+herpSync(x,
+         solveAmbiguity = TRUE,
+         cores = max(1, parallel::detectCores() - 1),
+         verbose = TRUE,
+         showProgress = TRUE,
+         getLink = FALSE)
 }
 \arguments{
 \item{x}{A character vector of taxon names to be processed (e.g., species list, phylogenetic tip labels, or trait table entries).}
@@ -39,7 +44,7 @@ regardless of if it has been split and the name applies only to a specific popul
 \examples{
 query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
 \donttest{
-herpSync(x=query)
+herpSync(x=query, cores = 2)
 }
 
 
