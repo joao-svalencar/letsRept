@@ -1,49 +1,46 @@
-#' Synchronize species names using The Reptile Database
+#' Synchronize Species Names Using The Reptile Database
 #'
 #' @description
-#' Queries a list of species parsed to \code{herpSearch} and returns a data frame with current valid names for queried species
+#' Queries a list of species names through \code{herpSearch()} and returns a data frame with the currently valid names and taxonomic status for each input.
 #'
 #' @usage
 #' herpSync(x,
 #'          solveAmbiguity = TRUE,
 #'          cores = max(1, parallel::detectCores() - 1),
-#'          verbose = TRUE,
-#'          showProgress = TRUE,
-#'          getLink = FALSE)
+#'          showProgress = TRUE)
 #'
-#' @param x A character vector of taxon names to be processed (e.g., species list, phylogenetic tip labels, or trait table entries).
-#' @param solveAmbiguity Logical. If \code{TRUE}, samples the synonyms of species with ambiguous nomenclature
+#' @param x A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).
+#' @param solveAmbiguity Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.
 #' @param cores Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.
-#' @param verbose Logical. If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.
-#' @param showProgress Logical. If \code{TRUE}, prints sampling progress in the console. Default is \code{FALSE}.
-#' @param getLink Logical. If \code{TRUE}, includes the RDB URL for each valid species names detected Default is \code{FALSE}.
+#' @param showProgress Logical. If \code{TRUE}, displays progress updates during processing. Default is \code{TRUE}.
 #'
 #' @return A data frame with the following columns:
 #' \itemize{
-#'   \item \code{query}: original input names from the query.
-#'   \item \code{RDB}: best-matching valid names according to the RDB.
-#'   \item \code{status}: description of the outcome (e.g., \code{up_to_date}, \code{"updated"}, \code{"ambiguous"},  \code{"not_found"}).
-#'   \item \code{url}: the url searched for each querried species. The urls of species with ambiguous nomenclature returns a list of species of which the querried species is considered a synonym
+#'   \item \code{query}: the original input names.
+#'   \item \code{RDB}: the best-matching valid names according to The Reptile Database.
+#'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, or \code{"not_found"}).
+#'   \item \code{url}: the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 #' }
-#' 
+#'
 #' @note
-#' \code{herpSync} does not make taxonomic claims. 
-#' The function compares queried species with valid species names and returns "up_to_date" for any binomial that is considered valid,
-#' regardless of if it has been split and the name applies only to a specific population.
-#' 
+#' \code{herpSync()} does not make authoritative taxonomic decisions. It matches input names against currently accepted names in The Reptile Database (RDB). 
+#' A name marked as \code{"up_to_date"} may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy.
+#'
+#' For ambiguous names, the \code{url} field may contain multiple links corresponding to all valid species to which the queried name is considered a synonym.
+#'
 #' @references
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
 #'
 #' @examples
 #' query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
-#' \donttest{
-#' herpSync(x=query, cores = 2)
-#' }
 #' 
+#' \donttest{
+#' herpSync(x = query, cores = 2)
+#' }
 #'
 #' @export
-#'
-herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCores() - 1), verbose = TRUE, showProgress = TRUE, getLink = FALSE) {
+
+herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCores() - 1), showProgress = TRUE) {
   
   # Worker function: performs search + classifies result
   worker <- function(species_name) {
@@ -85,7 +82,6 @@ herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCo
         if (length(synonyms) == 1) {
           RDB_new <- synonyms
           status_new <- "updated"
-          #url_new <- 
         } else if (length(synonyms) > 1) {
           RDB_new <- paste(synonyms, collapse = "; ")
           status_new <- "ambiguous"
