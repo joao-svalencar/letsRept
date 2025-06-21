@@ -4,7 +4,7 @@
 \alias{herpTidySyn}
 \title{Printing herpSync outcome in a tidy way}
 \usage{
-herpTidySyn(df, filter = FALSE)
+herpTidySyn(df, filter = NULL)
 }
 \arguments{
 \item{df}{The data frame derivated from \code{herpSync}}
