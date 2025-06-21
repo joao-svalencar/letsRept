@@ -31,13 +31,18 @@
 #' herpTidySyn(df, filter = TRUE)
 #'
 #' @export
-herpTidySyn <- function(df, filter = FALSE) {
+herpTidySyn <- function(df, filter = NULL) {
   if (!is.data.frame(df) || ncol(df) < 2) {
     stop("Input must be a data frame with at least two columns.")
   }
   
   if ("url" %in% names(df)) df <- df[ , !(names(df) == "url")]
-  if (filter) df <- df[df$status %in% c("ambiguous", "unknown"),]
+  
+  statuses <- c("up_to_date", "updated", "ambiguous", "unknown", "duplicated")
+  
+  if (is.null(filter)) filter <- statuses
+    
+    df <- df[df$status %in% filter,]
 
   spacer <- "   "  # 3 spaces between columns
   col_names <- names(df)
