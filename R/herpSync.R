@@ -104,8 +104,12 @@ herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCo
         df$status[df$query == ambiguity_df$query[i]] <- ambiguity_df$status[i]
       }
     }
+    
+    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "Not found")] >=2))] <- "duplicated"
+
     return(df)  
   }else{
+    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "Not found")] >=2))] <- "duplicated"
     return(df) 
   }
 }
