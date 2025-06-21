@@ -117,50 +117,75 @@ The complex `regex` pattern used to sample synonyms from The Reptile Database is
 
 **Function `herpSync`:**
 
-Inspired in function aswSync from package [AmphiNom](https://github.com/hcliedtke/AmphiNom) (Liedtke, 2018), this function compares a given list of species (e.g.: IUCN, or a regional list) with the list of species synonyms and returns a tidy comparison allowing faster nomenclature check.
+Initially inspired in function aswSync from package [AmphiNom](https://github.com/hcliedtke/AmphiNom) (Liedtke, 2018).
+
+This is the most recursive function of the package, using all the previous functions in order to provide the most likely updated nomenclature for the queried species. The function is divided in two main steps. Here is how it works:
+
+*Step 1*
+
+The function queries a vector of species (e.g.: IUCN, or a regional list), check their validity through `herpSearch` and returns a data frame with current valid species names. When `herpSearch` finds a species page it assumes that is the valid name for the queried species and returns the status "up_to_date". When `herpSearch` doesn't find a species it parses the binomial to `herpAdvancedSearch` using the synonym filter. If `herpAvancedSearch` returns a link for a species page that species name is considered valid for the synonym queried and the function returns the status "updated". Otherwise, `herpAvancedSearch` will return a link for a page with a list of species, then the function assumes that the queried synonym could be assigned to any of those valid names and returns the status: "ambiguous". If the queried species does not return a species page nor a page for multiple species the function returns to column "RDB" the sentence "Not found" and to column "status" the word "unknown".
+
+*Step 2*
+
+Step 2 is activated only if \code{solveAmbiguity = TRUE}. When `herpAvancedSearch` returns a link for a page with a list of species, that link is parsed to `herpSpecies` which collects species names and \code{urls} and automatically parses the resulting data frame to `herpSynonyms`. Finally, with the result of `herpSynonyms` the function compares the queried species with all listed synonyms. If the queried species is actually listed as a synonym of only one of the searched species (e.g. the queried name is not a synonym, but is mentioned in the comments section), the function will return that valid name and status will be "updated". If the queried species is actually a synonym of more than one valid species, then the function will return both species names and the status will still be "ambiguous".
 
 ```{.r}
 # comparing synonyms:
-boa_list <- c("Vieira-Alencar authoristicus",
-              "Boa atlantica",
-              "Boa diviniloqua",
-              "Boa imperator",
-              "Boa constrictor longicauda")
+query <- c("Vieira-Alencar authoristicus",
+           "Boa atlantica",
+           "Boa diviniloqua",
+           "Boa imperator",
+           "Boa constrictor longicauda")
 
-herpSync(boa_list, boa_syn)
+herpSync(query)
 
 #example 2:
-apo_list <- c("Vieira-Alencar authorisensis",
-              "Apostolepis ambiniger",
-              "Apostolepis cerradoensis",
-              "Elapomorphus assimilis",
-              "Apostolepis tertulianobeui",
-              "Apostolepis goiasensis")
+query <- c("Vieira-Alencar authorisensis",
+           "Apostolepis ambiniger",
+           "Apostolepis cerradoensis",
+           "Elapomorphus assimilis",
+           "Apostolepis tertulianobeui",
+           "Apostolepis goiasensis")
 
-herpSync(apo_list, apo_syn)
+herpSync(query)
 ```
 
-The column "Reptile_Database" shows current valid name according to The Reptile Database.
+The column "RDB" shows current valid name according to The Reptile Database.
 
-Special attention is needed to columns "status" and "warnings":
+Special attention is needed to column "status":
 
 **status:**
 
-- "up_to_date" -  Species name provided is the current valid name found in The Reptile Database
+- "up_to_date" - Species name provided is the current valid name found in The Reptile Database
  
 - "updated" - Species name provided is a synonym, and the current valid name is reported unambiguously.
 
-- "ambiguous" - Species name provided is considered a synonym of more than one current valid species, likely from a split in taxonomy. The synonym from query might also be found in the list of the current valid names, and can be assigned as valid on the fly using `interactive = TRUE` but see the example above for *Boa diviniloqua*.
+- "ambiguous" - Species name provided is considered a synonym of more than one current valid species, likely from a split in taxonomy.
 
-- "name_not_found" - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
+- "unknown" - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
 
-**warnings:**
-
-- "duplicated" - Currently, this is the only warning the user will get from `herpSync`. It means that multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization. In the example above both *Boa diviniloqua* and *Boa constrictor longicauda* are considered synonyms of *Boa constrictor*.
+- "duplicated" - Multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization.
 
 ⚠️ **ATTENTION!**⚠️ 
 
-`letsHerp` does not make taxonomic decisions. The package sample species current valid names and known synonyms but the decision upon which nomenclature to use relies on user expertise.
+`letsHerp` does not make authoritative taxonomic decisions. It matches input names against currently accepted names in The Reptile Database (RDB). 
+A name marked as \code{"up_to_date"} may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy.
+
+**Function `herpTidySyn`:**
+
+This function was developed exclusively to improve the visualization of `herpSync` outcome. Queried species with many current valid names would break the data frame visualizarion in the R console. `herpTidySyn` stacks current valid names and improves data visualization. Moreover, the argument \code{filter}, allows users to filter the printed data frame by "status" so users can focus only in the status that they want to evaluate.
+
+```{.r}
+query <- c("Vieira-Alencar authorisensis",
+           "Apostolepis ambiniger",
+           "Apostolepis cerradoensis",
+           "Elapomorphus assimilis",
+           "Apostolepis tertulianobeui",
+           "Apostolepis goiasensis")
+
+df <- herpSync(query)
+herpTidySyn(df)
+```
 
 ### **Internal datasets**
 
@@ -174,7 +199,7 @@ Special attention is needed to columns "status" and "warnings":
 
 To cite this package in publications, run:
 
-```r
+```{.r}
 citation("letsHerp")
 ```
 
