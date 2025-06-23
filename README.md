@@ -147,7 +147,7 @@ herpTidySyn(df)
 - [x] &nbsp; CRAN reviewed submission (June 18th, 2025)
 - [x] &nbsp; CRAN release 0.1.0 (June 23rd, 2025)
 - [ ] &nbsp; Paper submission (ongoing)
-- [x] &nbsp; `herpSycn` upgrade
+- [x] &nbsp; `herpSync` upgrade
 - [ ] &nbsp; Implement "up_to_date" check
 - [ ] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
 - [ ] &nbsp; Implement adapted version of `AmphiNom::synonym_report()` (Liedtke, 2018)
