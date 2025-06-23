@@ -7,19 +7,21 @@
 #' herpSync(x,
 #'          solveAmbiguity = TRUE,
 #'          cores = max(1, parallel::detectCores() - 1),
-#'          showProgress = TRUE)
+#'          showProgress = TRUE,
+#'          getLink = FALSE)
 #'
 #' @param x A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).
 #' @param solveAmbiguity Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.
 #' @param cores Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.
 #' @param showProgress Logical. If \code{TRUE}, displays progress updates during processing. Default is \code{TRUE}.
+#' @param getLink Logical. If \code{TRUE}, retrieves searched species URLs. Defaults if \code{FALSE}.
 #'
 #' @return A data frame with the following columns:
 #' \itemize{
 #'   \item \code{query}: the original input names.
 #'   \item \code{RDB}: the best-matching valid names according to The Reptile Database.
 #'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, or \code{"not_found"}).
-#'   \item \code{url}: the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
+#'   \item \code{url}: Optional, if getLink = TRUE returns the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 #' }
 #'
 #' @note
@@ -27,6 +29,8 @@
 #' A name marked as \code{"up_to_date"} may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy.
 #'
 #' For ambiguous names, the \code{url} field may contain multiple links corresponding to all valid species to which the queried name is considered a synonym.
+#' 
+#' See package vignettes for more details.
 #'
 #' @references
 #' Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. *Systematics and Biodiversity*, 17(1), 1–6. https://doi.org/10.1080/14772000.2018.1518935
@@ -40,7 +44,7 @@
 #'
 #' @export
 
-herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCores() - 1), showProgress = TRUE) {
+herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCores() - 1), showProgress = TRUE, getLink = FALSE) {
   
   # Worker function: performs search + classifies result
   worker <- function(species_name) {
@@ -104,12 +108,20 @@ herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCo
         df$status[df$query == ambiguity_df$query[i]] <- ambiguity_df$status[i]
       }
     }
-    
     df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "Not found")] >=2))] <- "duplicated"
-
-    return(df)  
+    if(getLink){
+      return(df)  
+    }else{
+      df <- df[,-4]
+      return(df)  
+    }
   }else{
     df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "Not found")] >=2))] <- "duplicated"
-    return(df) 
+    if(getLink){
+      return(df)  
+    }else{
+      df <- df[,-4]
+      return(df)
+    }
   }
 }
