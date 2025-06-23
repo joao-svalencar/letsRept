@@ -127,7 +127,7 @@ The function queries a vector of species (e.g.: IUCN, or a regional list), check
 
 *Step 2*
 
-Step 2 is activated only if \code{solveAmbiguity = TRUE}. When `herpAvancedSearch` returns a link for a page with a list of species, that link is parsed to `herpSpecies` which collects species names and \code{urls} and automatically parses the resulting data frame to `herpSynonyms`. Finally, with the result of `herpSynonyms` the function compares the queried species with all listed synonyms. If the queried species is actually listed as a synonym of only one of the searched species (e.g. the queried name is not a synonym, but is mentioned in the comments section), the function will return that valid name and status will be "updated". If the queried species is actually a synonym of more than one valid species, then the function will return both species names and the status will still be "ambiguous".
+Step 2 is activated only if `solveAmbiguity = TRUE`. When `herpAvancedSearch` returns a link for a page with a list of species, that link is parsed to `herpSpecies` which collects species names and `urls` and automatically parses the resulting data frame to `herpSynonyms`. Finally, with the result of `herpSynonyms` the function compares the queried species with all listed synonyms. If the queried species is actually listed as a synonym of only one of the searched species (e.g. the queried name is not a synonym, but is mentioned in the comments section), the function will return that valid name and status will be "updated". If the queried species is actually a synonym of more than one valid species, then the function will return both species names and the status will still be "ambiguous".
 
 ```{.r}
 # comparing synonyms:
@@ -169,11 +169,11 @@ Special attention is needed to column "status":
 ⚠️ **ATTENTION!**⚠️ 
 
 `letsHerp` does not make authoritative taxonomic decisions. It matches input names against currently accepted names in The Reptile Database (RDB). 
-A name marked as \code{"up_to_date"} may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy.
+A name marked as `"up_to_date"` may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy.
 
 **Function `herpTidySyn`:**
 
-This function was developed exclusively to improve the visualization of `herpSync` outcome. Queried species with many current valid names would break the data frame visualizarion in the R console. `herpTidySyn` stacks current valid names and improves data visualization. Moreover, the argument \code{filter}, allows users to filter the printed data frame by "status" so users can focus only in the status that they want to evaluate.
+This function was developed exclusively to improve the visualization of `herpSync` outcome. Queried species with many current valid names would break the data frame visualizarion in the R console. `herpTidySyn` stacks current valid names and improves data visualization. Moreover, the argument `filter`, allows users to filter the printed data frame by "status" so users can focus only in the status that they want to evaluate.
 
 ```{.r}
 query <- c("Vieira-Alencar authorisensis",

@@ -66,7 +66,7 @@ apo_syn <- herpSynonyms(apo)
 ```
 **Function `herpSync`:**
 
-Initially inspired in function \code{aswSync} from package [AmphiNom](https://github.com/hcliedtke/AmphiNom) (Liedtke, 2018).
+Initially inspired in function `aswSync` from package [AmphiNom](https://github.com/hcliedtke/AmphiNom) (Liedtke, 2018).
 
 This is the most recursive function of the package, using all the previous functions in order to provide the most likely updated nomenclature for the queried species.
 The function is divided in two main steps. Here is how it works:
@@ -82,8 +82,8 @@ If the queried species does not return a species page nor a page for multiple sp
 
 *Step 2*
 
-Step 2 is activated only if \code{solveAmbiguity = TRUE}.
-When `herpAvancedSearch` returns a link for a page with a list of species, that link is parsed to `herpSpecies` which collects species names and \code{urls} and automatically parses the resulting data frame to `herpSynonyms`.
+Step 2 is activated only if `solveAmbiguity = TRUE`.
+When `herpAvancedSearch` returns a link for a page with a list of species, that link is parsed to `herpSpecies` which collects species names and `urls` and automatically parses the resulting data frame to `herpSynonyms`.
 Finally, with the result of `herpSynonyms` the function compares the queried species with all listed synonyms.
 If the queried species is actually listed as a synonym of only one of the searched species (e.g. the queried name is not a synonym, but is mentioned in the comments section), the function will return that valid name and status will be "updated".
 If the queried species is actually a synonym of more than one valid species, then the function will return both species names and the status will still be "ambiguous".
@@ -116,7 +116,7 @@ herpSync(query)
 This function was developed exclusively to improve the visualization of `herpSync` outcome.
 Queried species with many current valid names would break the data frame visualizarion in the R console.
 `herpTidySyn` stacks current valid names and improves data visualization.
-Moreover, the argument \code{filter}, allows users to filter the printed data frame by "status" so users can focus only in the status that they want to evaluate.
+Moreover, the argument `filter`, allows users to filter the printed data frame by "status" so users can focus only in the status that they want to evaluate.
 
 ```{.r}
 query <- c("Vieira-Alencar authorisensis",
