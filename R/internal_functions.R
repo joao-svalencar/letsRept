@@ -498,4 +498,82 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
   }
 }
 
+# split check -------------------------------------------------------------
+
+#' Check if a species name might represent a split taxon
+#'
+#' @description
+#' Internal helper function used in \code{herpSplitCheck()} to assess whether a
+#' species name potentially corresponds to multiple recently described taxa.
+#' It scrapes The Reptile Database and checks publication years against a user-defined threshold.
+#'
+#' @param spp A character string with a species name to check.
+#' @param pubDate An optional integer year (e.g., 2020) to compare against taxon publication years.
+#' Species published from this year onward may indicate a recent split.
+#' @param verbose Logical; if \code{TRUE}, messages will be printed when an error occurs. Default is \code{TRUE}.
+#'
+#' @return A data frame with three columns:
+#' \itemize{
+#'   \item \code{query} – the input species name
+#'   \item \code{species} – one or more matched species (or \code{NA} if none)
+#'   \item \code{status} – one of \code{"check_split"}, \code{"up_to_date"}, \code{"unknown"}, or \code{"failed"}
+#' }
+#'
+#' @keywords internal
+#' @noRd
+splitCheck <- function(spp, pubDate = NULL, verbose = TRUE) {
+  tryCatch({
+    link <- herpAdvancedSearch(synonym = spp, verbose = verbose)
+    
+    # Character link: standard HTML parsing
+    if (is.character(link) && grepl("^https:", link)) {
+      search <- rvest::read_html(link)
+      title_node <- rvest::html_element(search, "h1")
+      title_text <- rvest::html_text(title_node, trim = TRUE)
+      
+      if (grepl("^Search results", title_text)) {
+        ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
+        if (length(ul_element) == 0) return(NULL)
+        
+        li_nodes <- xml2::xml_children(ul_element[[1]])
+        species <- sapply(li_nodes, function(node) {
+          rvest::html_text(rvest::html_element(xml2::xml_child(node, 1), "em"), trim = TRUE)
+        })
+        
+        years <- sapply(li_nodes, function(node) {
+          as.integer(stringr::str_extract(rvest::html_text(node), "(?<!\\d)\\d{4}(?!\\d)"))
+        })
+        
+        syn_df <- data.frame(species, years, stringsAsFactors = FALSE)
+        
+        if (any(syn_df$years >= pubDate, na.rm = TRUE)) {
+          matched_species <- paste(syn_df$species[syn_df$years >= pubDate], collapse = ";")
+          return(data.frame(query = spp, species = matched_species, status = "check_split", stringsAsFactors = FALSE))
+        } else if (spp %in% syn_df$species) {
+          return(data.frame(query = spp, species = spp, status = "up_to_date", stringsAsFactors = FALSE))
+        } else {
+          return(data.frame(query = spp, species = NA, status = "unknown", stringsAsFactors = FALSE))
+        }
+      }
+      
+    } else if (is.list(link) && !is.null(link$url)) {
+      search <- rvest::read_html(link$url)
+      title_node <- rvest::html_element(search, "h1")
+      em_species <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
+      
+      if (spp == em_species) {
+        return(data.frame(query = spp, species = em_species, status = "up_to_date", stringsAsFactors = FALSE))
+      }
+    }
+    
+    # Fallback
+    data.frame(query = spp, species = NA, status = "unknown", stringsAsFactors = FALSE)
+    
+  }, error = function(e) {
+    if (verbose) message(sprintf("Error for '%s': %s", spp, conditionMessage(e)))
+    data.frame(query = spp, species = NA, status = "failed", stringsAsFactors = FALSE)
+  })
+}
+
+
 # End of internal functions -----------------------------------------------

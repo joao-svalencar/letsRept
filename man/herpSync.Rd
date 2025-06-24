@@ -7,7 +7,8 @@
 herpSync(x,
          solveAmbiguity = TRUE,
          cores = max(1, parallel::detectCores() - 1),
-         showProgress = TRUE)
+         showProgress = TRUE,
+         getLink = FALSE)
 }
 \arguments{
 \item{x}{A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).}
@@ -17,6 +18,8 @@ herpSync(x,
 \item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.}
 
 \item{showProgress}{Logical. If \code{TRUE}, displays progress updates during processing. Default is \code{TRUE}.}
+
+\item{getLink}{Logical. If \code{TRUE}, retrieves searched species URLs. Defaults if \code{FALSE}.}
 }
 \value{
 A data frame with the following columns:
@@ -24,7 +27,7 @@ A data frame with the following columns:
 \item \code{query}: the original input names.
 \item \code{RDB}: the best-matching valid names according to The Reptile Database.
 \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, or \code{"not_found"}).
-\item \code{url}: the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
+\item \code{url}: Optional, if getLink = TRUE returns the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 }
 }
 \description{
@@ -35,6 +38,8 @@ Queries a list of species names through \code{herpSearch()} and returns a data f
 A name marked as \code{"up_to_date"} may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy.
 
 For ambiguous names, the \code{url} field may contain multiple links corresponding to all valid species to which the queried name is considered a synonym.
+
+See package vignettes for more details.
 }
 \examples{
 query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")

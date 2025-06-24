@@ -38,7 +38,7 @@ herpTidySyn <- function(df, filter = NULL) {
   
   if ("url" %in% names(df)) df <- df[ , !(names(df) == "url")]
   
-  statuses <- c("up_to_date", "updated", "ambiguous", "unknown", "duplicated")
+  statuses <- c("up_to_date", "updated", "ambiguous", "unknown", "duplicated", "check_split")
   
   if (is.null(filter)) filter <- statuses
     

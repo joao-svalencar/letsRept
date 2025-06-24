@@ -101,7 +101,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
       return(url)
     } else if (grepl("No species were found", msg)) {
       warning("No species were found. Please verify the search arguments.\n")
-      return("Not found")
+      return("not_found")
     } else {
       warning("Unexpected content in a search results page.\n")
       return(invisible(NULL))
@@ -110,7 +110,7 @@ herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_
   } else {
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
-    if(verbose) message("Searched synonym is currently:\n", binomial, "\n")
+    if(verbose) message("Searched binomial is currently:\n", binomial, "\n")
     search <- herpSearch(binomial = binomial, verbose = FALSE)
     return(search)
   }

@@ -3,6 +3,7 @@
 export(herpAdvancedSearch)
 export(herpSearch)
 export(herpSpecies)
+export(herpSplitCheck)
 export(herpSync)
 export(herpSynonyms)
 export(herpTidySyn)
