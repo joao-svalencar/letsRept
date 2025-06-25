@@ -515,7 +515,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #' @return A data frame with three columns:
 #' \itemize{
 #'   \item \code{query} – the input species name
-#'   \item \code{species} – one or more matched species (or \code{NA} if none)
+#'   \item \code{RDB} – one or more matched species (or \code{NA} if none)
 #'   \item \code{status} – one of \code{"check_split"}, \code{"up_to_date"}, \code{"unknown"}, or \code{"failed"}
 #' }
 #'
@@ -547,12 +547,17 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE) {
         syn_df <- data.frame(species, years, stringsAsFactors = FALSE)
         
         if (any(syn_df$years >= pubDate, na.rm = TRUE)) {
-          matched_species <- paste(syn_df$species[syn_df$years >= pubDate], collapse = ";")
-          return(data.frame(query = spp, species = matched_species, status = "check_split", stringsAsFactors = FALSE))
+          
+          if(spp %in% syn_df$species){
+          matched_species <- paste(spp, syn_df$species[syn_df$years >= pubDate], collapse = "; ")
+          }else{
+          matched_species <- paste(syn_df$species[syn_df$years >= pubDate], collapse = "; ")
+          }
+          return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
         } else if (spp %in% syn_df$species) {
-          return(data.frame(query = spp, species = spp, status = "up_to_date", stringsAsFactors = FALSE))
+          return(data.frame(query = spp, RDB = spp, status = "up_to_date", stringsAsFactors = FALSE))
         } else {
-          return(data.frame(query = spp, species = NA, status = "unknown", stringsAsFactors = FALSE))
+          return(data.frame(query = spp, RDB = NA, status = "unknown", stringsAsFactors = FALSE))
         }
       }
       
@@ -562,18 +567,17 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE) {
       em_species <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
       
       if (spp == em_species) {
-        return(data.frame(query = spp, species = em_species, status = "up_to_date", stringsAsFactors = FALSE))
+        return(data.frame(query = spp, RDB = em_species, status = "up_to_date", stringsAsFactors = FALSE))
       }
     }
     
     # Fallback
-    data.frame(query = spp, species = NA, status = "unknown", stringsAsFactors = FALSE)
+    data.frame(query = spp, RDB = NA, status = "unknown", stringsAsFactors = FALSE)
     
   }, error = function(e) {
     if (verbose) message(sprintf("Error for '%s': %s", spp, conditionMessage(e)))
     data.frame(query = spp, species = NA, status = "failed", stringsAsFactors = FALSE)
   })
 }
-
 
 # End of internal functions -----------------------------------------------
