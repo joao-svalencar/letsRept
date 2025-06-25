@@ -3,17 +3,6 @@
 #' @description 
 #' Retrieves a list of reptile species from The Reptile Database (RDB) based on a search URL, and optionally returns detailed taxonomic information for each species. 
 #' This function can also save progress to disk during sampling and extract species-specific URLs for further use.
-#' 
-#' @usage herpSpecies(url,
-#'                    showProgress = TRUE,
-#'                    dataList = NULL, 
-#'                    taxonomicInfo=FALSE, 
-#'                    fullHigher=FALSE, 
-#'                    getLink=FALSE,
-#'                    cores = max(1, parallel::detectCores() - 1),
-#'                    checkpoint = NULL,
-#'                    backup_file = NULL
-#'                    )
 #'                    
 #' @param url Character string. A search URL generated via an advanced search on the RDB website or with \code{\link{herpAdvancedSearch}}.
 #' @param showProgress Logical. If \code{TRUE}, prints sampling progress in the console. Default is \code{FALSE}.

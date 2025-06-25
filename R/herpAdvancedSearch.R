@@ -6,14 +6,6 @@
 #' 
 #' If a synonym is provided and can be unambiguously matched to a valid species, the function also prints detailed information for that species.
 #' 
-#' @usage herpAdvancedSearch(higher=NULL,
-#'                           genus=NULL,
-#'                           year=NULL,
-#'                           common_name=NULL,
-#'                           synonym=NULL,
-#'                           location=NULL,
-#'                           verbose = TRUE)
-#' 
 #' @param higher Character string. A higher-level reptile taxon above genus (e.g., \code{"snakes"} or \code{"Boidae"}).
 #' @param genus Character string. The current valid name of a reptile genus (e.g., \code{"Apostolepis"}).
 #' @param year Character string. Filters the search by year of species description (e.g., \code{"2025"}).
@@ -45,7 +37,13 @@
 #' }
 #' @export
 #'
-herpAdvancedSearch <- function(higher = NULL, genus = NULL, year = NULL, common_name = NULL, synonym = NULL, location = NULL, verbose = TRUE) {
+herpAdvancedSearch <- function(higher = NULL,
+                               genus = NULL,
+                               year = NULL,
+                               common_name = NULL,
+                               synonym = NULL,
+                               location = NULL,
+                               verbose = TRUE) {
   
   # Check if all arguments are NULL
   if (all(sapply(list(higher, genus, year, common_name, synonym, location), is.null))) {

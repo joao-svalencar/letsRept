@@ -3,19 +3,19 @@
 #' @description
 #' Queries The Reptile Database (RDB) for information about a single reptile species using its binomial name.
 #' 
-#' @usage herpSearch(binomial=NULL, ref=FALSE, verbose=TRUE)
+#' @usage herpSearch(binomial=NULL, getRef=FALSE, verbose=TRUE)
 #' 
 #' @param binomial Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").
-#' @param ref Logical. If \code{TRUE}, returns the list of references from RDB associated with the species. Default is \code{FALSE}.
+#' @param getRef Logical. If \code{TRUE}, returns the list of references from RDB associated with the species. Default is \code{FALSE}.
 #' @param verbose Logical. If \code{TRUE}, prints species information in the console. Default is \code{TRUE}.
 #'
 #' @return
-#' A list containing species information retrieved from The Reptile Database. If \code{ref = TRUE}, returns references related to the species.
+#' A list containing species information retrieved from The Reptile Database. If \code{getRef = TRUE}, returns references related to the species.
 #' 
 #' @examples
 #' \donttest{
 #' herpSearch("Boa constrictor")
-#' herpSearch("Boa constrictor", ref = TRUE)
+#' herpSearch("Boa constrictor", getRef = TRUE)
 #' }
 #' 
 #' @seealso \code{\link{herpSynonyms}}, \code{\link{herpSpecies}} for related species data functions.
@@ -24,7 +24,7 @@
 #' 
 #' @export
 
-herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
+herpSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
   if (!is.null(binomial)) {
     output_list <- list()
     base_url <- "https://reptile-database.reptarium.cz/species"
@@ -64,7 +64,7 @@ herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
       }
       
       if (title_clean == "References") {
-        if (ref) {
+        if (getRef) {
           ref_list <- NULL
           li_nodes <- rvest::html_elements(cells[[2]], "li")
           xml2::xml_remove(xml2::xml_find_all(li_nodes, ".//a"))
@@ -105,7 +105,7 @@ herpSearch <- function(binomial = NULL, ref = FALSE, verbose = TRUE) {
     }
     
     # Print and add references only at the end, if requested
-    if (verbose==TRUE && ref && !is.null(ref_list)) {
+    if (verbose==TRUE && getRef && !is.null(ref_list)) {
       cat("References:\n")
       for (item in ref_list) cat(" -", item, "\n")
       cat("\n")
