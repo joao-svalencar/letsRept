@@ -1,6 +1,6 @@
-# CRAN submission: letsHerp 0.1.0
+# CRAN submission: letsHerp 1.0.0
 
-This is the first submission of the package `letsHerp` to CRAN.
+This is the second submission of the package `letsHerp` to CRAN.
 
 ## R CMD check results
 
@@ -11,29 +11,29 @@ I have run R CMD check on:
 R CMD check results:  
 - No ERRORs  
 - No WARNINGs  
-- 1 NOTE for "New submission," which is expected.
+- 1 NOTE about "Days since last update", which is expected due to the recent 0.1.0 submission. This is a significant update with breaking changes.
 
 ## Test coverage and documentation
 
 - All exported functions are documented and tested using `testthat`.  
-- I have included a `NEWS.md` file with the initial release notes.  
-- Examples requiring internet access are wrapped in `\donttest{}` to avoid failures on CRAN’s offline test servers.  
-- Tests that require internet access use `skip_on_cran()` and checks for `Sys.getenv("NOT_CRAN")` to ensure they do not run during CRAN testing but do run in local environments.
+- A `NEWS.md` file is included with a summary of major changes.
 
-## Changes since last submission
+## Summary of changes in version 1.0.0
 
-- Updated package title to remove redundant "An R" at the beginning, now:  
-  *"An Interface to the Reptile Database"*  
-- Added a direct hyperlink to The Reptile Database in the DESCRIPTION `Description` field:  
-  *Provides tools to retrieve and summarize taxonomic information and synonymy data for reptile species using data scraped from The Reptile Database website (<https://reptile-database.reptarium.cz/>).*  
-- Improved message handling in functions by introducing a `verbose` argument to control progress output. All console messages now use `message()` or `warning()`, allowing users to suppress them if desired.
-- Implemented warnings to highlight any species sampling error and how to extract failed species from original objects
-- Implemented synonym search in `herpSearch` when binomial does not match a species valid name, returns a message and (if verbose = TRUE, default), prints the valid species information in the console.
+- `herpSync()` was fully redesigned for improved performance and flexibility (**breaking change**).
+- Added `herpSplitCheck()` to identify potential taxonomic splits after a user-defined year.
+- Added `herpTidySyn()` to summarize outputs from `herpSync()` and `herpSplitCheck()`, with optional filtering.
+- Added internal helper `splitCheck()` to support `herpSplitCheck`.
+- Vignettes updated and expanded to reflect the changes.
 
 ## Notes for CRAN reviewers
 
-- The package scrapes publicly accessible data from [The Reptile Database](https://reptile-database.reptarium.cz) using respectful user-agent headers.  
-- Most package functionality requires internet access. To accommodate CRAN’s testing environment, examples and tests that depend on online resources are conditionally skipped as described above.  
-- All console output can be controlled or suppressed by the user through the `verbose` argument or standard R message/warning handling.
+- The package scrapes publicly accessible content from [The Reptile Database](https://reptile-database.reptarium.cz) using a respectful user-agent via `httr`.
+- Most functions require internet access. To accommodate CRAN’s offline testing environment:
+  - Examples are wrapped in `\donttest{}`.
+  - Tests using online resources are skipped on CRAN using `skip_on_cran()` and `Sys.getenv("NOT_CRAN")`.
+- Console output and progress feedback are now fully suppressible using `verbose` or `showProgress` arguments, where applicable.
+- The only exception is `herpTidySyn()`, which is an interactive console summary function (similar to `print()` or `summary()`), and is intended to produce console output by design.
+- This update is submitted shortly after the previous version to address important functional changes and new features that were not included in version 0.1.0.
 
 Thank you for your time and consideration.

@@ -1,13 +1,15 @@
 # letsHerp NEWS
 
-## Version 0.1.0 — YYYY-MM-DD
+## Version 1.0.0 — YYYY-MM-DD
 
-- Initial release of letsHerp
-- Provides tools to retrieve and summarize taxonomic and synonymy data for reptile species
-- Scrapes up-to-date information from The Reptile Database website
-- Includes functions for parallel and sequential synonym extraction with backup support
-- Features clean species name extraction and standardized data frame outputs
-- Supports optional retrieval of synonym references
-- Designed to facilitate ecological, evolutionary, and conservation research workflows
+### Major changes
+
+- `herpSync()` was fully redesigned for improved performance and flexibility. This change breaks compatibility with previous versions.
+- Added new function `herpSplitCheck()`. This function checks for potential taxonomic splits departing from a user defined date.
+- Added new function `herpTidySyn()`. This function prints to the console the outcomes of `herpSync` and `herpSplitCheck` with an optional "filter" argument.
+- Added helper `splitCheck()` to support `herpSplitCheck()`.
+
+### Other changes
+- I updated and expanded the vignettes to include the major changes
 
 ---

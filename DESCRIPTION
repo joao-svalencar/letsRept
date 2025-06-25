@@ -1,6 +1,6 @@
 Package: letsHerp
 Title: An Interface to the Reptile Database
-Version: 0.1.0
+Version: 1.0.0
 Authors@R:
     c(
     person(given="João Paulo dos Santos",
