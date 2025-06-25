@@ -2,7 +2,7 @@
 % Please edit documentation in R/herpSplitCheck.R
 \name{herpSplitCheck}
 \alias{herpSplitCheck}
-\title{Check for possible splits in herp species names}
+\title{Check for potential taxonomic splits in a query}
 \usage{
 herpSplitCheck(
   x,
@@ -13,19 +13,35 @@ herpSplitCheck(
 )
 }
 \arguments{
-\item{x}{A character vector of species names to check.}
+\item{x}{A character vector of species names to check. Usually from a database.}
 
-\item{pubDate}{An integer year (e.g., 2019) used to detect new taxa.}
+\item{pubDate}{Integer. An year (e.g., 2019) used as a reference date from when to check potential taxonomic split}
 
-\item{verbose}{Logical; whether to print progress.}
+\item{verbose}{Logical; If \code{TRUE}, prints progress messages. Default is \code{TRUE}.}
 
 \item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the total available cores.}
 
 \item{showProgress}{Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.}
 }
 \value{
-A data frame with columns: query, species, status.
+A data frame with the following columns:
+\itemize{
+\item \code{query}: the original input names.
+\item \code{RDB}: the best-matching valid names according to The Reptile Database.
+\item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, or \code{"not_found"}).
+}
 }
 \description{
-Check for possible splits in herp species names
+Check for potential taxonomic splits in a query
+}
+\examples{
+query <- c("Vieira-Alencar authoristicus",
+"Tantilla melanocephala",
+"Oxybelis aeneus",
+"Apostolepis dimidiata",
+"Bothrops pauloensis")
+
+\donttest{
+result <- herpSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
+}
 }

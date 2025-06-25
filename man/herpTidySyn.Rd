@@ -2,7 +2,7 @@
 % Please edit documentation in R/herpTidySyn.R
 \name{herpTidySyn}
 \alias{herpTidySyn}
-\title{Printing herpSync outcome in a tidy way}
+\title{Printing herpSync and herpSplitCheck outcomes in a tidy way}
 \usage{
 herpTidySyn(df, filter = NULL)
 }
@@ -15,7 +15,7 @@ herpTidySyn(df, filter = NULL)
 Invisibly returns \code{NULL}. Used for side-effect printing only.
 }
 \description{
-Prints the data frame derivated from \code{herpSync} in a tidy way.
+Prints the data frame derived from \code{herpSync} or \code{herpSplitCheck} in a tidy way.
 Optionally, it filters the data frame for species with unresolved nomenclature only.
 }
 \examples{
@@ -37,6 +37,6 @@ df <- data.frame(
              "ambiguous"),
   stringsAsFactors = FALSE
 )
-herpTidySyn(df, filter = TRUE)
+herpTidySyn(df, filter = c("ambiguous", "unknown"))
 
 }
