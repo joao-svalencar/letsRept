@@ -4,13 +4,15 @@
 \alias{herpSynonyms}
 \title{Retrieve Synonyms for Reptile Species from RDB}
 \usage{
-herpSynonyms(x,
-                    getRef = FALSE,
-                    showProgress = TRUE,
-                    checkpoint = NULL,
-                    backup_file = NULL,
-                    resume = FALSE,
-                    cores = max(1, parallel::detectCores() - 1))
+herpSynonyms(
+  x,
+  getRef = FALSE,
+  showProgress = TRUE,
+  checkpoint = NULL,
+  backup_file = NULL,
+  resume = FALSE,
+  cores = max(1, parallel::detectCores() - 1)
+)
 }
 \arguments{
 \item{x}{A data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.}

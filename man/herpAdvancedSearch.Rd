@@ -4,13 +4,15 @@
 \alias{herpAdvancedSearch}
 \title{Search The Reptile Database website (RDB): Advanced}
 \usage{
-herpAdvancedSearch(higher=NULL,
-                          genus=NULL,
-                          year=NULL,
-                          common_name=NULL,
-                          synonym=NULL,
-                          location=NULL,
-                          verbose = TRUE)
+herpAdvancedSearch(
+  higher = NULL,
+  genus = NULL,
+  year = NULL,
+  common_name = NULL,
+  synonym = NULL,
+  location = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{higher}{Character string. A higher-level reptile taxon above genus (e.g., \code{"snakes"} or \code{"Boidae"}).}

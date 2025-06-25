@@ -4,15 +4,6 @@
 #' Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (RDB). 
 #' Optionally, the references citing each synonym can also be included.
 #' 
-#' @usage
-#' herpSynonyms(x,
-#'              getRef = FALSE,
-#'              showProgress = TRUE,
-#'              checkpoint = NULL,
-#'              backup_file = NULL,
-#'              resume = FALSE,
-#'              cores = max(1, parallel::detectCores() - 1))
-#' 
 #' @param x A data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.
 #' @param getRef Logical. If \code{TRUE}, includes the reference(s) in which each synonym was mentioned. Default is \code{FALSE}.
 #' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.

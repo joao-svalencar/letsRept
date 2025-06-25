@@ -3,13 +3,6 @@
 #' @description
 #' Queries a list of species names through \code{herpSearch()} and returns a data frame with the currently valid names and taxonomic status for each input.
 #'
-#' @usage
-#' herpSync(x,
-#'          solveAmbiguity = TRUE,
-#'          cores = max(1, parallel::detectCores() - 1),
-#'          showProgress = TRUE,
-#'          getLink = FALSE)
-#'
 #' @param x A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).
 #' @param solveAmbiguity Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.
 #' @param cores Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.

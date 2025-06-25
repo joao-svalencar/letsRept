@@ -4,11 +4,13 @@
 \alias{herpSync}
 \title{Synchronize Species Names Using The Reptile Database}
 \usage{
-herpSync(x,
-         solveAmbiguity = TRUE,
-         cores = max(1, parallel::detectCores() - 1),
-         showProgress = TRUE,
-         getLink = FALSE)
+herpSync(
+  x,
+  solveAmbiguity = TRUE,
+  cores = max(1, parallel::detectCores() - 1),
+  showProgress = TRUE,
+  getLink = FALSE
+)
 }
 \arguments{
 \item{x}{A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).}

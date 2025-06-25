@@ -4,16 +4,17 @@
 \alias{herpSpecies}
 \title{Retrieve Reptile Species and Taxonomic Information from RDB}
 \usage{
-herpSpecies(url,
-                   showProgress = TRUE,
-                   dataList = NULL, 
-                   taxonomicInfo=FALSE, 
-                   fullHigher=FALSE, 
-                   getLink=FALSE,
-                   cores = max(1, parallel::detectCores() - 1),
-                   checkpoint = NULL,
-                   backup_file = NULL
-                   )
+herpSpecies(
+  url = NULL,
+  showProgress = TRUE,
+  dataList = NULL,
+  taxonomicInfo = FALSE,
+  fullHigher = FALSE,
+  getLink = FALSE,
+  cores = max(1, parallel::detectCores() - 1),
+  checkpoint = NULL,
+  backup_file = NULL
+)
 }
 \arguments{
 \item{url}{Character string. A search URL generated via an advanced search on the RDB website or with \code{\link{herpAdvancedSearch}}.}
