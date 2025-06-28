@@ -39,7 +39,7 @@
 
 herpSync <- function(x, 
                      solveAmbiguity = TRUE,
-                     cores = parallel::detectCores()/2,
+                     cores = max(1L, floor(parallel::detectCores() / 2)),
                      showProgress = TRUE,
                      getLink = FALSE) {
   

@@ -28,7 +28,7 @@
 herpSplitCheck <- function(x,
                            pubDate = NULL,
                            verbose = TRUE,
-                           cores = parallel::detectCores()/2,
+                           cores = max(1L, floor(parallel::detectCores() / 2)),
                            showProgress = TRUE) {
   
   results <- safeParallel(x, function(spp) {

@@ -47,7 +47,7 @@ herpSynonyms <- function(x,
                          checkpoint = NULL,
                          backup_file = NULL,
                          resume=FALSE,
-                         cores = parallel::detectCores()/2)
+                         cores = max(1L, floor(parallel::detectCores() / 2)))
 {
   if (cores==1 && is.null(backup_file) && !is.null(checkpoint) && checkpoint < length(x$species)) {
     stop("You must provide a valid backup_file path if checkpoint is smaller than the number of species.")
