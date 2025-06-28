@@ -68,7 +68,7 @@ herpSync <- function(x, solveAmbiguity = TRUE, cores = max(1, parallel::detectCo
   if(solveAmbiguity){
     
     synSample <- df[df$RDB == "ambiguous", c("query", "url")]
-    if(showProgress) message(sprintf("Sampling synonyms to approach ambiguity for %d species", nrow(synSample)))
+    if(showProgress && nrow(synSample) >=1 ) message(sprintf("Sampling synonyms to approach ambiguity for %d species", nrow(synSample)))
     
     if (nrow(synSample) > 0) {
       ambiguity_results <- safeParallel(1:nrow(synSample), FUN = function(i) {

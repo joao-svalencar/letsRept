@@ -545,14 +545,8 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE) {
         })
         
         syn_df <- data.frame(species, years, stringsAsFactors = FALSE)
-        
         if (any(syn_df$years >= pubDate, na.rm = TRUE)) {
-          
-          if(spp %in% syn_df$species){
-          matched_species <- paste(spp, syn_df$species[syn_df$years >= pubDate], collapse = "; ")
-          }else{
           matched_species <- paste(syn_df$species[syn_df$years >= pubDate], collapse = "; ")
-          }
           return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
         } else if (spp %in% syn_df$species) {
           return(data.frame(query = spp, RDB = spp, status = "up_to_date", stringsAsFactors = FALSE))
