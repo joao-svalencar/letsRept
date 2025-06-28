@@ -3,7 +3,7 @@
 #' @param x A character vector of species names to check. Usually from a database.
 #' @param pubDate Integer. An year (e.g., 2019) used as a reference date from when to check potential taxonomic split
 #' @param verbose Logical; If \code{TRUE}, prints progress messages. Default is \code{TRUE}.
-#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is one less than the total available cores.
+#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.
 #' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
 #'
 #' @return A data frame with the following columns:
@@ -25,7 +25,12 @@
 #' }
 #' @export
 #' 
-herpSplitCheck <- function(x, pubDate = NULL, verbose = TRUE, cores = max(1, parallel::detectCores() - 1), showProgress = TRUE) {
+herpSplitCheck <- function(x,
+                           pubDate = NULL,
+                           verbose = TRUE,
+                           cores = parallel::detectCores()/2,
+                           showProgress = TRUE) {
+  
   results <- safeParallel(x, function(spp) {
     splitCheck(spp, pubDate = pubDate, verbose = verbose)
   }, cores = cores,
