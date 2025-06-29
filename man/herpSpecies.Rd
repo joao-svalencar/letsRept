@@ -11,7 +11,7 @@ herpSpecies(
   taxonomicInfo = FALSE,
   fullHigher = FALSE,
   getLink = FALSE,
-  cores = max(1, parallel::detectCores() - 1),
+  cores = max(1L, floor(parallel::detectCores()/2)),
   checkpoint = NULL,
   backup_file = NULL
 )
@@ -29,7 +29,7 @@ herpSpecies(
 
 \item{getLink}{Logical. If \code{TRUE}, includes the RDB URL for each species (useful for follow-up functions like \code{\link{herpSynonyms}}). Default is \code{FALSE}.}
 
-\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.}
 
 \item{checkpoint}{Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).}
 

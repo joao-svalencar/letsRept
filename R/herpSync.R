@@ -5,7 +5,7 @@
 #'
 #' @param x A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).
 #' @param solveAmbiguity Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.
-#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.
+#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).
 #' @param showProgress Logical. If \code{TRUE}, displays progress updates during processing. Default is \code{TRUE}.
 #' @param getLink Logical. If \code{TRUE}, retrieves searched species URLs. Defaults if \code{FALSE}.
 #'

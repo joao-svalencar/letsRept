@@ -11,7 +11,7 @@ herpSynonyms(
   checkpoint = NULL,
   backup_file = NULL,
   resume = FALSE,
-  cores = max(1, parallel::detectCores() - 1)
+  cores = max(1L, floor(parallel::detectCores()/2))
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ herpSynonyms(
 
 \item{resume}{Logical. If \code{TRUE}, resumes sampling from a previous run using the file provided in \code{backup_file}. Only works when \code{cores = 1}.}
 
-\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the total available cores.}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.}
 }
 \value{
 A data frame with columns:

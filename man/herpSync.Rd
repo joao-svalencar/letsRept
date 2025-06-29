@@ -7,7 +7,7 @@
 herpSync(
   x,
   solveAmbiguity = TRUE,
-  cores = max(1, parallel::detectCores() - 1),
+  cores = max(1L, floor(parallel::detectCores()/2)),
   showProgress = TRUE,
   getLink = FALSE
 )
@@ -17,7 +17,7 @@ herpSync(
 
 \item{solveAmbiguity}{Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.}
 
-\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the number of available cores.}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.}
 
 \item{showProgress}{Logical. If \code{TRUE}, displays progress updates during processing. Default is \code{TRUE}.}
 

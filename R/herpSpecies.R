@@ -10,7 +10,7 @@
 #' @param taxonomicInfo Logical. If \code{TRUE}, returns taxonomic information for each species, including order, suborder, family, genus, author, and year. Default is \code{FALSE}.
 #' @param fullHigher Logical. If \code{TRUE}, includes the full higher taxonomic hierarchy as reported by RDB (e.g., including subfamilies). Requires \code{taxonomicInfo = TRUE}. Default is \code{FALSE}.
 #' @param getLink Logical. If \code{TRUE}, includes the RDB URL for each species (useful for follow-up functions like \code{\link{herpSynonyms}}). Default is \code{FALSE}.
-#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.
+#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).
 #' @param checkpoint Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).
 #' @param backup_file Optional. Character string specifying the path to an \code{.rds} file for saving intermediate results when \code{checkpoint} is set. Must end in \code{.rds}.
 #' 
@@ -45,7 +45,7 @@ herpSpecies <- function(url=NULL,
                         taxonomicInfo = FALSE,
                         fullHigher = FALSE,
                         getLink = FALSE,
-                        cores = parallel::detectCores()/2,
+                        cores = max(1L, floor(parallel::detectCores() / 2)),
                         checkpoint = NULL,
                         backup_file = NULL
                         )

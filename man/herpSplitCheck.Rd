@@ -8,7 +8,7 @@ herpSplitCheck(
   x,
   pubDate = NULL,
   verbose = TRUE,
-  cores = max(1, parallel::detectCores() - 1),
+  cores = max(1L, floor(parallel::detectCores()/2)),
   showProgress = TRUE
 )
 }
@@ -19,7 +19,7 @@ herpSplitCheck(
 
 \item{verbose}{Logical; If \code{TRUE}, prints progress messages. Default is \code{TRUE}.}
 
-\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is one less than the total available cores.}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.}
 
 \item{showProgress}{Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.}
 }
