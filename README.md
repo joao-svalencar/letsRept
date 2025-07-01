@@ -111,6 +111,20 @@ query <- c("Vieira-Alencar authorisensis",
 herpSync(query)
 ```
 
+**Function `herpSplitCheck`:**
+
+Queries binomial names as synonyms using `herpAdvancedSearch`, and checks whether any associated species were described after a user-defined date (e.g., the publication date of the dataset being used).
+
+See package vignettes for more details.
+
+```{.r}
+query <- c("Tantilla melanocephala",
+           "Atractus snethlageae",
+           "Oxybelis aeneus")
+
+herpSplitCheck(query, pubDate = 2019) # pubDate of Nogueira et al., Atlas of Brazilian Snakes
+```
+
 **Function `herpTidySyn`:**
 
 This function was developed exclusively to improve the visualization of `herpSync` outcome.
@@ -148,7 +162,7 @@ herpTidySyn(df)
 - [x] &nbsp; CRAN release 0.1.0 (June 23rd, 2025)
 - [ ] &nbsp; Paper submission (ongoing)
 - [x] &nbsp; `herpSync` upgrade
-- [ ] &nbsp; Implement "up_to_date" check
+- [x] &nbsp; Implement "up_to_date" check
 - [ ] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
 - [ ] &nbsp; Implement adapted version of `AmphiNom::synonym_report()` (Liedtke, 2018)
 - [ ] &nbsp; Implement IUCN match
