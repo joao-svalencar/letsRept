@@ -19,7 +19,7 @@ herpSplitCheck(
 
 \item{verbose}{Logical; If \code{TRUE}, prints progress messages. Default is \code{TRUE}.}
 
-\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores.}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).}
 
 \item{showProgress}{Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.}
 }
