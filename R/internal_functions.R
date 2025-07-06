@@ -521,7 +521,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #'
 #' @keywords internal
 #' @noRd
-splitCheck <- function(spp, pubDate = NULL, verbose = TRUE) {
+splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, x) {
   tryCatch({
     link <- herpAdvancedSearch(synonym = spp, verbose = verbose)
     
@@ -545,11 +545,20 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE) {
         })
         
         syn_df <- data.frame(species, years, stringsAsFactors = FALSE)
-        if (any(syn_df$years >= pubDate, na.rm = TRUE)) {
-          matched_species <- paste(syn_df$species[syn_df$years >= pubDate], collapse = "; ")
-          return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
-        } else if (spp %in% syn_df$species) {
+        
+        if(!any(syn_df$years >= pubDate, na.rm = TRUE) && spp %in% syn_df$species){
           return(data.frame(query = spp, RDB = spp, status = "up_to_date", stringsAsFactors = FALSE))
+        }
+        
+        syn_df_filter <- syn_df[!syn_df$species %in% setdiff(x, spp), ]
+        
+        if (length(syn_df_filter$species) == 1 && syn_df_filter$species == spp) {
+          return(data.frame(query = spp, RDB = spp, status = "checked", stringsAsFactors = FALSE))
+        }
+        
+        if (any(syn_df_filter$years >= pubDate, na.rm = TRUE)) {
+          matched_species <- paste(syn_df_filter$species[syn_df_filter$years >= pubDate], collapse = "; ")
+          return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
         } else {
           return(data.frame(query = spp, RDB = NA, status = "unknown", stringsAsFactors = FALSE))
         }
@@ -570,8 +579,9 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE) {
     
   }, error = function(e) {
     if (verbose) message(sprintf("Error for '%s': %s", spp, conditionMessage(e)))
-    data.frame(query = spp, species = NA, status = "failed", stringsAsFactors = FALSE)
+    data.frame(query = spp, RDB = NA, status = "failed", stringsAsFactors = FALSE)
   })
 }
+
 
 # End of internal functions -----------------------------------------------
