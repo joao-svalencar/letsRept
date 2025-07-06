@@ -15,7 +15,7 @@ herpSynonyms(
 )
 }
 \arguments{
-\item{x}{A data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.}
+\item{x}{A character string with a species binomial or a data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.}
 
 \item{getRef}{Logical. If \code{TRUE}, includes the reference(s) in which each synonym was mentioned. Default is \code{FALSE}.}
 
@@ -51,6 +51,7 @@ boa <- letsHerp::allReptiles[grep("^Boa\\\\s", letsHerp::allReptiles$species), ]
 \donttest{
 # Retrieve synonyms (without references)
 boa_syn <- herpSynonyms(boa, getRef = FALSE, cores = 2)
+Bconstrictor_syn <- herpSynonyms(x = "Boa constrictor")
 }
 
 }

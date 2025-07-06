@@ -4,7 +4,7 @@
 #' Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (RDB). 
 #' Optionally, the references citing each synonym can also be included.
 #' 
-#' @param x A data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.
+#' @param x A character string with a species binomial or a data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.
 #' @param getRef Logical. If \code{TRUE}, includes the reference(s) in which each synonym was mentioned. Default is \code{FALSE}.
 #' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
 #' @param checkpoint Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).
@@ -34,6 +34,7 @@
 #' \donttest{
 #' # Retrieve synonyms (without references)
 #' boa_syn <- herpSynonyms(boa, getRef = FALSE, cores = 2)
+#' Bconstrictor_syn <- herpSynonyms(x = "Boa constrictor")
 #' }
 #' 
 #' @seealso \code{\link{herpSpecies}}, \code{\link{herpAdvancedSearch}}
@@ -49,16 +50,71 @@ herpSynonyms <- function(x,
                          resume=FALSE,
                          cores = max(1L, floor(parallel::detectCores() / 2)))
 {
+  if(is.character(x)){
+    species_list <- c()
+    synonyms_list <- c()
+    synonymsRef_list <- c()
+    binomial <- x
+    base_url <- "https://reptile-database.reptarium.cz/species"
+    gen <- strsplit(binomial, " ")[[1]][1]
+    species <- strsplit(binomial, " ")[[1]][2]
+    query <- paste0("?genus=", gen, "&species=", species)
+    sppLink <- paste0(base_url, query)
+    
+    url <- rvest::read_html(httr::GET(sppLink, httr::user_agent("Mozilla/5.0")))
+    element <- rvest::html_element(url, "table") # species table
+    
+    # Extract synonyms
+    syn <- xml2::xml_child(element, 4)
+    td2 <- rvest::html_element(syn, "td:nth-child(2)")
+    children <- xml2::xml_contents(td2)
+    
+    synonyms_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
+    synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
+    
+    synonyms <- clean_species_names(synonyms_vector)
+    species <- rep(binomial, times = length(synonyms))
+    
+    species_list <- c(species_list, species)
+    synonyms_list <- c(synonyms_list, synonyms)
+    synonymsRef_list <- c(synonymsRef_list, synonyms_vector)
+    
+    if(getRef==TRUE){
+      synonymsResults <- data.frame(species = species_list,
+                                    synonyms = synonyms_list,
+                                    ref = synonymsRef_list,
+                                    stringsAsFactors = FALSE)
+      return(synonymsResults)
+    }else{
+      synonymsResults <- data.frame(species = species_list,
+                                    synonyms = synonyms_list,
+                                    stringsAsFactors = FALSE)
+      
+      synonymsResults$combined <- paste((synonymsResults)$species, (synonymsResults)$synonyms, sep="_")
+      
+      uniquerec <- data.frame(unique(synonymsResults$combined))
+      
+      uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymsResults.combined.", 
+                                        into=c("species", "synonyms"), sep="_",
+                                        convert=TRUE)
+      
+      if(showProgress == TRUE){
+        cat("\nSynonyms sampling complete!\n")
+      }
+      return(uniqueSynonyms)
+    }
+  }
+  
   if (cores==1 && is.null(backup_file) && !is.null(checkpoint) && checkpoint < length(x$species)) {
     stop("You must provide a valid backup_file path if checkpoint is smaller than the number of species.")
   }else 
     if(!is.null(backup_file) && !grepl(".rds", backup_file)){
-    stop("Backup file path must end with 'filename.rds'")
+      stop("Backup file path must end with 'filename.rds'")
     }
   if (!"url" %in% names(x) || all(is.na(x$url))) {
     stop("No valid species URL found in x")
   }
-
+  
   if(cores > 1){
     synonyms <- safeParallel(
       data = seq_along(x$species),
