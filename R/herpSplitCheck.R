@@ -32,7 +32,7 @@ herpSplitCheck <- function(x,
                            showProgress = TRUE) {
   
   results <- safeParallel(x, function(spp) {
-    splitCheck(spp, pubDate = pubDate, verbose = verbose)
+    splitCheck(spp, pubDate = pubDate, verbose = verbose, x = x)
   }, cores = cores,
   showProgress = showProgress)
   
