@@ -105,7 +105,7 @@ herpSync <- function(x,
         df$status[df$query == ambiguity_df$query[i]] <- ambiguity_df$status[i]
       }
     }
-    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "Not found")] >=2))] <- "duplicated"
+    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "duplicated"
     if(getLink){
       return(df)  
     }else{
