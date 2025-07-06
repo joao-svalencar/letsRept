@@ -113,7 +113,7 @@ All console messages, warnings, and progress updates can be silenced. However, `
 
 #### **Function `herpSynonyms`:**
 
-Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to use half of the available cores.
+Samples species synonyms either using binomial or a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to use half of the available cores.
 
 ```{.r}
 #check number of available cores:
@@ -121,7 +121,8 @@ install.packages("parallel")
 parallel::detectCores()
 
 # sample species synonyms
-boa_syn <- herpSynonyms(boa)
+boa_syn <- herpSynonyms(boa) # using data frame created, with herpSpecies(boa_link, getLink = TRUE)
+Bconstrictor_syn <- herpSynonyms(x = "Boa constrictor") # using species binomial
 
 #example 2
 apo_syn <- herpSynonyms(apo)
@@ -220,8 +221,9 @@ Pay special attention to the `"status"` column:
 
 - `"up_to_date"` – The species name provided is not a synonym of any species described after `pubDate`.
 
-- `"check_split"` – The species name provided is a synonym of at least one valid species described after `pubDate`, suggesting a possible taxonomic split.
+- `"check_split"` – The species name provided is a synonym of at least one valid species described in or after `pubDate`, suggesting a possible taxonomic split.
 
+**OBS: ** If the queried species is a synonym of only species described in the same year `pubDate` that are already included in the queried species list, the queried species will receive the status `"up_to_date"`.
 
 #### **Function `herpTidySyn`:**
 
