@@ -85,7 +85,11 @@ herpSpecies <- function(url=NULL,
       
       if(showProgress == TRUE){
       percent <- (i/length(xml2::xml_children(ul_element[[1]]))) * 100
-      cat(sprintf("\rGetting species links progress: %.1f%%", percent))
+        if(getLink){
+          cat(sprintf("\rGetting species names and links progress: %.1f%%", percent))  
+        }else{
+          cat(sprintf("\rGetting species names progress: %.1f%%", percent))
+        }
       utils::flush.console()
       }
     }
