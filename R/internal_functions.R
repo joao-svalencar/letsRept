@@ -546,22 +546,17 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, x) {
         
         syn_df <- data.frame(species, years, stringsAsFactors = FALSE)
         
-        if(!any(syn_df$years >= pubDate, na.rm = TRUE) && spp %in% syn_df$species){
+        syn_df_filter <- syn_df[!syn_df$species %in% setdiff(x, spp), ]
+
+        if(!any(syn_df_filter$years >= pubDate, na.rm = TRUE) && spp %in% syn_df$species){
           return(data.frame(query = spp, RDB = spp, status = "up_to_date", stringsAsFactors = FALSE))
         }
         
-        syn_df_filter <- syn_df[!syn_df$species %in% setdiff(x, spp), ]
-        
-        if (length(syn_df_filter$species) == 1 && syn_df_filter$species == spp) {
-          return(data.frame(query = spp, RDB = spp, status = "checked", stringsAsFactors = FALSE))
-        }
-        
-        if (any(syn_df_filter$years >= pubDate, na.rm = TRUE)) {
+        if(any(syn_df_filter$years >= pubDate, na.rm = TRUE)) {
           matched_species <- paste(syn_df_filter$species[syn_df_filter$years >= pubDate], collapse = "; ")
           return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
-        } else {
-          return(data.frame(query = spp, RDB = NA, status = "unknown", stringsAsFactors = FALSE))
-        }
+        } 
+
       }
       
     } else if (is.list(link) && !is.null(link$url)) {
