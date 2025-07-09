@@ -124,7 +124,7 @@ herpSpecies <- function(url=NULL,
     message("Sampling species higher taxa progress:\n")
     }
     orders <- c("Squamata", "Crocodylia", "Rhynchocephalia", "Testudines")
-    suborders <- c("Sauria", "Serpentes")
+    suborders <- c("Amphisbaenia","Sauria", "Serpentes")
     
     if (cores > 1)
     {
