@@ -19,7 +19,7 @@ match_taxon <- function(taxa_vector, rank_list) {
   }
   match_positions <- sapply(matches, function(rank) stringr::str_locate(taxa_vector, rank)[1])
   sorted_matches <- matches[order(match_positions)]
-  return(paste(sorted_matches, collapse = ", "))
+  return(sorted_matches[1])
 }
 
 # safeParallel ------------------------------------------------------------
