@@ -49,6 +49,6 @@ reptStats(verbose = TRUE)
 reptStats(family = "Elapidae")
 
 # Combine filters and return list
-reptStats(order = "Squamata", suborder = "Serpentes", verbose = TRUE)
+reptStats(suborder = "Serpentes", verbose = TRUE)
 
 }

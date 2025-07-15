@@ -4,6 +4,12 @@
 #' @param getLink Logical; if TRUE, also returns associated links to references.
 #'
 #' @return A character vector of references (if getLink = FALSE), or a data frame with columns `reference` and `link`.
+#' 
+#' @examples
+#' \donttest{
+#' df <- reptRefs("Apostolepis adhara")
+#' }
+#' 
 #' @export
 reptRefs <- function(x = NULL, getLink = TRUE) {
   if (is.null(x) || !is.character(x)) {

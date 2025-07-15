@@ -17,3 +17,9 @@ A character vector of references (if getLink = FALSE), or a data frame with colu
 \description{
 Extract references from the Reptile Database
 }
+\examples{
+\donttest{
+df <- reptRefs("Apostolepis adhara")
+}
+
+}

@@ -1,7 +1,7 @@
-# CRAN submission: letsRept 1.0.0
+# CRAN submission: letsRept 0.0.1
 
-This is the second submission of the package `letsRept` to CRAN.
-I am changing the package name to `letsRept`
+This package is a renamed and refactored version of the previously submitted package `letsHerp`.
+It is submitted as a new package due to the name change, and supersedes the previous version.
 
 ## R CMD check results
 
@@ -19,9 +19,9 @@ R CMD check results:
 - All exported functions are documented and tested using `testthat`.  
 - A `NEWS.md` file is included with a summary of major changes.
 
-## Summary of changes in version 1.0.0
+## Summary of changes in comparison to letsHerp (version 0.0.1)
 
-- `reptSync()` was fully redesigned for improved performance and flexibility (**breaking change**).
+- `herpSync()`, now `reptSync()` was fully redesigned for improved performance and flexibility.
 - Added `reptSplitCheck()` to identify potential taxonomic splits after a user-defined year.
 - Added `reptTidySyn()` to summarize outputs from `reptSync()` and `reptSplitCheck()`, with optional filtering.
 - Added `reptCompare()` to facilitate the comparison of a user species list with the internal dataset or with a subset provided by users
@@ -38,6 +38,5 @@ R CMD check results:
   - Tests using online resources are skipped on CRAN using `skip_on_cran()` and `Sys.getenv("NOT_CRAN")`.
 - Console output and progress feedback are now fully suppressible using `verbose` or `showProgress` arguments, where applicable.
 - The only exception is `reptTidySyn()`, which is an interactive console summary function (similar to `print()` or `summary()`), and is intended to produce console output by design.
-- This update is submitted shortly after the previous version to address important functional changes and new features that were not included in version 0.1.0.
 
 Thank you for your time and consideration.
