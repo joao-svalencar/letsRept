@@ -1,6 +1,6 @@
 # letsRept
 
-### **An R Interface to the Reptile Database**
+### **An Interface to the Reptile Database**
 
 This package was developed to facilitate the processes of reptile nomenclature update based on a search for species synonyms according to [The Reptile Databse](https://reptile-database.reptarium.cz) website (Uetz et al., 2025).
 
@@ -21,40 +21,40 @@ library(letsRept)
 ```
 
 ### **List of functions and examples**
-**Function `herpSearch`:**
+**Function `reptSearch`:**
 
 Prints species information sampled from the respective species page in RD:
 ```{.r}
 #single species:
-herpSearch(binomial = "Apostolepis adhara")
+reptSearch(binomial = "Apostolepis adhara")
 ```
 
-**Function `herpAdvancedSearch`:**
+**Function `reptAdvancedSearch`:**
 
 Creates a link for a page as derived from an Advanced Search in RD (multiple species in a page):
 ```{.r}
 #create multiple species link:
-link <- herpAdvancedSearch(genus = "Apostolepis") #returns a link to access a list of all Apostolepis species
-link <- herpAdvancedSearch(higher = "snakes", location = "Brazil") #returns a link to access a list of all snake species in Brazil
+link <- reptAdvancedSearch(genus = "Apostolepis") #returns a link to access a list of all Apostolepis species
+link <- reptAdvancedSearch(higher = "snakes", location = "Brazil") #returns a link to access a list of all snake species in Brazil
 ```
 
-**Function `herpSpecies`:**
+**Function `reptSpecies`:**
 
-Sample species data from the species link created by `herpAdvancedSearch`. It includes higher taxa information, authors, year of description, and the species url.
+Sample species data from the species link created by `reptAdvancedSearch`. It includes higher taxa information, authors, year of description, and the species url.
 
 - Returns higher taxa information and species url:
 ```{.r}
 #sample multiple species data:
-apo <- herpSpecies(link, taxonomicInfo = TRUE, getLink = TRUE) 
+apo <- reptSpecies(link, taxonomicInfo = TRUE, getLink = TRUE) 
 ```
 - Returns only species url - Faster and recommended for large datasets:
 ```{.r}
-apo <- herpSpecies(link, taxonomicInfo = FALSE, getLink = TRUE)
+apo <- reptSpecies(link, taxonomicInfo = FALSE, getLink = TRUE)
 ```
 
-**Function `herpSynonyms`:**
+**Function `reptSynonyms`:**
 
-Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `herpSpecies(link, getLink=TRUE)`).
+Samples species synonyms using a data frame with species names and the species link (e.g.: the result of `reptSpecies(link, getLink=TRUE)`).
 
 ⚠️ ATTENTION!⚠️ 
 
@@ -62,9 +62,9 @@ The complex `regex` pattern used to sample synonyms from The Reptile Database is
 
 ```{.r}
 #sample species synonyms
-apo_syn <- herpSynonyms(apo)
+apo_syn <- reptSynonyms(apo)
 ```
-**Function `herpSync`:**
+**Function `reptSync`:**
 
 Initially inspired in function `aswSync` from package [AmphiNom](https://github.com/hcliedtke/AmphiNom) (Liedtke, 2018).
 
@@ -73,18 +73,18 @@ The function is divided in two main steps. Here is how it works:
 
 *Step 1*
 
-The function queries a vector of species (e.g.: IUCN, or a regional list), check their validity through `herpSearch` and returns a data frame with current valid species names.
-When `herpSearch` finds a species page it assumes that is the valid name for the queried species and returns the status "up_to_date".
-When `herpSearch` doesn't find a species it parses the binomial to `herpAdvancedSearch` using the synonym filter.
-If `herpAvancedSearch` returns a link for a species page that species name is considered valid for the synonym queried and the function returns the status "updated".
-Otherwise, `herpAvancedSearch` will return a link for a page with a list of species, then the function assumes that the queried synonym could be assigned to any of those valid names and returns the status: "ambiguous".
+The function queries a vector of species (e.g.: IUCN, or a regional list), check their validity through `reptSearch` and returns a data frame with current valid species names.
+When `reptSearch` finds a species page it assumes that is the valid name for the queried species and returns the status "up_to_date".
+When `reptSearch` doesn't find a species it parses the binomial to `reptAdvancedSearch` using the synonym filter.
+If `reptAvancedSearch` returns a link for a species page that species name is considered valid for the synonym queried and the function returns the status "updated".
+Otherwise, `reptAvancedSearch` will return a link for a page with a list of species, then the function assumes that the queried synonym could be assigned to any of those valid names and returns the status: "ambiguous".
 If the queried species does not return a species page nor a page for multiple species the function returns to column "RDB" the sentence "Not found" and to column "status" the word "unknown".
 
 *Step 2*
 
 Step 2 is activated only if `solveAmbiguity = TRUE`.
-When `herpAvancedSearch` returns a link for a page with a list of species, that link is parsed to `herpSpecies` which collects species names and `urls` and automatically parses the resulting data frame to `herpSynonyms`.
-Finally, with the result of `herpSynonyms` the function compares the queried species with all listed synonyms.
+When `reptAvancedSearch` returns a link for a page with a list of species, that link is parsed to `reptSpecies` which collects species names and `urls` and automatically parses the resulting data frame to `reptSynonyms`.
+Finally, with the result of `reptSynonyms` the function compares the queried species with all listed synonyms.
 If the queried species is actually listed as a synonym of only one of the searched species (e.g. the queried name is not a synonym, but is mentioned in the comments section), the function will return that valid name and status will be "updated".
 If the queried species is actually a synonym of more than one valid species, then the function will return both species names and the status will still be "ambiguous".
 
@@ -98,7 +98,7 @@ query <- c("Vieira-Alencar authoristicus",
            "Boa imperator",
            "Boa constrictor longicauda")
 
-herpSync(query)
+reptSync(query)
 
 #example 2:
 query <- c("Vieira-Alencar authorisensis",
@@ -108,12 +108,12 @@ query <- c("Vieira-Alencar authorisensis",
            "Apostolepis tertulianobeui",
            "Apostolepis goiasensis")
 
-herpSync(query)
+reptSync(query)
 ```
 
-**Function `herpSplitCheck`:**
+**Function `reptSplitCheck`:**
 
-Queries binomial names as synonyms using `herpAdvancedSearch`, and checks whether any associated species were described after a user-defined date (e.g., the publication date of the dataset being used).
+Queries binomial names as synonyms using `reptAdvancedSearch`, and checks whether any associated species were described after a user-defined date (e.g., the publication date of the dataset being used).
 
 See package vignettes for more details.
 
@@ -122,14 +122,14 @@ query <- c("Tantilla melanocephala",
            "Atractus snethlageae",
            "Oxybelis aeneus")
 
-herpSplitCheck(query, pubDate = 2019) # pubDate of Nogueira et al., Atlas of Brazilian Snakes
+reptSplitCheck(query, pubDate = 2019) # pubDate of Nogueira et al., Atlas of Brazilian Snakes
 ```
 
-**Function `herpTidySyn`:**
+**Function `reptTidySyn`:**
 
-This function was developed exclusively to improve the visualization of `herpSync` outcome.
+This function was developed exclusively to improve the visualization of `reptSync` outcome.
 Queried species with many current valid names would break the data frame visualizarion in the R console.
-`herpTidySyn` stacks current valid names and improves data visualization.
+`reptTidySyn` stacks current valid names and improves data visualization.
 Moreover, the argument `filter`, allows users to filter the printed data frame by "status" so users can focus only in the status that they want to evaluate.
 
 ```{.r}
@@ -140,8 +140,8 @@ query <- c("Vieira-Alencar authorisensis",
            "Apostolepis tertulianobeui",
            "Apostolepis goiasensis")
 
-df <- herpSync(query)
-herpTidySyn(df)
+df <- reptSync(query)
+reptTidySyn(df)
 ```
 ### **Internal datasets**
 
@@ -153,18 +153,18 @@ herpTidySyn(df)
 
 ### **Next steps**
 
-- [x] &nbsp; Implement `herpAdvancedSearch` link testing and result summary
-- [x] &nbsp; Implement `herpSynonym` batch sampling and tryCatch() mechanism
-- [x] &nbsp; `herpSpecies()` with parallel sampling
-- [x] &nbsp; `herpSynonyms()` with parallel sampling
+- [x] &nbsp; Implement `reptAdvancedSearch` link testing and result summary
+- [x] &nbsp; Implement `reptSynonym` batch sampling and tryCatch() mechanism
+- [x] &nbsp; `reptSpecies()` with parallel sampling
+- [x] &nbsp; `reptSynonyms()` with parallel sampling
 - [x] &nbsp; CRAN submission (June 14th, 2025)
 - [x] &nbsp; CRAN reviewed submission (June 18th, 2025)
 - [x] &nbsp; CRAN release 0.1.0 (June 23rd, 2025)
 - [ ] &nbsp; Paper submission (ongoing)
-- [x] &nbsp; `herpSync` upgrade
-- [x] &nbsp; Implement "up_to_date" check (`herpSplitCheck`)
-- [ ] &nbsp; Implement Reference sampling (df with links)
-- [ ] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
+- [x] &nbsp; `reptSync` upgrade
+- [x] &nbsp; Implement "up_to_date" check (`reptSplitCheck`)
+- [x] &nbsp; Implement Reference sampling (df with links)
+- [x] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
 - [ ] &nbsp; Implement adapted version of `AmphiNom::synonym_report()` (Liedtke, 2018)
 - [ ] &nbsp; Implement IUCN match
 
