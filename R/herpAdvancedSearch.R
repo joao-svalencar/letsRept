@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Creates a search URL for retrieving species lists from RDB based on multiple filters.
-#' This URL is primarily used by \code{\link{herpSpecies}}, but can also be used manually for advanced queries.
+#' This URL is primarily used by \code{\link{reptSpecies}}, but can also be used manually for advanced queries.
 #' 
 #' If a synonym is provided and can be unambiguously matched to a valid species, the function also prints detailed information for that species.
 #' 
@@ -12,10 +12,10 @@
 #' @param common_name Character string. A common name potentially linked to a species or genus (e.g., \code{"tree boa"}).
 #' @param synonym Character string. A name potentially regarded as a synonym of a valid taxon (e.g., \code{"Boa diviniloqua"}).
 #' @param location Character string. A country or region name used to list species expected to occur there.
-#' @param verbose Logical. To be passed to \code{herpSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
+#' @param verbose Logical. To be passed to \code{reptSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
 #' If \code{TRUE}, prints status messages and species information in the console. Default is \code{TRUE}.
 #'
-#' @return A character string containing the URL to be used in \code{\link{herpSpecies}}.
+#' @return A character string containing the URL to be used in \code{\link{reptSpecies}}.
 #' 
 #' If a provided synonym corresponds unambiguously to a valid species, the function also prints species information retrieved from RDB to the console.
 #' 
@@ -31,13 +31,13 @@
 #' 
 #' @examples
 #' \donttest{
-#' herpAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
-#' herpAdvancedSearch(year = "2010 OR 2011 OR 2012")
-#' herpAdvancedSearch(genus = "Apostolepis OR \"Boa\" OR Atractus") #quotes "Boa"
+#' reptAdvancedSearch(higher = "snakes", year = "2010", location = "Brazil")
+#' reptAdvancedSearch(year = "2010 OR 2011 OR 2012")
+#' reptAdvancedSearch(genus = "Apostolepis OR \"Boa\" OR Atractus") #quotes "Boa"
 #' }
 #' @export
 #'
-herpAdvancedSearch <- function(higher = NULL,
+reptAdvancedSearch <- function(higher = NULL,
                                genus = NULL,
                                year = NULL,
                                common_name = NULL,
@@ -95,7 +95,7 @@ herpAdvancedSearch <- function(higher = NULL,
     msg <- rvest::html_text(ul_element)
     
     if (grepl("^Species found:", msg)) {
-      if(verbose) message(msg, "\nProceed to herpSpecies() with the returned link\n")
+      if(verbose) message(msg, "\nProceed to reptSpecies() with the returned link\n")
       return(url)
     } else if (grepl("No species were found", msg)) {
       warning("No species were found. Please verify the search arguments.\n")
@@ -109,7 +109,7 @@ herpAdvancedSearch <- function(higher = NULL,
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
     if(verbose) message("Searched binomial is currently:\n", binomial, "\n")
-    search <- herpSearch(binomial = binomial, verbose = FALSE)
+    search <- reptSearch(binomial = binomial, verbose = FALSE)
     return(search)
   }
 }

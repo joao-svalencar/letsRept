@@ -2,7 +2,7 @@
 
 #' Match higher taxonomic ranks
 #'
-#' Helper for \code{herpSpecies()}. Matches known taxonomic ranks (e.g., orders or suborders) from a character vector of taxonomic information.
+#' Helper for \code{reptSpecies()}. Matches known taxonomic ranks (e.g., orders or suborders) from a character vector of taxonomic information.
 #'
 #' @param taxa_vector A character vector containing taxonomic strings.
 #' @param rank_list A character vector of known rank names to match (e.g., \code{c("Squamata", "Serpentes")}).
@@ -26,7 +26,7 @@ match_taxon <- function(taxa_vector, rank_list) {
 
 #' Safe parallel execution
 #'
-#' Helper for functions like \code{herpSpecies()} and \code{herpSynonyms()}. Selects a safe parallel backend depending on the user's OS and optionally shows progress bars.
+#' Helper for functions like \code{reptSpecies()} and \code{reptSynonyms()}. Selects a safe parallel backend depending on the user's OS and optionally shows progress bars.
 #'
 #' @param data A list or vector of items to process in parallel.
 #' @param FUN A function to be applied to each element of \code{data}.
@@ -59,7 +59,7 @@ safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
 
 #' Extract taxonomic info for one species (parallel worker)
 #'
-#' Internal function used by \code{herpSpecies()} to scrape taxonomic data for multiple species in parallel.
+#' Internal function used by \code{reptSpecies()} to scrape taxonomic data for multiple species in parallel.
 #' This function handles a single species per call and is designed to be mapped over a vector of species using parallel execution.
 #'
 #' @param x A species name to match.
@@ -132,7 +132,7 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
 
 #' Extract taxonomic info from the Reptile Database (single-core with backup)
 #'
-#' Internal function used by \code{herpSpecies()} when \code{cores = 1}. Loops over species pages and extracts
+#' Internal function used by \code{reptSpecies()} when \code{cores = 1}. Loops over species pages and extracts
 #' taxonomic information (order, suborder, family, author, etc.). Supports progress printing and checkpoint-based backups.
 #'
 #' @param species_list Character vector of species names.
@@ -148,7 +148,7 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
 #'
 #' @return A data frame containing the scraped taxonomic information. If vector lengths mismatch, returns a named list instead.
 #'
-#' @note Intended for internal use only. Called by \code{herpSpecies()} when not using parallelization.
+#' @note Intended for internal use only. Called by \code{reptSpecies()} when not using parallelization.
 #'
 #' @keywords internal
 #' @noRd
@@ -282,7 +282,7 @@ higherSample <- function(species_list,
 
 #' Clean taxonomic species names from synonym strings
 #'
-#' Helper function for \code{herpSynonyms()}. Extracts and cleans species names from raw synonym strings,
+#' Helper function for \code{reptSynonyms()}. Extracts and cleans species names from raw synonym strings,
 #' removing authorship, special characters, Unicode quotes, and redundant elements.
 #'
 #' @param names_vec Character vector of raw synonym name strings.
@@ -338,7 +338,7 @@ clean_species_names <- function(names_vec) {
 #' Designed to be called in parallel over a data frame of species and URLs.
 #' 
 #' @param i Integer index for the species to process (used internally by parallel loops).
-#' @param x Data frame with columns \code{species} and \code{url} (e.g., output from \code{herpSpecies()}).
+#' @param x Data frame with columns \code{species} and \code{url} (e.g., output from \code{reptSpecies()}).
 #' @param getRef Logical; if \code{TRUE}, returns synonyms along with their source references. Default \code{FALSE}.
 #' 
 #' @return A data frame with columns \code{species}, \code{synonyms}, and optionally \code{ref}.
@@ -385,7 +385,7 @@ getSynonymsParallel <- function(i, x, getRef) {
 #' Scrapes synonyms of reptile species from The Reptile Database.
 #' 
 #' @param x A data frame with columns \code{species} and \code{url} (the respective Reptile Database URLs).  
-#'   Typically, the output of \code{letsHerp::herpSpecies()}.
+#'   Typically, the output of \code{letsHerp::reptSpecies()}.
 #' @param checkpoint Integer specifying how many species to process before saving progress to \code{backup_file}.  
 #'   Helps avoid data loss if the function stops unexpectedly. Backups are saved only if \code{checkpoint} is not \code{NULL}.
 #' @param resume Logical. If \code{TRUE}, resumes processing from a previous backup saved at \code{backup_file}.
@@ -503,7 +503,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #' Check if a species name might represent a split taxon
 #'
 #' @description
-#' Internal helper function used in \code{herpSplitCheck()} to assess whether a
+#' Internal helper function used in \code{reptSplitCheck()} to assess whether a
 #' species name potentially corresponds to multiple recently described taxa.
 #' It scrapes The Reptile Database and checks publication years against a user-defined threshold.
 #'
@@ -523,7 +523,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #' @noRd
 splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, x) {
   tryCatch({
-    link <- herpAdvancedSearch(synonym = spp, verbose = verbose)
+    link <- reptAdvancedSearch(synonym = spp, verbose = verbose)
     
     # Character link: standard HTML parsing
     if (is.character(link) && grepl("^https:", link)) {

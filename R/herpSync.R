@@ -1,7 +1,7 @@
 #' Synchronize Species Names Using The Reptile Database
 #'
 #' @description
-#' Queries a list of species names through \code{herpSearch()} and returns a data frame with the currently valid names and taxonomic status for each input.
+#' Queries a list of species names through \code{reptSearch()} and returns a data frame with the currently valid names and taxonomic status for each input.
 #'
 #' @param x A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).
 #' @param solveAmbiguity Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.
@@ -18,7 +18,7 @@
 #' }
 #'
 #' @note
-#' \code{herpSync()} does not make authoritative taxonomic decisions. It matches input names against currently accepted names in The Reptile Database (RDB). 
+#' \code{reptSync()} does not make authoritative taxonomic decisions. It matches input names against currently accepted names in The Reptile Database (RDB). 
 #' A name marked as \code{"up_to_date"} may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy.
 #'
 #' For ambiguous names, the \code{url} field may contain multiple links corresponding to all valid species to which the queried name is considered a synonym.
@@ -32,12 +32,12 @@
 #' query <- c("Vieira-Alencar authoristicus", "Boa atlantica", "Boa diviniloqua", "Boa imperator")
 #' 
 #' \donttest{
-#' herpSync(x = query, cores = 2)
+#' reptSync(x = query, cores = 2)
 #' }
 #'
 #' @export
 
-herpSync <- function(x, 
+reptSync <- function(x, 
                      solveAmbiguity = TRUE,
                      cores = max(1L, floor(parallel::detectCores() / 2)),
                      showProgress = TRUE,
@@ -45,7 +45,7 @@ herpSync <- function(x,
   
   # Worker function: performs search + classifies result
   worker <- function(species_name) {
-    result <- letsHerp::herpSearch(species_name)
+    result <- letsHerp::reptSearch(species_name)
     
     if (is.list(result)) {
       RDB <- result$species
@@ -76,8 +76,8 @@ herpSync <- function(x,
     
     if (nrow(synSample) > 0) {
       ambiguity_results <- safeParallel(1:nrow(synSample), FUN = function(i) {
-        # For each species, resolve ambiguity using herpSynonyms
-        spp_syn <- herpSynonyms(herpSpecies(synSample$url[i], getLink = TRUE, showProgress = FALSE, cores = cores), cores = cores, showProgress = FALSE)
+        # For each species, resolve ambiguity using reptSynonyms
+        spp_syn <- reptSynonyms(reptSpecies(synSample$url[i], getLink = TRUE, showProgress = FALSE, cores = cores), cores = cores, showProgress = FALSE)
         synonyms <- spp_syn$species[synSample$query[i] == spp_syn$synonyms]
         
         if (length(synonyms) == 1) {

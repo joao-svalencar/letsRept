@@ -4,7 +4,7 @@
 #' Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (RDB). 
 #' Optionally, the references citing each synonym can also be included.
 #' 
-#' @param x A character string with a species binomial or a data frame with columns \code{species} and \code{url}, typically the output of \code{\link{herpSpecies}} with \code{getLink = TRUE}.
+#' @param x A character string with a species binomial or a data frame with columns \code{species} and \code{url}, typically the output of \code{\link{reptSpecies}} with \code{getLink = TRUE}.
 #' @param getRef Logical. If \code{TRUE}, includes the reference(s) in which each synonym was mentioned. Default is \code{FALSE}.
 #' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
 #' @param checkpoint Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).
@@ -33,16 +33,16 @@
 #' 
 #' \donttest{
 #' # Retrieve synonyms (without references)
-#' boa_syn <- herpSynonyms(boa, getRef = FALSE, cores = 2)
-#' Bconstrictor_syn <- herpSynonyms(x = "Boa constrictor")
+#' boa_syn <- reptSynonyms(boa, getRef = FALSE, cores = 2)
+#' Bconstrictor_syn <- reptSynonyms(x = "Boa constrictor")
 #' }
 #' 
-#' @seealso \code{\link{herpSpecies}}, \code{\link{herpAdvancedSearch}}
+#' @seealso \code{\link{reptSpecies}}, \code{\link{reptAdvancedSearch}}
 #'
 #' @export
 
 
-herpSynonyms <- function(x, 
+reptSynonyms <- function(x, 
                          getRef=FALSE,
                          showProgress = TRUE,
                          checkpoint = NULL,

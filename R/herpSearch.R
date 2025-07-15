@@ -3,7 +3,7 @@
 #' @description
 #' Queries The Reptile Database (RDB) for information about a single reptile species using its binomial name.
 #' 
-#' @usage herpSearch(binomial=NULL, getRef=FALSE, verbose=TRUE)
+#' @usage reptSearch(binomial=NULL, getRef=FALSE, verbose=TRUE)
 #' 
 #' @param binomial Character string. The valid binomial name of a reptile species (e.g., "Boa constrictor").
 #' @param getRef Logical. If \code{TRUE}, returns the list of references from RDB associated with the species. Default is \code{FALSE}.
@@ -14,17 +14,17 @@
 #' 
 #' @examples
 #' \donttest{
-#' herpSearch("Boa constrictor")
-#' herpSearch("Boa constrictor", getRef = TRUE)
+#' reptSearch("Boa constrictor")
+#' reptSearch("Boa constrictor", getRef = TRUE)
 #' }
 #' 
-#' @seealso \code{\link{herpSynonyms}}, \code{\link{herpSpecies}} for related species data functions.
+#' @seealso \code{\link{reptSynonyms}}, \code{\link{reptSpecies}} for related species data functions.
 #' @references
 #' Uetz, P., Freed, P., & Hošek, J. (Eds.). (2025). The Reptile Database. Retrieved from \url{http://www.reptile-database.org}
 #' 
 #' @export
 
-herpSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
+reptSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
   if (!is.null(binomial)) {
     output_list <- list()
     base_url <- "https://reptile-database.reptarium.cz/species"
@@ -38,7 +38,7 @@ herpSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
     
     if (is.na(element)) {
       if(verbose) message("Species not found: ", binomial, "\nSearching as synonym in advanced search.\n")
-      link <- letsHerp::herpAdvancedSearch(synonym = binomial, verbose = verbose)
+      link <- letsHerp::reptAdvancedSearch(synonym = binomial, verbose = verbose)
       return(link)
     }
     

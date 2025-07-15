@@ -1,10 +1,10 @@
-#' Printing herpSync and herpSplitCheck outcomes in a tidy way
+#' Printing reptSync and reptSplitCheck outcomes in a tidy way
 #'
 #' @description
-#' Prints the data frame derived from \code{herpSync} or \code{herpSplitCheck} in a tidy way.
+#' Prints the data frame derived from \code{reptSync} or \code{reptSplitCheck} in a tidy way.
 #' Optionally, it filters the data frame for species with unresolved nomenclature only.
 #'
-#' @param df The data frame derivated from \code{herpSync}
+#' @param df The data frame derivated from \code{reptSync}
 #' @param filter Logical. If \code{TRUE} will print only the species entries with unresolved nomenclature (e.g.: ambiguous or unknown). Default is \code{TRUE}
 #'
 #' @return Invisibly returns `NULL`. Used for side-effect printing only.
@@ -28,10 +28,10 @@
 #'              "ambiguous"),
 #'   stringsAsFactors = FALSE
 #' )
-#' herpTidySyn(df, filter = c("ambiguous", "unknown"))
+#' reptTidySyn(df, filter = c("ambiguous", "unknown"))
 #'
 #' @export
-herpTidySyn <- function(df, filter = NULL) {
+reptTidySyn <- function(df, filter = NULL) {
   if (!is.data.frame(df) || ncol(df) < 2) {
     stop("Input must be a data frame with at least two columns.")
   }

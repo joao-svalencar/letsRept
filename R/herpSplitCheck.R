@@ -21,11 +21,11 @@
 #' "Bothrops pauloensis")
 #'
 #'\donttest{
-#'result <- herpSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
+#'result <- reptSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
 #' }
 #' @export
 #' 
-herpSplitCheck <- function(x,
+reptSplitCheck <- function(x,
                            pubDate = NULL,
                            verbose = TRUE,
                            cores = max(1L, floor(parallel::detectCores() / 2)),
