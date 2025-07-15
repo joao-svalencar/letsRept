@@ -38,7 +38,7 @@ reptSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
     
     if (is.na(element)) {
       if(verbose) message("Species not found: ", binomial, "\nSearching as synonym in advanced search.\n")
-      link <- letsHerp::reptAdvancedSearch(synonym = binomial, verbose = verbose)
+      link <- letsRept::reptAdvancedSearch(synonym = binomial, verbose = verbose)
       return(link)
     }
     

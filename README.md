@@ -1,4 +1,4 @@
-# letsHerp
+# letsRept
 
 ### **An R Interface to the Reptile Database**
 
@@ -16,8 +16,8 @@ To install the stable version of this package user must run:
 
 ```{.r}
 # install.packages("devtools")
-devtools::install_github("joao-svalencar/letsHerp", ref="main")
-library(letsHerp)
+devtools::install_github("joao-svalencar/letsRept", ref="main")
+library(letsRept)
 ```
 
 ### **List of functions and examples**
@@ -173,12 +173,12 @@ herpTidySyn(df)
 To cite this package in publications, run:
 
 ```r
-citation("letsHerp")
+citation("letsRept")
 ```
 
 ⚠️ Important note:
 
-`letsHerp` retrieves valuable taxonomic and synonymy data directly from [The Reptile Database](http://www.reptile-database.org)..
+`letsRept` retrieves valuable taxonomic and synonymy data directly from [The Reptile Database](http://www.reptile-database.org)..
 When citing this package, please also cite the original database as a data source.
 
 ### **References**

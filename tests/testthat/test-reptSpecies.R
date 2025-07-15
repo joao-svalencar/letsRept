@@ -1,8 +1,8 @@
-test_that("herpSpecies returns expected output", {
+test_that("reptSpecies returns expected output", {
   skip_on_cran()
   skip_if_not(Sys.getenv("NOT_CRAN") == "true")
   
-  result <- herpSpecies(herpAdvancedSearch(genus = "Boa"),
+  result <- reptSpecies(reptAdvancedSearch(genus = "Boa"),
                         taxonomicInfo = FALSE, cores = 2,
                         getLink = TRUE, showProgress = FALSE)
   

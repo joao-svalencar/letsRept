@@ -126,7 +126,7 @@ All console messages, warnings, and progress updates can be silenced. However, `
 
 This function summarizes the taxonomic content of a species list, typically an object created with `reptSpecies()` with higher taxa information. If no object is provided it summarizes the internal dataset `allReptiles`.
 
-```{r}
+```{.r}
 # summary of internal database allReptiles
 reptStats() 
 

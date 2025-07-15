@@ -30,7 +30,7 @@ reptCompare <- function(x = NULL, y = NULL, filter = NULL){
   }
   if(is.null(y)){
     warning("No RDB list provided, comparing with internal data 'allReptiles'")
-    y <- letsHerp::allReptiles
+    y <- letsRept::allReptiles
   }
   
   if(is.data.frame(x)){

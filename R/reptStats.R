@@ -30,7 +30,7 @@
 #' reptStats(order = "Squamata", suborder = "Serpentes", verbose = TRUE)
 #'
 #' @export
-reptStats <- function(x = letsHerp::allReptiles,
+reptStats <- function(x = letsRept::allReptiles,
                       verbose = FALSE,
                       order = NULL,
                       suborder = NULL,

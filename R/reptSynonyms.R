@@ -29,7 +29,7 @@
 #'
 #' @examples
 #' # Filter species belonging to genus Boa
-#' boa <- letsHerp::allReptiles[grep("^Boa\\s", letsHerp::allReptiles$species), ]
+#' boa <- letsRept::allReptiles[grep("^Boa\\s", letsRept::allReptiles$species), ]
 #' 
 #' \donttest{
 #' # Retrieve synonyms (without references)

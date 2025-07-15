@@ -385,7 +385,7 @@ getSynonymsParallel <- function(i, x, getRef) {
 #' Scrapes synonyms of reptile species from The Reptile Database.
 #' 
 #' @param x A data frame with columns \code{species} and \code{url} (the respective Reptile Database URLs).  
-#'   Typically, the output of \code{letsHerp::reptSpecies()}.
+#'   Typically, the output of \code{letsRept::reptSpecies()}.
 #' @param checkpoint Integer specifying how many species to process before saving progress to \code{backup_file}.  
 #'   Helps avoid data loss if the function stops unexpectedly. Backups are saved only if \code{checkpoint} is not \code{NULL}.
 #' @param resume Logical. If \code{TRUE}, resumes processing from a previous backup saved at \code{backup_file}.

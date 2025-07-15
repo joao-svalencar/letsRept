@@ -12,7 +12,7 @@ A dataframe with 53,159 rows and 2 variables:
 }
 }
 \source{
-The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function letsHerp::herpSynonyms(letsHerp::allReptiles)
+The data was sampled from The Reptile Database website https://reptile-database.reptarium.cz using function letsRept::herpSynonyms(letsRept::allReptiles)
 }
 \usage{
 allSynonyms

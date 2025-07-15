@@ -1,4 +1,4 @@
-test_that("herpSplitCheck returns expected output", {
+test_that("reptSplitCheck returns expected output", {
   
   query <- c("Vieira-Alencar authoristicus",
              "Tantilla melanocephala",
@@ -6,7 +6,7 @@ test_that("herpSplitCheck returns expected output", {
              "Apostolepis dimidiata",
              "Bothrops pauloensis")
   
-  result <- herpSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
+  result <- reptSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
   
   expect_s3_class(result, "data.frame")
   expect_true("RDB" %in% names(result))

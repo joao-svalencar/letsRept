@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(letsHerp)
+library(letsRept)
 
-test_check("letsHerp")
+test_check("letsRept")
