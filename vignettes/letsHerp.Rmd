@@ -47,7 +47,6 @@ library(letsHerp)
 
 **NOTE:** Some functions use parallel processing by default. Parallel processing may affect system performance. Adjust the number of cores according to your needs. A snippet showing how to access the number of available cores in your computer is provided along with the functions examples.
 
-
 #### **Function `herpSearch`:**
 
 Retrieves species information from The Reptile Database using a binomial name.
@@ -61,6 +60,20 @@ herpSearch(binomial = "Bothrops pauloensis", getRef=TRUE)
 
 `herpSearch()` supports synonym-based queries. If the provided binomial does not match any currently valid species name, the function automatically passes the query to `herpAdvancedSearch(synonym = binomial)`. In such cases, if the synonym can be unambiguously resolved to a valid species, the function will return the corresponding species information. Otherwise, it provides a link (which can be accessed using `herpSpecies(url = link)`) to a list of all species that include the queried synonym in their synonymy.
 
+#### **Function `reptRefs`:**
+
+Retrieves the reference list for a given species from the Reptile Database. By default, it returns both the citation and a link to the reference source (if available). If the user sets `getLink = FALSE`, the function returns only the plain-text references.
+
+This function is useful to extract citation metadata for taxonomic or historical analyses.
+
+```r
+# Basic usage
+reptRefs("Boa constrictor")
+
+# If you want only reference texts, without links:
+reptRefs("Boa constrictor", getLink = FALSE)
+
+```
 
 #### **Function `herpAdvancedSearch`:**
 
@@ -77,7 +90,6 @@ link <- herpAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to a l
 ```
 
 `herpAdvancedSearch(synonym = "example")` will return the species information directly (via `herpSearch("example")`) if the synonym uniquely matches a single valid species. The \" in the *Boa* example parses the information strictly as "Boa", avoiding to return genus like *Pseudoboa*, or *Boaedon*.
-
 
 #### **Function `herpSpecies`:**
 
@@ -110,6 +122,20 @@ apo <- herpSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE, checkpoint=6
 
 All console messages, warnings, and progress updates can be silenced. However, `herpSpecies()` issues a helpful warning if any species information fails to be retrieved, along with instructions on how to access those entries from the function output.
 
+#### **Function `reptCompare`:**
+Compares the nomenclature of a user provided vector of species (`x`) with the RDB nomenclature. User may provide vector of current names sampled from RDB with herpSpecies(), otherwise the names in `x` will be compared with those in the internal dataset `allReptiles` (the dataset documentation to see the RDB version (current is May, 2025).
+
+The function returns species that are either unmatched ("review") or matched with the RDB list, or both.
+
+```{.r}
+my_species <- data.frame(species = c("Boa constrictor", "Pantherophis guttatus", "Fake species"))
+
+reptCompare(my_species)
+reptCompare(my_species, filter = "review")
+reptCompare(my_species, filter = "matched")
+```
+
+Species that requires nomenclature review  are usually queried to `herpSync()`, while matched species is ideally queried to `herpSplitCheck` with a reference date parsed to the argument `pubDate`.
 
 #### **Function `herpSynonyms`:**
 
