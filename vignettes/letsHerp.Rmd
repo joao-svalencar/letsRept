@@ -20,7 +20,7 @@ This package was developed to facilitate the processes of reptile nomenclature u
 
 Currently, the package accesses many species information from the Reptile Database using R interface.
 
-I hope it to be useful to people trying to match databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species information directly in R.
+It is useful to people trying to match databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species information directly in R, optionally storing this information in a list.
 
 Any feedback, suggestion or request are welcome!
 
@@ -45,7 +45,7 @@ library(letsHerp)
 
 ### **List of functions and examples**
 
-**NOTE:** Some functions use parallel processing by default. Parallel processing may affect system performance. Adjust the number of cores according to your needs.
+**NOTE:** Some functions use parallel processing by default. Parallel processing may affect system performance. Adjust the number of cores according to your needs. A snippet showing how to access the number of available cores in your computer is provided along with the functions examples.
 
 
 #### **Function `herpSearch`:**
@@ -67,7 +67,7 @@ herpSearch(binomial = "Bothrops pauloensis", getRef=TRUE)
 Creates a link for a page as derived from an Advanced Search in RD (multiple species in a page):
 ```{.r}
 # create multiple species link:
-link_boa <- herpAdvancedSearch(genus = "Boa") #returns a link to a list of all Boa species
+link_boa <- herpAdvancedSearch(genus = "\"Boa\"") #returns a link to a list of all Boa species.
 
 link_apo <- herpAdvancedSearch(genus = "Apostolepis") #returns a link to a list of all Apostolepis species
 
@@ -76,7 +76,7 @@ link <- herpAdvancedSearch(higher = "snakes", location = "Brazil") #returns a li
 link <- herpAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to a list of all species described from 2010 to 2012
 ```
 
-`herpAdvancedSearch(synonym = "example")` will return the species information directly (via `herpSearch("example")`) if the synonym uniquely matches a single valid species.
+`herpAdvancedSearch(synonym = "example")` will return the species information directly (via `herpSearch("example")`) if the synonym uniquely matches a single valid species. The \" in the *Boa* example parses the information strictly as "Boa", avoiding to return genus like *Pseudoboa*, or *Boaedon*.
 
 
 #### **Function `herpSpecies`:**
@@ -194,7 +194,7 @@ Pay special attention to the `"status"` column:
 
 ⚠️ **ATTENTION!**⚠️ 
 
-`letsHerp` does not make authoritative taxonomic decisions. It matches input names against currently accepted names in The Reptile Database (RDB). 
+`letsHerp` does not make authoritative taxonomic decisions. It matches input names against currently accepted names in the Reptile Database (RDB). 
 
 A name marked as `"up_to_date"` may still refer to a taxon that has been split, and thus may not reflect the most recent population-level taxonomy, see function `herpSplitCheck` below.
 
