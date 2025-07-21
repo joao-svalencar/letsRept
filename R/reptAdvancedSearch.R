@@ -14,7 +14,7 @@
 #' @param location Character string. A country or region name used to list species expected to occur there.
 #' @param verbose Logical. To be passed to \code{reptSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
 #' If \code{TRUE}, prints status messages and species information in the console. Default is \code{TRUE}.
-#' @param exact Logical. To return outputs that matches exactly the searched term (e.g., avoid returning genus "Boaedon" when searching for "Boa"). Default is \code{TRUE}.
+#' @param exact Logical. To return outputs that matches exactly the searched term (e.g., avoid returning genus "Boaedon" when searching for "Boa"). Default is \code{FALSE}.
 #'
 #' @return A character string containing the URL to be used in \code{\link{reptSpecies}}.
 #' 
@@ -45,7 +45,8 @@ reptAdvancedSearch <- function(higher = NULL,
                                common_name = NULL,
                                synonym = NULL,
                                location = NULL,
-                               verbose = TRUE) {
+                               verbose = TRUE,
+                               exact = FALSE) {
   
   # Check if all arguments are NULL
   if (all(sapply(list(higher, genus, year, common_name, synonym, location), is.null))) {

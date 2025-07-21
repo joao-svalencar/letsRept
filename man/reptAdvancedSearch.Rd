@@ -11,7 +11,8 @@ reptAdvancedSearch(
   common_name = NULL,
   synonym = NULL,
   location = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  exact = FALSE
 )
 }
 \arguments{
@@ -30,7 +31,7 @@ reptAdvancedSearch(
 \item{verbose}{Logical. To be passed to \code{reptSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
 If \code{TRUE}, prints status messages and species information in the console. Default is \code{TRUE}.}
 
-\item{exact}{Logical. To return outputs that matches exactly the searched term (e.g., avoid returning genus "Boaedon" when searching for "Boa"). Default is \code{TRUE}.}
+\item{exact}{Logical. To return outputs that matches exactly the searched term (e.g., avoid returning genus "Boaedon" when searching for "Boa"). Default is \code{FALSE}.}
 }
 \value{
 A character string containing the URL to be used in \code{\link{reptSpecies}}.
