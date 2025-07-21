@@ -29,6 +29,8 @@ reptAdvancedSearch(
 
 \item{verbose}{Logical. To be passed to \code{reptSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
 If \code{TRUE}, prints status messages and species information in the console. Default is \code{TRUE}.}
+
+\item{exact}{Logical. To return outputs that matches exactly the searched term (e.g., avoid returning genus "Boaedon" when searching for "Boa"). Default is \code{TRUE}.}
 }
 \value{
 A character string containing the URL to be used in \code{\link{reptSpecies}}.
@@ -42,8 +44,9 @@ This URL is primarily used by \code{\link{reptSpecies}}, but can also be used ma
 If a synonym is provided and can be unambiguously matched to a valid species, the function also prints detailed information for that species.
 }
 \note{
-This function does not automatically quote input values. If you want to force an exact match (e.g., \code{"Boa"} as a phrase),
-you must manually include quotes in the input string, e.g., \code{"\"Boa\""}.
+The argument \code{exact} does not work properly for searches using logical arguments (e.g. \code{AND/OR}).
+If you want to force an exact match (e.g., \code{"Boa"} as a phrase) with multiple terms (e.g., \code{"Boa OR Apostolepis"}),
+you must manually include quotes in the input string, e.g., \code{"\"Boa\" OR Apostolepis"}.
 
 Logical operators (e.g., \code{OR}, \code{AND}) are supported and will be properly formatted in the search.
 To exclude terms, use a leading minus sign (e.g., \code{higher = "-snakes"}) following RDB's query syntax, instead of using \code{NOT}.

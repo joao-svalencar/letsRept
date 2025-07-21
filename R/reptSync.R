@@ -52,7 +52,20 @@ reptSync <- function(x,
       status <- if (species_name == RDB) "up_to_date" else "updated"
       url <- result$url
     } else if (is.character(result) && grepl("^https:", result)) {
-      RDB <- "ambiguous"
+      search <- rvest::read_html(result)
+      title_node <- rvest::html_element(search, "h1")
+      title_text <- rvest::html_text(title_node, trim = TRUE)
+      
+      if (grepl("^Search results", title_text)) {
+        ul_element <- rvest::html_elements(search, "#content > ul:nth-child(6)")
+        if (length(ul_element) == 0) return(NULL)
+        
+        li_nodes <- xml2::xml_children(ul_element[[1]])
+        species <- sapply(li_nodes, function(node) {
+          rvest::html_text(rvest::html_element(xml2::xml_child(node, 1), "em"), trim = TRUE)
+        })
+      }
+      RDB <- paste(species, collapse = "; ")
       status <- "ambiguous"
       url <- result
     } else {
@@ -71,7 +84,7 @@ reptSync <- function(x,
   
   if(solveAmbiguity){
     
-    synSample <- df[df$RDB == "ambiguous", c("query", "url")]
+    synSample <- df[df$status == "ambiguous", c("query", "url")]
     if(showProgress && nrow(synSample) >=1 ) message(sprintf("Sampling synonyms to approach ambiguity for %d species", nrow(synSample)))
     
     if (nrow(synSample) > 0) {

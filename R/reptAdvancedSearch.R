@@ -14,6 +14,7 @@
 #' @param location Character string. A country or region name used to list species expected to occur there.
 #' @param verbose Logical. To be passed to \code{reptSpecies()} in the case of a provided synonym corresponds unambiguously to a valid species.
 #' If \code{TRUE}, prints status messages and species information in the console. Default is \code{TRUE}.
+#' @param exact Logical. To return outputs that matches exactly the searched term (e.g., avoid returning genus "Boaedon" when searching for "Boa"). Default is \code{TRUE}.
 #'
 #' @return A character string containing the URL to be used in \code{\link{reptSpecies}}.
 #' 
@@ -21,8 +22,9 @@
 #' 
 #' @note
 #' 
-#' This function does not automatically quote input values. If you want to force an exact match (e.g., \code{"Boa"} as a phrase),
-#' you must manually include quotes in the input string, e.g., \code{"\"Boa\""}.
+#' The argument \code{exact} does not work properly for searches using logical arguments (e.g. \code{AND/OR}).
+#' If you want to force an exact match (e.g., \code{"Boa"} as a phrase) with multiple terms (e.g., \code{"Boa OR Apostolepis"}),
+#' you must manually include quotes in the input string, e.g., \code{"\"Boa\" OR Apostolepis"}.
 #' 
 #' Logical operators (e.g., \code{OR}, \code{AND}) are supported and will be properly formatted in the search.
 #' To exclude terms, use a leading minus sign (e.g., \code{higher = "-snakes"}) following RDB's query syntax, instead of using \code{NOT}.
@@ -53,27 +55,27 @@ reptAdvancedSearch <- function(higher = NULL,
   
   base_url <- "https://reptile-database.reptarium.cz/advanced_search"
   
-  quote_if_simple <- function(x) {
+  quote_if_simple <- function(x, exact = TRUE) {
     if (grepl("\\b(OR|AND|NOT)\\b", x, ignore.case = TRUE)) {
-      # Logical query: replace spaces with +
-      gsub(" ", "+", x)
+      if (exact) {
+        warning("Exact matching not applicable to logical 'AND/OR/NOT' queries for multiple terms.")
+      }
+      return(utils::URLencode(gsub(" ", "+", x), reserved = FALSE))
     } else {
-      # No logical operators: encode as is (do NOT add quotes)
-      utils::URLencode(x, reserved = FALSE)
+      if (exact) x <- paste0('"', x, '"')
+      return(utils::URLencode(x, reserved = FALSE))
     }
   }
-  
-  encode_param <- function(x) utils::URLencode(x, reserved = FALSE)
   
   # Build list of query parameters based on non-NULL arguments
   params <- list()
   
-  if (!is.null(higher))       params$taxon          <- encode_param(quote_if_simple(higher))
-  if (!is.null(genus))        params$genus          <- encode_param(quote_if_simple(genus))
-  if (!is.null(year))         params$year           <- encode_param(quote_if_simple(year))
-  if (!is.null(common_name))  params$common_name    <- encode_param(quote_if_simple(common_name))
-  if (!is.null(synonym))      params$common_name    <- encode_param(quote_if_simple(synonym))
-  if (!is.null(location))     params$location       <- encode_param(quote_if_simple(location))
+  if (!is.null(higher))       params$taxon          <- quote_if_simple(higher, exact)
+  if (!is.null(genus))        params$genus          <- quote_if_simple(genus, exact)
+  if (!is.null(year))         params$year           <- quote_if_simple(year, exact)
+  if (!is.null(common_name))  params$common_name    <- quote_if_simple(common_name, exact)
+  if (!is.null(synonym))      params$common_name    <- quote_if_simple(synonym, exact)
+  if (!is.null(location))     params$location       <- quote_if_simple(location, exact)
   
   # Always include the submit flag
   params$submit <- "Search"
