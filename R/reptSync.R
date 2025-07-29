@@ -70,7 +70,7 @@ reptSync <- function(x,
       url <- result
     } else {
       RDB <- result
-      status <- "unknown"
+      status <- "not_found"
       url <- result
     }
     data.frame(query = species_name, RDB = RDB, status = status, url = url, stringsAsFactors = FALSE)

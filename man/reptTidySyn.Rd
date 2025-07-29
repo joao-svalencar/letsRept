@@ -9,7 +9,7 @@ reptTidySyn(df, filter = NULL)
 \arguments{
 \item{df}{The data frame derivated from \code{reptSync}}
 
-\item{filter}{Logical. If \code{TRUE} will print only the species entries with unresolved nomenclature (e.g.: ambiguous or unknown). Default is \code{TRUE}}
+\item{filter}{Logical. If \code{TRUE} will print only the species entries with unresolved nomenclature (e.g.: ambiguous or not_found). Default is \code{TRUE}}
 }
 \value{
 Invisibly returns \code{NULL}. Used for side-effect printing only.
@@ -33,10 +33,10 @@ df <- data.frame(
   status = c("ambiguous", 
              "updated",
              "up_to_date",
-             "unknown",
+             "not_found",
              "ambiguous"),
   stringsAsFactors = FALSE
 )
-reptTidySyn(df, filter = c("ambiguous", "unknown"))
+reptTidySyn(df, filter = c("ambiguous", "not_found"))
 
 }

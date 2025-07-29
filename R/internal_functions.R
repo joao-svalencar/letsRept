@@ -516,7 +516,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #' \itemize{
 #'   \item \code{query} – the input species name
 #'   \item \code{RDB} – one or more matched species (or \code{NA} if none)
-#'   \item \code{status} – one of \code{"check_split"}, \code{"up_to_date"}, \code{"unknown"}, or \code{"failed"}
+#'   \item \code{status} – one of \code{"check_split"}, \code{"up_to_date"}, \code{"not_found"}, or \code{"failed"}
 #' }
 #'
 #' @keywords internal
@@ -570,7 +570,7 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, x) {
     }
     
     # Fallback
-    data.frame(query = spp, RDB = NA, status = "unknown", stringsAsFactors = FALSE)
+    data.frame(query = spp, RDB = NA, status = "not_found", stringsAsFactors = FALSE)
     
   }, error = function(e) {
     if (verbose) message(sprintf("Error for '%s': %s", spp, conditionMessage(e)))
