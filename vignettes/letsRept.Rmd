@@ -193,7 +193,7 @@ The function is divided in two main steps. Here is how it works:
 
 **Step 1**
 
-The function queries a vector of species (e.g.: IUCN, or a regional list), check their validity through `reptSearch` and returns a data frame with current valid species names. When `reptSearch` finds a species page it assumes that is the valid name for the queried species and returns the status "up_to_date". When `reptSearch` doesn't find a species it parses the binomial to `reptAdvancedSearch` using the synonym filter. If `reptAvancedSearch` returns a link for a species page that species name is considered valid for the synonym queried and the function returns the status `"updated"`. Otherwise, `reptAvancedSearch` will return a link for a page with a list of species, then the function assumes that the queried synonym could be assigned to any of those valid names and returns the status: `"ambiguous"`. If the queried species does not return a species page nor a page for multiple species the function returns to column "RDB" the sentence `"not_found"` and to column `"status"` the word `"unknown"`.
+The function queries a vector of species (e.g.: IUCN, or a regional list), check their validity through `reptSearch` and returns a data frame with current valid species names. When `reptSearch` finds a species page it assumes that is the valid name for the queried species and returns the status "up_to_date". When `reptSearch` doesn't find a species it parses the binomial to `reptAdvancedSearch` using the synonym filter. If `reptAvancedSearch` returns a link for a species page that species name is considered valid for the synonym queried and the function returns the status `"updated"`. Otherwise, `reptAvancedSearch` will return a link for a page with a list of species, then the function assumes that the queried synonym could be assigned to any of those valid names and returns the status: `"ambiguous"`. If the queried species does not return a species page nor a page for multiple species the function returns to columns `"RDB"` and `"status"` the sentence `"not_found"`.
 
 **Step 2**
 
@@ -236,7 +236,7 @@ Pay special attention to the `"status"` column:
 
 - `"ambiguous"` - Species name provided is considered a synonym of more than one current valid species, likely from a split in taxonomy.
 
-- `"unknown"` - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
+- `"not_found"` - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
 
 - `"duplicated"` - Multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization.
 
@@ -270,6 +270,8 @@ Pay special attention to the `"status"` column:
 - `"up_to_date"` – The species name provided is not a synonym of any species described after `pubDate`.
 
 - `"check_split"` – The species name provided is a synonym of at least one valid species described in or after `pubDate`, suggesting a possible taxonomic split.
+
+- `"not_found"` - This is a temporary status to detect species that are not listed as synonyms of themselves, so it does not appear in the advanced search (e.g.: to correct in RDB).
 
 **OBS: ** If the queried species is a synonym of only species described in the same year `pubDate` that are already included in the queried species list, the queried species will receive the status `"up_to_date"`.
 

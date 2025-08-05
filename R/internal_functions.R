@@ -570,7 +570,7 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, x) {
     }
     
     # Fallback
-    data.frame(query = spp, RDB = NA, status = "not_found", stringsAsFactors = FALSE)
+    data.frame(query = spp, RDB = spp, status = "not_found", stringsAsFactors = FALSE)
     
   }, error = function(e) {
     if (verbose) message(sprintf("Error for '%s': %s", spp, conditionMessage(e)))
