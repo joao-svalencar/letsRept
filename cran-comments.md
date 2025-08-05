@@ -12,7 +12,7 @@ I have run R CMD check on:
 R CMD check results:  
 - No ERRORs  
 - No WARNINGs  
-- No Notes
+- Only one NOTE: "New submission". This is technically a new submission under the name `letsRept`, but it replaces the previous package `letsHerp`, which I intend to archive.
 
 ## Test coverage and documentation
 
