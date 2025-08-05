@@ -7,6 +7,7 @@
 reptSplitCheck(
   x,
   pubDate = NULL,
+  includeAll = FALSE,
   verbose = TRUE,
   cores = max(1L, floor(parallel::detectCores()/2)),
   showProgress = TRUE
@@ -16,6 +17,8 @@ reptSplitCheck(
 \item{x}{A character vector of species names to check. Usually from a database.}
 
 \item{pubDate}{Integer. An year (e.g., 2019) used as a reference date from when to check potential taxonomic split}
+
+\item{includeAll}{Logical; If \code{TRUE}, include all species described since \code{pubDate} regardless of if it is already included in the queried species list. Default is \code{FALSE}}
 
 \item{verbose}{Logical; If \code{TRUE}, prints progress messages. Default is \code{TRUE}.}
 

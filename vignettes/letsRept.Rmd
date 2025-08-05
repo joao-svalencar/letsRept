@@ -254,11 +254,15 @@ Species names in recent databases are most likely marked with the status `"up_to
 To assist with this, the function `reptSplitCheck` queries binomial names as synonyms using `reptAdvancedSearch`, and checks whether any associated species were described after a user-defined date (e.g., the publication date of the dataset being used). By default this function uses parallel processing, with default set to use half of the available cores.
 
 ```{.r}
-query <- c("Tantilla melanocephala",
+query <- c("Atractus dapsilis",
+           "Atractus trefauti",
            "Atractus snethlageae",
-           "Oxybelis aeneus")
+           "Tantilla melanocephala",
+           "Oxybelis aeneus",
+           "Oxybelis rutherfordi")
 
 reptSplitCheck(query, pubDate = 2019) # pubDate of Nogueira et al., Atlas of Brazilian Snakes
+reptSplitCheck(query, pubDate = 2019, includeAll = TRUE)
 ```
 
 The column `"RDB"` shows the current valid names according to The Reptile Database.
@@ -273,7 +277,7 @@ Pay special attention to the `"status"` column:
 
 - `"not_found"` - This is a temporary status to detect species that are not listed as synonyms of themselves, so it does not appear in the advanced search (e.g.: to correct in RDB).
 
-**OBS: ** If the queried species is a synonym of only species described in the same year `pubDate` that are already included in the queried species list, the queried species will receive the status `"up_to_date"`.
+**OBS: ** With argument `includeAll` set to default (`FALSE`), if the queried species is a synonym of only species described in the same year `pubDate` that are already included in the queried species list, the queried species will receive the status `"up_to_date"`. To check every possible taxonomic split regardless of whether the new species is already present in the queried species list, change the argument value to `TRUE`.
 
 #### **Function `reptTidySyn`:**
 

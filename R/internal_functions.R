@@ -521,7 +521,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #'
 #' @keywords internal
 #' @noRd
-splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, x) {
+splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, includeAll = includeAll, x) {
   tryCatch({
     link <- reptAdvancedSearch(synonym = spp, verbose = verbose)
     
@@ -546,17 +546,28 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, x) {
         
         syn_df <- data.frame(species, years, stringsAsFactors = FALSE)
         
-        syn_df_filter <- syn_df[!syn_df$species %in% setdiff(x, spp), ]
-
-        if(!any(syn_df_filter$years >= pubDate, na.rm = TRUE) && spp %in% syn_df$species){
-          return(data.frame(query = spp, RDB = spp, status = "up_to_date", stringsAsFactors = FALSE))
+        if(includeAll == TRUE){
+          if(!any(syn_df$years >= pubDate, na.rm = TRUE) && spp %in% syn_df$species){
+            return(data.frame(query = spp, RDB = spp, status = "up_to_date", stringsAsFactors = FALSE))
+          }
+          
+          if(any(syn_df$years >= pubDate, na.rm = TRUE)) {
+            matched_species <- paste(syn_df$species[syn_df$years >= pubDate], collapse = "; ")
+            return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
+            } 
+          }else{
+            
+          syn_df_filter <- syn_df[!syn_df$species %in% setdiff(x, spp), ]
+  
+          if(!any(syn_df_filter$years >= pubDate, na.rm = TRUE) && spp %in% syn_df$species){
+            return(data.frame(query = spp, RDB = spp, status = "up_to_date", stringsAsFactors = FALSE))
+          }
+          
+          if(any(syn_df_filter$years >= pubDate, na.rm = TRUE)) {
+            matched_species <- paste(syn_df_filter$species[syn_df_filter$years >= pubDate], collapse = "; ")
+            return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
+          }
         }
-        
-        if(any(syn_df_filter$years >= pubDate, na.rm = TRUE)) {
-          matched_species <- paste(syn_df_filter$species[syn_df_filter$years >= pubDate], collapse = "; ")
-          return(data.frame(query = spp, RDB = matched_species, status = "check_split", stringsAsFactors = FALSE))
-        } 
-
       }
       
     } else if (is.list(link) && !is.null(link$url)) {

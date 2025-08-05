@@ -2,6 +2,7 @@
 #'
 #' @param x A character vector of species names to check. Usually from a database.
 #' @param pubDate Integer. An year (e.g., 2019) used as a reference date from when to check potential taxonomic split
+#' @param includeAll Logical; If \code{TRUE}, include all species described since `pubDate` regardless of if it is already included in the queried species list. Default is \code{FALSE}
 #' @param verbose Logical; If \code{TRUE}, prints progress messages. Default is \code{TRUE}.
 #' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).
 #' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
@@ -27,12 +28,13 @@
 #' 
 reptSplitCheck <- function(x,
                            pubDate = NULL,
+                           includeAll = FALSE,
                            verbose = TRUE,
                            cores = max(1L, floor(parallel::detectCores() / 2)),
                            showProgress = TRUE) {
   
   results <- safeParallel(x, function(spp) {
-    splitCheck(spp, pubDate = pubDate, verbose = verbose, x = x)
+    splitCheck(spp, pubDate = pubDate, includeAll = includeAll, verbose = verbose, x = x)
   }, cores = cores,
   showProgress = showProgress)
   
