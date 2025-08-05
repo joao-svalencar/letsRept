@@ -1,7 +1,7 @@
 # letsRept NEWS
 The package was renamed to `letsRept`
 
-## Version 0.0.1 — 2025-08-05
+## Version 0.1.0 — 2025-08-05
 
 ### Major changes
 
