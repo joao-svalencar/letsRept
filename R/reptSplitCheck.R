@@ -15,14 +15,20 @@
 #' }
 #' 
 #' @examples
-#' query <- c("Vieira-Alencar authoristicus",
+#' query <- c(
+#' "Atractus dapsilis",
+#' "Atractus trefauti",
+#' "Atractus snethlageae",
 #' "Tantilla melanocephala",
 #' "Oxybelis aeneus",
-#' "Apostolepis dimidiata",
+#' "Oxybelis rutherfordi"
+#' "Vieira-Alencar authoristicus",
+#' "Oxybelis aeneus",
 #' "Bothrops pauloensis")
 #'
 #'\donttest{
 #'result <- reptSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
+#'result <- reptSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE, includeAll = TRUE)
 #' }
 #' @export
 #' 
@@ -32,6 +38,10 @@ reptSplitCheck <- function(x,
                            verbose = TRUE,
                            cores = max(1L, floor(parallel::detectCores() / 2)),
                            showProgress = TRUE) {
+  if(is.null(pubDate)){
+    message("Argument pubDate not provided, setting to ", min(letsRept::allReptiles$year))
+    pubDate <- as.integer(min(letsRept::allReptiles$year))
+  }
   
   results <- safeParallel(x, function(spp) {
     splitCheck(spp, pubDate = pubDate, includeAll = includeAll, verbose = verbose, x = x)
