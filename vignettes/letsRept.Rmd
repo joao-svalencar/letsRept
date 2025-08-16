@@ -147,21 +147,6 @@ reptStats(snakes_br, family = "Viperidae", verbose = TRUE)
 
 ```
 
-#### **Function `reptCompare`:**
-Compares the nomenclature of a user provided vector of species (`x`) with the RDB nomenclature. User may provide vector of current names sampled from RDB with reptSpecies(), otherwise the names in `x` will be compared with those in the internal dataset `allReptiles` (the dataset documentation to see the RDB version (current is May, 2025).
-
-The function returns species that are either unmatched ("review") or matched with the RDB list, or both.
-
-```{.r}
-my_species <- data.frame(species = c("Boa constrictor", "Pantherophis guttatus", "Fake species"))
-
-reptCompare(my_species)
-reptCompare(my_species, filter = "review")
-reptCompare(my_species, filter = "matched")
-```
-
-Species that requires nomenclature review  are usually queried to `reptSync()`, while matched species is ideally queried to `reptSplitCheck` with a reference date parsed to the argument `pubDate`.
-
 #### **Function `reptSynonyms`:**
 
 Samples species synonyms either using binomial or a data frame with species names and the species link (e.g.: the result of `reptSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to use half of the available cores.
@@ -185,6 +170,20 @@ All console messages, warnings, and progress updates can be silenced. However, `
 
 The complex `regex` pattern used to sample synonyms from The Reptile Database is quite efficient, but still samples about 0.2% in an incorrect format. Most cases represent unusual nomenclature so users might not face any problems trying to match current valid names. In any case, I fixed (potentially) all unusual synonym formats in the internal dataset `allSynonyms` (last update: 23rd May, 2025)
 
+#### **Function `reptCompare`:**
+Compares the nomenclature of a user provided vector of species (`x`) with the RDB nomenclature. User may provide vector of current names sampled from RDB with reptSpecies(), otherwise the names in `x` will be compared with those in the internal dataset `allReptiles` (the dataset documentation to see the RDB version (current is May, 2025).
+
+The function returns species that are either unmatched ("review") or matched with the RDB list, or both.
+
+```{.r}
+my_species <- data.frame(species = c("Boa constrictor", "Pantherophis guttatus", "Fake species"))
+
+reptCompare(my_species)
+reptCompare(my_species, filter = "review")
+reptCompare(my_species, filter = "matched")
+```
+
+Species that requires nomenclature review are usually queried to `reptSync()`, while matched species is ideally queried to `reptSplitCheck` with a reference date parsed to the argument `pubDate`.
 
 #### **Function `reptSync`:**
 
@@ -268,8 +267,6 @@ reptSplitCheck(query, pubDate = 2019) # pubDate of Nogueira et al., Atlas of Bra
 reptSplitCheck(query, pubDate = 2019, includeAll = TRUE)
 ```
 
-The column `"RDB"` shows the current valid names according to The Reptile Database.
-
 Pay special attention to the `"status"` column:
 
 **status:**
@@ -280,7 +277,9 @@ Pay special attention to the `"status"` column:
 
 - `"not_found"` - This is a temporary status to detect species that are not listed as synonyms of themselves, so it does not appear in the advanced search (e.g.: to correct in RDB).
 
-**OBS: ** With argument `includeAll` set to default (`FALSE`), if the queried species is a synonym of only species described in the same year `pubDate` that are already included in the queried species list, the queried species will receive the status `"up_to_date"`. To check every possible taxonomic split regardless of whether the new species is already present in the queried species list, change the argument value to `TRUE`.
+**OBS:** With argument `includeAll` set to default (`FALSE`), if the queried species is a synonym of only species described in the same year `pubDate` that are already included in the queried species list, the queried species will receive the status `"up_to_date"`. To check every possible taxonomic split regardless of whether the new species is already present in the queried species list, change the argument value to `TRUE`.
+
+**Attention:** The column `"RDB"` shows only the current valid names of species described in, or after, `pubDate` according to The Reptile Database. It will NOT show the queried species, but be aware that `reptSplitCheck` is for valid names only (e.g.: "matched", from `reptCompare`). Therefore, the `"check_split"` status is only to highlight that users must check if the data related to the queried species could be used (e.g.: species traits) or divided (e.g.: distribution) to the `"RDB"` column species. In other words, in the example above, it does not mean that *Tantilla melanocephala* current valid name is *T. selmae*. It means that users must ensure that the use of the queried nomenclature will not overlook the possibility that the data, or part of it, should be assigned to *T. selmae* instead.
 
 #### **Function `reptTidySyn`:**
 
