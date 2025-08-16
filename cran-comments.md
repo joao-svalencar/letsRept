@@ -1,7 +1,7 @@
-# CRAN submission: letsRept 0.1.0
+# CRAN submission: letsRept 1.0.0
 
 This package is a renamed and refactored version of the previously submitted package `letsHerp`.
-It is submitted as a new package due to the name change, and supersedes the previous version.
+It is submitted as a new package due to the name change that reflects more acuratelly the package utility, and supersedes the previous version.
 
 ## R CMD check results
 

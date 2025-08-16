@@ -1,0 +1,31 @@
+
+citHeader("Please cite both the letsRept package and the Reptile Database if you use this package:")
+
+# 1. Package citation
+bibentry(
+  bibtype = "Manual",
+  title   = "letsRept: An Interface to the Reptile Database",
+  author  = c(as.person("João Paulo Santos Vieira-Alencar"),
+              as.person("Cristoph Liedtke")),
+  year    = "2025",
+  note    = paste("R package version", utils::packageVersion("letsRept"))
+)
+
+# 2. Reptile Database citation
+bibentry(
+  bibtype = "Misc",
+  title   = "The Reptile Database",
+  author  = c(
+    as.person("Peter Uetz"),
+    as.person("Paula Freed"),
+    as.person("Rafael Aguilar"),
+    as.person("Felipe Reyes"),
+    as.person("Jiri Kudera"),
+    as.person("Jiri Hošek")
+  ),
+  year    = format(Sys.Date(), "%Y"),  # automatically current year
+  note    = paste0(
+    "Accessed on ", format(Sys.Date(), "%B %d, %Y"),
+    ". Available at: http://www.reptile-database.org"
+  )
+)
