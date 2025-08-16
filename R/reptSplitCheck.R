@@ -21,14 +21,22 @@
 #' "Atractus snethlageae",
 #' "Tantilla melanocephala",
 #' "Oxybelis aeneus",
-#' "Oxybelis rutherfordi"
+#' "Oxybelis rutherfordi",
 #' "Vieira-Alencar authoristicus",
 #' "Oxybelis aeneus",
 #' "Bothrops pauloensis")
 #'
 #'\donttest{
-#'result <- reptSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
-#'result <- reptSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE, includeAll = TRUE)
+#'result <- reptSplitCheck(x=query,
+#'                         pubDate = 2019,
+#'                         cores = 2,
+#'                         showProgress = FALSE)
+#'
+#'result <- reptSplitCheck(x=query,
+#'                         pubDate = 2019,
+#'                         cores = 2,
+#'                         showProgress = FALSE,
+#'                         includeAll = TRUE)
 #' }
 #' @export
 #' 

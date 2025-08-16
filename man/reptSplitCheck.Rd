@@ -38,13 +38,27 @@ A data frame with the following columns:
 Check for potential taxonomic splits in a query
 }
 \examples{
-query <- c("Vieira-Alencar authoristicus",
+query <- c(
+"Atractus dapsilis",
+"Atractus trefauti",
+"Atractus snethlageae",
 "Tantilla melanocephala",
 "Oxybelis aeneus",
-"Apostolepis dimidiata",
+"Oxybelis rutherfordi",
+"Vieira-Alencar authoristicus",
+"Oxybelis aeneus",
 "Bothrops pauloensis")
 
 \donttest{
-result <- reptSplitCheck(x=query, pubDate = 2019, cores = 2, showProgress = FALSE)
+result <- reptSplitCheck(x=query,
+                        pubDate = 2019,
+                        cores = 2,
+                        showProgress = FALSE)
+
+result <- reptSplitCheck(x=query,
+                        pubDate = 2019,
+                        cores = 2,
+                        showProgress = FALSE,
+                        includeAll = TRUE)
 }
 }
