@@ -66,13 +66,12 @@ Retrieves the reference list for a given species from the Reptile Database. By d
 
 This function is useful to extract citation metadata for taxonomic or historical analyses.
 
-```r
+```{.r}
 # Basic usage
 reptRefs("Boa constrictor")
 
 # If you want only reference texts, without links:
 reptRefs("Boa constrictor", getLink = FALSE)
-
 ```
 
 #### **Function `reptAdvancedSearch`:**
@@ -80,7 +79,7 @@ reptRefs("Boa constrictor", getLink = FALSE)
 Creates a link for a page as derived from an Advanced Search in RD (multiple species in a page):
 ```{.r}
 # create multiple species link:
-link_boa <- reptAdvancedSearch(genus = "\"Boa\"") #returns a link to a list of all Boa species.
+link_boa <- reptAdvancedSearch(genus = "Boa", exact = TRUE) #returns a link to a list of all Boa species.
 
 link_apo <- reptAdvancedSearch(genus = "Apostolepis") #returns a link to a list of all Apostolepis species
 
@@ -89,7 +88,11 @@ link <- reptAdvancedSearch(higher = "snakes", location = "Brazil") #returns a li
 link <- reptAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to a list of all species described from 2010 to 2012
 ```
 
-`reptAdvancedSearch(synonym = "example")` will return the species information directly (via `reptSearch("example")`) if the synonym uniquely matches a single valid species. The \" in the *Boa* example parses the information strictly as "Boa", avoiding to return genus like *Pseudoboa*, or *Boaedon*.
+`reptAdvancedSearch(synonym = "example")` will return the species information directly (via `reptSearch("example")`) if the synonym uniquely matches a single valid species. The `exact = TRUE` argument in the *Boa* example parses the information strictly as "Boa", avoiding to return genus like *Pseudoboa*, or *Boaedon*.
+
+⚠️ **Note:**
+
+The argument `exact` does not work properly for searches using logical arguments (e.g. `AND/OR`). If you want to force an exact match (e.g., "*Boa*" as a phrase) with multiple terms (e.g., "*Boa* OR *Apostolepis*"), you must manually include quotes in the input string, e.g., "\"*Boa*\" OR *Apostolepis*".
 
 #### **Function `reptSpecies`:**
 
