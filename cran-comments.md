@@ -38,5 +38,6 @@ R CMD check results:
   - Tests using online resources are skipped on CRAN using `skip_on_cran()` and `Sys.getenv("NOT_CRAN")`.
 - Console output and progress feedback are now fully suppressible using `verbose` or `showProgress` arguments, where applicable.
 - The only exception is `reptTidySyn()`, which is an interactive console summary function (similar to `print()` or `summary()`), and is intended to produce console output by design.
+- Considering that the package relies on The Reptile Database, I changed the CITATION file to include the reference to the website. I plan to edit the CITATION file again as soon as the manuscript related to the package gets published.
 
 Thank you for your time and consideration.
