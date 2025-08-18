@@ -118,7 +118,7 @@ reptSync <- function(x,
         df$status[df$query == ambiguity_df$query[i]] <- ambiguity_df$status[i]
       }
     }
-    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "duplicated"
+    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "synonymization"
     if(getLink){
       return(df)  
     }else{
@@ -126,7 +126,7 @@ reptSync <- function(x,
       return(df)  
     }
   }else{
-    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "duplicated"
+    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "synonymization"
     if(getLink){
       return(df)  
     }else{
