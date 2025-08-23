@@ -47,8 +47,8 @@ browseVignettes("letsRept")
 - [x] &nbsp; Implement "up_to_date" check (`reptSplitCheck`)
 - [x] &nbsp; Implement Reference sampling (df with links)
 - [x] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
-- [x] $nbsp; Stable version 1.0.0 CRAN submission (August 18th, 2025)
-- [x] $nbsp; Stable version 1.0.0 CRAN release (August 22nd, 2025)
+- [x] &nbsp; Stable version 1.0.0 CRAN submission (August 18th, 2025)
+- [x] &nbsp; Stable version 1.0.0 CRAN release (August 22nd, 2025)
 - [x] &nbsp; Paper submission (August 18th, 2025)
 
 ### **How to Cite**
