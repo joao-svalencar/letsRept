@@ -8,7 +8,7 @@ bibentry(
   author  = c(as.person("João Paulo Santos Vieira-Alencar"),
               as.person("H. Cristoph Liedtke")),
   year    = "2025",
-  note    = paste("R package version 1.0.0")
+  note    = paste("R package version 1.0.1")
 )
 
 # 2. Reptile Database citation

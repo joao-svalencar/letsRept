@@ -1,7 +1,12 @@
 # letsRept NEWS
 The package was renamed to `letsRept`
 
-## Version 0.1.0 — 2025-08-05
+## Version 1.0.1 — 2025-08-23
+- Fixed CRAN test issues by skipping network-dependent tests.
+- Made parallel calls safe on macOS (cores = 1 for tests).
+- Minor bugfixes and test updates.
+
+## Version 1.0.0 — 2025-08-05
 
 ### Major changes
 
