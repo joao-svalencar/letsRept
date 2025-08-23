@@ -240,7 +240,7 @@ Pay special attention to the `"status"` column:
 
 - `"not_found"` - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
 
-- `"duplicated"` - Multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization.
+- `"synonymization"` - Multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization.
 
 ⚠️ **ATTENTION!**⚠️ 
 

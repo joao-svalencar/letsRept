@@ -88,7 +88,7 @@ reptSync <- function(x,
     if(showProgress && nrow(synSample) >=1 ) message(sprintf("Sampling synonyms to approach ambiguity for %d species", nrow(synSample)))
     
     if (nrow(synSample) > 0) {
-      ambiguity_results <- safeParallel(1:nrow(synSample), FUN = function(i) {
+      ambiguity_results <- safeParallel(seq_len(nrow(synSample)), FUN = function(i) {
         # For each species, resolve ambiguity using reptSynonyms
         spp_syn <- reptSynonyms(reptSpecies(synSample$url[i], getLink = TRUE, showProgress = FALSE, cores = cores), cores = cores, showProgress = FALSE)
         synonyms <- spp_syn$species[synSample$query[i] == spp_syn$synonyms]

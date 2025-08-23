@@ -6,9 +6,9 @@ bibentry(
   bibtype = "Manual",
   title   = "letsRept: An Interface to the Reptile Database",
   author  = c(as.person("João Paulo Santos Vieira-Alencar"),
-              as.person("Cristoph Liedtke")),
+              as.person("H. Cristoph Liedtke")),
   year    = "2025",
-  note    = paste("R package version", utils::packageVersion("letsRept"))
+  note    = paste("R package version 1.0.0")
 )
 
 # 2. Reptile Database citation

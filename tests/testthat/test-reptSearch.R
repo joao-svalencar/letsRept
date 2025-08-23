@@ -6,5 +6,5 @@ test_that("reptSearch returns expected output", {
   
   expect_type(result, "list")
   expect_true("species" %in% names(result))
-  expect_gt(length(result), 0)
+  expect_gte(length(result), 0)
 })

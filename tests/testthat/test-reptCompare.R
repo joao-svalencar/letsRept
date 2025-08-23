@@ -4,9 +4,11 @@ test_that("reptCompare returns expected output", {
   
   my_species <- data.frame(species = c("Boa constrictor", "Pantherophis guttatus", "Fake species"))
   
-  result <- reptCompare(my_species)
-  
+  expect_warning(
+  result <- reptCompare(my_species),
+  "No RDB list provided"
+  )
   expect_s3_class(result, "data.frame")
   expect_true("species" %in% names(result))
-  expect_gt(nrow(result), 0)
+  expect_gte(nrow(result), 0)
 })

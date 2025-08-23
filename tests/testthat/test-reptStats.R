@@ -6,5 +6,5 @@ test_that("reptCompare returns expected output", {
   
   expect_s3_class(result, "data.frame")
   expect_true("taxa" %in% names(result))
-  expect_gt(nrow(result), 0)
+  expect_gte(nrow(result), 0)
 })

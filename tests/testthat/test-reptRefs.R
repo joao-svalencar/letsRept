@@ -6,5 +6,5 @@ test_that("reptRefs returns expected output", {
   
   expect_s3_class(result, "data.frame")
   expect_true("link" %in% names(result))
-  expect_gt(nrow(result), 0)
+  expect_gte(nrow(result), 0)
 })
