@@ -38,13 +38,10 @@ match_taxon <- function(taxa_vector, rank_list) {
 #' @keywords internal
 #' @noRd
 safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
-  if (.Platform$OS.type == "unix") {
-    if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
-      pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
-    } else {
-      parallel::mclapply(data, FUN, mc.cores = cores)
-    }
-  } else {
+is_mac <- Sys.info()["sysname"] == "Darwin"
+
+if (.Platform$OS.type == "unix") {
+  if (is_mac || cores > 1) { # macOS is unsafe with fork
     cl <- parallel::makeCluster(cores)
     on.exit(parallel::stopCluster(cl))
     if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
@@ -52,8 +49,40 @@ safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
     } else {
       parallel::parLapply(cl, data, FUN)
     }
+  } else { # safe to use mclapply (Linux)
+    if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
+      pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
+    } else {
+      parallel::mclapply(data, FUN, mc.cores = cores)
+    }
+  }
+} else { # Windows
+  cl <- parallel::makeCluster(cores)
+  on.exit(parallel::stopCluster(cl))
+  if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
+    pbapply::pblapply(data, FUN, cl = cl)
+  } else {
+    parallel::parLapply(cl, data, FUN)
   }
 }
+}
+# safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
+#   if (.Platform$OS.type == "unix") {
+#     if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
+#       pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
+#     } else {
+#       parallel::mclapply(data, FUN, mc.cores = cores)
+#     }
+#   } else {
+#     cl <- parallel::makeCluster(cores)
+#     on.exit(parallel::stopCluster(cl))
+#     if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
+#       pbapply::pblapply(data, FUN, cl = cl)
+#     } else {
+#       parallel::parLapply(cl, data, FUN)
+#     }
+#   }
+#}
 
 # higherSampleParallel ----------------------------------------------------
 
