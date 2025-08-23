@@ -1,5 +1,9 @@
-# letsRept
+# letsRept🦎 🐍 🐊 🐢
 
+<!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/letsRept)](https://CRAN.R-project.org/package=letsRept)
+<!-- badges: end -->
+  
 ### **An Interface to the Reptile Database**
 
 This package was developed to facilitate the processes of reptile nomenclature update based on a search for species synonyms according to [The Reptile Databse](https://reptile-database.reptarium.cz) website (Uetz et al., 2025).
