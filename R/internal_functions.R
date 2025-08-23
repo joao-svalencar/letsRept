@@ -524,7 +524,16 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #' @noRd
 splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, includeAll = includeAll, x) {
   tryCatch({
-    link <- reptAdvancedSearch(synonym = spp, verbose = verbose, exact = TRUE)
+    parts <- strsplit(spp, " ")[[1]]
+    
+    exact_flag <- length(parts) == 2 && tolower(parts[1]) == tolower(parts[2])
+   
+     if (exact_flag) {
+      link <- reptAdvancedSearch(synonym = spp, verbose = verbose, exact = TRUE)
+    } else {
+      link <- reptAdvancedSearch(synonym = spp, verbose = verbose)
+    }
+    
     
     # Character link: standard HTML parsing
     if (is.character(link) && grepl("^https:", link)) {
