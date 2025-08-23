@@ -511,6 +511,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #' @param pubDate An optional integer year (e.g., 2020) to compare against taxon publication years.
 #' Species published from this year onward may indicate a recent split.
 #' @param verbose Logical; if \code{TRUE}, messages will be printed when an error occurs. Default is \code{TRUE}.
+#' @param includeAll Logical; If \code{TRUE}, include all species described since `pubDate` regardless of if it is already included in the queried species list. Default is \code{FALSE}
 #'
 #' @return A data frame with three columns:
 #' \itemize{
@@ -523,7 +524,7 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
 #' @noRd
 splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, includeAll = includeAll, x) {
   tryCatch({
-    link <- reptAdvancedSearch(synonym = spp, verbose = verbose)
+    link <- reptAdvancedSearch(synonym = spp, verbose = verbose, exact = TRUE)
     
     # Character link: standard HTML parsing
     if (is.character(link) && grepl("^https:", link)) {
