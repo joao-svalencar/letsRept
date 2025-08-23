@@ -66,23 +66,6 @@ if (.Platform$OS.type == "unix") {
   }
 }
 }
-# safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
-#   if (.Platform$OS.type == "unix") {
-#     if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
-#       pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
-#     } else {
-#       parallel::mclapply(data, FUN, mc.cores = cores)
-#     }
-#   } else {
-#     cl <- parallel::makeCluster(cores)
-#     on.exit(parallel::stopCluster(cl))
-#     if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
-#       pbapply::pblapply(data, FUN, cl = cl)
-#     } else {
-#       parallel::parLapply(cl, data, FUN)
-#     }
-#   }
-#}
 
 # higherSampleParallel ----------------------------------------------------
 
