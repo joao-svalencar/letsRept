@@ -29,7 +29,7 @@ reptCompare <- function(x = NULL, y = NULL, filter = NULL){
     stop("No species list provided")
   }
   if(is.null(y)){
-    warning("No RDB list provided, comparing with internal data 'allReptiles'")
+    message("No RDB list provided, comparing with internal data 'allReptiles'")
     y <- letsRept::allReptiles
   }
   
@@ -41,9 +41,15 @@ reptCompare <- function(x = NULL, y = NULL, filter = NULL){
     y <- y$species
   }
   
+  
   review <- x[which(!x %in% y)]
   matched <- x[which(x %in% y)]
   
+  if(length(review) == 0){
+    message("\nAll species nomenclature are up to date!")
+    matched <- data.frame(species = matched, status = "matched")
+    return(matched)
+  }else{
     if(!is.null(filter)){
         if(filter=="review"){
           return(review)
@@ -61,5 +67,6 @@ reptCompare <- function(x = NULL, y = NULL, filter = NULL){
       df <- df[order(df$species),]
       return(df)
     }
+  }
 }
 
