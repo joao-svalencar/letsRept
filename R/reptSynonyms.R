@@ -10,7 +10,7 @@
 #' @param checkpoint Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).
 #' @param backup_file Optional. Character string specifying the path to an \code{.rds} file used to save or resume intermediate results. Required if using \code{checkpoint} or \code{resume}.
 #' @param resume Logical. If \code{TRUE}, resumes sampling from a previous run using the file provided in \code{backup_file}. Only works when \code{cores = 1}.
-#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).
+#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.
 #'
 #' @return
 #' A data frame with columns:
@@ -48,7 +48,7 @@ reptSynonyms <- function(x,
                          checkpoint = NULL,
                          backup_file = NULL,
                          resume=FALSE,
-                         cores = max(1L, floor(parallel::detectCores() / 2)))
+                         cores = 1)
 {
   if(is.character(x)){
     species_list <- c()

@@ -5,7 +5,7 @@
 #'
 #' @param x A character vector of taxon names to be matched (e.g., species lists, phylogenetic tip labels, or trait table entries).
 #' @param solveAmbiguity Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.
-#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).
+#' @param cores Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.
 #' @param showProgress Logical. If \code{TRUE}, displays progress updates during processing. Default is \code{TRUE}.
 #' @param getLink Logical. If \code{TRUE}, retrieves searched species URLs. Defaults if \code{FALSE}.
 #'
@@ -13,7 +13,7 @@
 #' \itemize{
 #'   \item \code{query}: the original input names.
 #'   \item \code{RDB}: the best-matching valid names according to The Reptile Database.
-#'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, or \code{"not_found"}).
+#'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, \code{"synonymization"}, or \code{"not_found"}).
 #'   \item \code{url}: Optional, if getLink = TRUE returns the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 #' }
 #'
@@ -39,7 +39,7 @@
 
 reptSync <- function(x, 
                      solveAmbiguity = TRUE,
-                     cores = max(1L, floor(parallel::detectCores() / 2)),
+                     cores = 1,
                      showProgress = TRUE,
                      getLink = FALSE) {
   
