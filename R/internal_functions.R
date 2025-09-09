@@ -37,34 +37,104 @@ match_taxon <- function(taxa_vector, rank_list) {
 #' 
 #' @keywords internal
 #' @noRd
+# safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
+# is_mac <- Sys.info()["sysname"] == "Darwin"
+# 
+# if (.Platform$OS.type == "unix") {
+#   if (is_mac || cores > 1) { # macOS is unsafe with fork
+#     cl <- parallel::makeCluster(cores)
+#     on.exit(parallel::stopCluster(cl))
+#     if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
+#       pbapply::pblapply(data, FUN, cl = cl)
+#     } else {
+#       parallel::parLapply(cl, data, FUN)
+#     }
+#   } else { # safe to use mclapply (Linux)
+#     if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
+#       pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
+#     } else {
+#       parallel::mclapply(data, FUN, mc.cores = cores)
+#     }
+#   }
+# } else { # Windows
+#   cl <- parallel::makeCluster(cores)
+#   on.exit(parallel::stopCluster(cl))
+#   if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
+#     pbapply::pblapply(data, FUN, cl = cl)
+#   } else {
+#     parallel::parLapply(cl, data, FUN)
+#   }
+# }
+# }
 safeParallel <- function(data, FUN, cores = 1, showProgress = TRUE) {
-is_mac <- Sys.info()["sysname"] == "Darwin"
-
-if (.Platform$OS.type == "unix") {
-  if (is_mac || cores > 1) { # macOS is unsafe with fork
+  is_mac <- Sys.info()["sysname"] == "Darwin"
+  
+  if (.Platform$OS.type == "unix") {
+    if (is_mac || cores > 1) { # macOS is unsafe with fork, or multiple cores
+      cl <- parallel::makeCluster(cores)
+      on.exit(parallel::stopCluster(cl), add = TRUE)
+      
+      out <- tryCatch(
+        {
+          if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
+            pbapply::pblapply(data, FUN, cl = cl)
+          } else {
+            parallel::parLapply(cl, data, FUN)
+          }
+        },
+        interrupt = function(e) {
+          message("Parallel processing was interrupted by user.")
+          NULL
+        },
+        error = function(e) {
+          message("An error occurred: ", e$message)
+          NULL
+        }
+      )
+      
+    } else { # Linux, safe to use mclapply
+      out <- tryCatch(
+        {
+          if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
+            pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
+          } else {
+            parallel::mclapply(data, FUN, mc.cores = cores)
+          }
+        },
+        interrupt = function(e) {
+          message("Parallel processing was interrupted by user.")
+          NULL
+        },
+        error = function(e) {
+          message("An error occurred: ", e$message)
+          NULL
+        }
+      )
+    }
+    
+  } else { # Windows
     cl <- parallel::makeCluster(cores)
-    on.exit(parallel::stopCluster(cl))
-    if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
-      pbapply::pblapply(data, FUN, cl = cl)
-    } else {
-      parallel::parLapply(cl, data, FUN)
-    }
-  } else { # safe to use mclapply (Linux)
-    if (showProgress && requireNamespace("pbmcapply", quietly = TRUE)) {
-      pbmcapply::pbmclapply(data, FUN, mc.cores = cores)
-    } else {
-      parallel::mclapply(data, FUN, mc.cores = cores)
-    }
+    on.exit(parallel::stopCluster(cl), add = TRUE)
+    
+    out <- tryCatch(
+      {
+        if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
+          pbapply::pblapply(data, FUN, cl = cl)
+        } else {
+          parallel::parLapply(cl, data, FUN)
+        }
+      },
+      interrupt = function(e) {
+        message("Parallel processing was interrupted by user.")
+        NULL
+      },
+      error = function(e) {
+        message("An error occurred: ", e$message)
+        NULL
+      }
+    )
   }
-} else { # Windows
-  cl <- parallel::makeCluster(cores)
-  on.exit(parallel::stopCluster(cl))
-  if (showProgress && requireNamespace("pbapply", quietly = TRUE)) {
-    pbapply::pblapply(data, FUN, cl = cl)
-  } else {
-    parallel::parLapply(cl, data, FUN)
-  }
-}
+  return(out)
 }
 
 # higherSampleParallel ----------------------------------------------------
