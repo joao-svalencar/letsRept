@@ -59,7 +59,12 @@ reptStats <- function(x = letsRept::allReptiles,
   taxonomic_levels <- c("order", "suborder", "family", "genus", "species")
   levels_to_summarize <- taxonomic_levels[highest_filter:length(taxonomic_levels)]
   
-  out <- lapply(x[, levels_to_summarize, drop = FALSE], table)
+  out <- lapply(x[, levels_to_summarize, drop = FALSE], function(col) {
+    res <- sort(table(col), decreasing = TRUE)
+    names(dimnames(res)) <- NULL
+    res
+  })
+  
   out$species <- names(out$species)
   
   if(verbose){
