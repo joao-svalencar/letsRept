@@ -13,7 +13,7 @@
 #' \itemize{
 #'   \item \code{query}: the original input names.
 #'   \item \code{RDB}: the best-matching valid names according to The Reptile Database.
-#'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, \code{"synonymization"}, or \code{"not_found"}).
+#'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, \code{"merge"}, or \code{"not_found"}).
 #'   \item \code{url}: Optional, if getLink = TRUE returns the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 #' }
 #'
@@ -118,7 +118,7 @@ reptSync <- function(x,
         df$status[df$query == ambiguity_df$query[i]] <- ambiguity_df$status[i]
       }
     }
-    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "synonymization"
+    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "merge"
     if(getLink){
       return(df)  
     }else{
@@ -126,7 +126,7 @@ reptSync <- function(x,
       return(df)  
     }
   }else{
-    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "synonymization"
+    df$status[df$RDB %in% names(which(table(df$RDB)[!names(table(df$RDB)) %in% c("ambiguous", "not_found")] >=2))] <- "merge"
     if(getLink){
       return(df)  
     }else{
