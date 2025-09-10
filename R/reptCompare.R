@@ -7,12 +7,13 @@
 #' @param x A character vector or a data frame containing a column named `species` with species names to be compared.
 #' @param y Optional. A character vector or a data frame containing a column named `species` to compare against. Defaults to the internal object `allReptiles`.
 #' @param filter Optional. A character string. If `"review"`, returns only unmatched species.
-#' If `"matched"`, returns only matched species. If `NULL` (default), returns a data frame of both.
+#' If `"matched"`, returns only matched species.
+#' If `"absent"`, returns species from `x` that are absent from `y`. If `NULL` (default), returns a data frame with all species and respective statuses.
 #'
 #' @return A character vector (if `filter` is `"review"` or `"matched"`), or a data frame with columns:
 #' \describe{
 #'   \item{species}{Species names from `x`}
-#'   \item{status}{Comparison result: `"review"` or `"matched"`}
+#'   \item{status}{Comparison result: `"review"`, `"matched"` or `"absent"`}
 #' }
 #'
 #' @examples
@@ -41,32 +42,41 @@ reptCompare <- function(x = NULL, y = NULL, filter = NULL){
     y <- y$species
   }
   
-  
   review <- x[which(!x %in% y)]
   matched <- x[which(x %in% y)]
   
-  if(length(review) == 0){
+  if (!missing(y)) {
+    absent <- review[review %in% letsRept::allReptiles$species]
+    review <- review[!review %in% letsRept::allReptiles$species]
+  } else {
+    absent <- character(0)  # empty if y not provided
+  }
+  
+  if(length(review) == 0 && length(absent) == 0){
     message("\nAll species nomenclature are up to date!")
     matched <- data.frame(species = matched, status = "matched")
     return(matched)
-  }else{
-    if(!is.null(filter)){
-        if(filter=="review"){
-          return(review)
-          }else
-        if(filter=="matched"){
-            return(matched)
-          }else{
-        stop("No valid filter argument provided")
-        }
+  }
+  
+  if(!is.null(filter)){
+    if(filter=="review"){
+      return(review)
+    } else if(filter=="matched"){
+      return(matched)
+    } else if(filter=="absent"){
+      return(absent)
     }else{
-      review <- data.frame(species = review, status = "review")
-      matched <- data.frame(species = matched, status = "matched")
-      
-      df <- rbind(review, matched)
-      df <- df[order(df$species),]
-      return(df)
+      stop("No valid filter argument provided")
     }
+  }else{
+    review <- data.frame(species = review, status = "review")
+    matched <- data.frame(species = matched, status = "matched")
+    absent <- data.frame(species = absent, status = "absent")
+    
+    df <- rbind(review, matched, absent)
+    df <- df[order(df$species),]
+    return(df)
   }
 }
+
 
