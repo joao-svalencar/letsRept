@@ -46,6 +46,9 @@ reptSplitCheck <- function(x,
                            verbose = TRUE,
                            cores = 1,
                            showProgress = TRUE) {
+  if(!is.character(x)){
+    stop("Object x is not a character vector")
+  }
   if(is.null(pubDate)){
     message("Argument pubDate not provided, setting to ", min(letsRept::allReptiles$year))
     pubDate <- as.integer(min(letsRept::allReptiles$year))
