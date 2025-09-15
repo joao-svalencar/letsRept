@@ -1,0 +1,5 @@
+articles:
+- title: "Case Studies"
+  navbar: ~
+  contents:
+  - case-study
