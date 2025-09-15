@@ -2,7 +2,7 @@
 #'
 #' This dataset contains the valid names and url addresses for all reptile species cataloged in The Reptile Database.
 #'
-#' @format A dataframe (download: May 23th, 2025) with 12440 rows and 8 variables:
+#' @format A dataframe (download: September 15th, 2025) with 12500 rows and 8 variables:
 #' \describe{
 #'   \item{order}{A species current order}
 #'   \item{suborder}{A species current suborder}
