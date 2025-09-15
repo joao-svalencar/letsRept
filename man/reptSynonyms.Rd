@@ -11,7 +11,7 @@ reptSynonyms(
   checkpoint = NULL,
   backup_file = NULL,
   resume = FALSE,
-  cores = max(1L, floor(parallel::detectCores()/2))
+  cores = 1
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ reptSynonyms(
 
 \item{resume}{Logical. If \code{TRUE}, resumes sampling from a previous run using the file provided in \code{backup_file}. Only works when \code{cores = 1}.}
 
-\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.}
 }
 \value{
 A data frame with columns:

@@ -7,7 +7,7 @@
 reptSync(
   x,
   solveAmbiguity = TRUE,
-  cores = max(1L, floor(parallel::detectCores()/2)),
+  cores = 1,
   showProgress = TRUE,
   getLink = FALSE
 )
@@ -17,7 +17,7 @@ reptSync(
 
 \item{solveAmbiguity}{Logical. If \code{TRUE}, attempts to resolve ambiguous names by retrieving all possible valid species to which the query may refer. Default is \code{TRUE}.}
 
-\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is half of available cores (min = 1).}
+\item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.}
 
 \item{showProgress}{Logical. If \code{TRUE}, displays progress updates during processing. Default is \code{TRUE}.}
 
@@ -28,7 +28,7 @@ A data frame with the following columns:
 \itemize{
 \item \code{query}: the original input names.
 \item \code{RDB}: the best-matching valid names according to The Reptile Database.
-\item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, or \code{"not_found"}).
+\item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, \code{"merge"}, or \code{"not_found"}).
 \item \code{url}: Optional, if getLink = TRUE returns the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 }
 }

@@ -2,29 +2,34 @@
 % Please edit documentation in R/reptCompare.R
 \name{reptCompare}
 \alias{reptCompare}
-\title{Compare a Species nomenclature with Reptile Database Data}
+\title{Compare species nomenclature between datasets or with Reptile Database Data}
 \usage{
 reptCompare(x = NULL, y = NULL, filter = NULL)
 }
 \arguments{
 \item{x}{A character vector or a data frame containing a column named \code{species} with species names to be compared.}
 
-\item{y}{Optional. A character vector or a data frame containing a column named \code{species} to compare against. Defaults to the internal object \code{allReptiles}.}
+\item{y}{Optional. A character vector or a data frame containing a column named \code{species} to be compared. Defaults to the internal object \code{allReptiles}.}
 
-\item{filter}{Optional. A character string. If \code{"review"}, returns only unmatched species.
-If \code{"matched"}, returns only matched species. If \code{NULL} (default), returns a data frame of both.}
+\item{filter}{Optional. A character string or a vector of characters.
+If \code{"review"}, returns only unmatched species.
+If \code{"matched"}, returns only matched species.
+If \code{"absent"}, returns only species from \code{x} that are absent from \code{y}.
+If \code{NULL} (default), returns a data frame with all species and respective statuses.
+Multiple filters can be concatenated and the resulting data frame will return all species with both status.}
 }
 \value{
-A character vector (if \code{filter} is \code{"review"} or \code{"matched"}), or a data frame with columns:
+A character vector (if \code{filter} is \code{"review"}, \code{"matched"} or \verb{"absent}), or a data frame with columns:
 \describe{
 \item{species}{Species names from \code{x}}
-\item{status}{Comparison result: \code{"review"} or \code{"matched"}}
+\item{status}{Comparison result: \code{"review"}, \code{"matched"} or \code{"absent"}}
 }
 }
 \description{
 This function compares a list of species (\code{x}) with another list (\code{y}), typically from the Reptile Database (RDB).
-If \code{y} is not provided, it defaults to using the internal object \code{allReptiles}.
-The function returns species that are either unmatched ("review") or matched with the RDB list, or both.
+If \code{y} is not provided, it defaults to using the internal object \code{allReptiles}, extracted from RDB (version: May, 2025).
+The function returns species from \code{x}that are either unmatched ("review") or matched with \code{y} or with \code{allReptiles}, if \code{y} is NULL.
+If \code{y} is provided and any species from \code{x} is a valid name according to RDB but is absent from \code{y}, it receives the status \code{absent}
 }
 \examples{
 my_species <- data.frame(species = c("Boa constrictor", "Pantherophis guttatus", "Fake species"))
