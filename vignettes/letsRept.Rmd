@@ -1,5 +1,3 @@
-yaml
-
 ---
 title: "letsRept: An Interface to the Reptile Database"
 output: rmarkdown::html_vignette
@@ -113,6 +111,9 @@ apo <- reptSpecies(link_apo, taxonomicInfo = TRUE, getLink = TRUE) #link from re
 #Returns only species url - Faster and recommended for large datasets:
 boa <- reptSpecies(link_boa, taxonomicInfo = FALSE, getLink = TRUE) #link from reptAdvancedSearch(genus = "Boa")
 
+#Returns only species names - Faster and recommended for large datasets for just nomenclatural check:
+boa <- reptSpecies(link_boa, taxonomicInfo = FALSE, getLink = FALSE) #link from reptAdvancedSearch(genus = "Boa")
+
 #example 2
 apo <- reptSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE) #link from reptAdvancedSearch(genus = "Apostolepis")
 
@@ -124,6 +125,45 @@ apo <- reptSpecies(link_apo, taxonomicInfo = FALSE, getLink = TRUE, checkpoint=6
 ⚠️ **Note:**
 
 All console messages, warnings, and progress updates can be silenced. However, `reptSpecies()` issues a helpful warning if any species information fails to be retrieved, along with instructions on how to access those entries from the function output.
+
+As many functions in `letsRept` relies on internet connection errors or failed species information sampling might happen with no regards on the package coding. From `reptSpecies()` a given warning might appear:
+
+```{r, eval = FALSE}
+Warning message:
+In reptSpecies(dataList = allReptilesLinks, getLink = FALSE, taxonomicInfo = TRUE,  :
+  Data sampling completed with errors for the following species:
+- Ablepharus himalayanus: cannot open the connection
+- Acanthodactylus tristrami: cannot open the connection
+- Amphisbaena leucocephala: cannot open the connection
+- Amphisbaena vanzolinii: cannot open the connection
+- Amyda ornata: cannot open the connection
+... and 10 others
+```
+
+In this case, all species have been tried to be sampled once, and for some (in the example: 15 species) loading their page in R failed. This will provide a dataframe with the usual 7 columns desired when `taxonomicInfo = TRUE`, plus a column to report the occurence of an error, the message related to the error and the species url regardeless of if `getLink = FALSE` and the code necessary to extract the failed species from the output in order to retry their sampling:
+
+```{r, eval = FALSE}
+failed_spp <- df[df$species %in% df$species[df$error == TRUE], c('species', 'url')]
+```
+
+Where `df` is object named in the first run of `reptSpecies()`. This line samples the object selecting all species that got any errors in the previous run along with their url, the current requeried entries to run `reptSpecies()` with argument `dataList`:
+
+```{r}
+failed <- reptSpecies(dataList = failed_spp, taxonomicInfo = TRUE)
+```
+
+To merge the original `df` object with the ressampled species we first remove the failed species from `df`, then we `rbind` the objects and reorder the species:
+
+```{r}
+df <- df[!df$species %in% df$species[allRept$error == TRUE], c(-8,-9,-10)]
+dfNew <- rbind(df, failed)
+
+dfNew <- dfNew[order(dfNew$species),]
+```
+
+A similar approach is possible for any of the functions tied to web scraping.
+
+A new version of `reptSpecies()` allowing users to ask for automated retries is planned for a future version.
 
 #### **Function `reptStats``:**
 
@@ -240,7 +280,7 @@ Pay special attention to the `"status"` column:
 
 - `"not_found"` - Species name provided in query is not a current valid name nor synonym according to The Reptile Database. This status could be derived from a typo within species name. A very rare situation where this status can pop up is when the current valid name is updated in the query but is not found in the list of synonyms.
 
-- `"synonymization"` - Multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization.
+- `"merge"` - Multiple names in the query are now considered synonyms of a single valid species, likely from a synonymization.
 
 ⚠️ **ATTENTION!**⚠️ 
 

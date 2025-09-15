@@ -1,0 +1,165 @@
+---
+title: "Case Study: Using letsRept"
+author: "João Paulo dos Santos Vieira-Alencar"
+date: "`r Sys.Date()`"
+output: html_vignette
+vignette: >
+  %\VignetteIndexEntry{Case Study: Using letsRept}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Updating nomenclature with letsRept
+
+This article is dedicated to simulate a follow up, step-by-step of the case study presented in `Vieira-Alencar et al. (2025)`.
+
+The data used in the examples are referenced and publicly available. A full repository dedicated for the paper reproducibility is accessible via: https://doi.org/10.5281/zenodo.16895979. Download the repo and execute the .Rproj file to keep the same code structure as shown herein.
+
+I recommend installing the development version directly from GitHub, but a stable version is available on CRAN. Package `here` and `parallel` are suggested to follow this tutorial.
+
+```{r}
+#devtools::install_github("joao-svalencar/letsRept", ref="main", force=TRUE)
+#install.packages("here")
+#install.packages("parallel")
+library(letsRept)
+```
+
+If you downloaded the repository and executed the .Rproj, then to load the example dataset from [Nogueira et al. (2019)](https://doi.org/10.2994/SAJH-D-19-00120.1) run:
+
+```{.r, eval = FALSE}
+# load Nogueira et al., (2019) Supp. Mat. Table S3 (georeferenced type localities)
+atlas <- read.csv(here::here("data", "atlas.csv"))
+```
+
+In the manuscript, to introduce readers to some of the main functions of *letsRept* we showed an example of how to subset the Reptile Database to get taxonomic information from a given group, in a given region. 
+
+```{.r, eval = FALSE}
+link <- reptAdvancedSearch(location = "Brazil", higher = "snakes")
+snakes_br <- reptSpecies(link, taxonomicInfo = TRUE, cores = (parallel::detectCores()-1))
+head(snakes_br)
+```
+
+But for nomenclature update using the internal data `allReptiles` you can just run `reptCompare` without a second argument:
+
+```{.r}
+compare <- reptCompare(atlas$species)
+table(compare$status)
+```
+
+The basic update that most other tools provide will just try to detect the current name for unmatched entries. To start with these cases we subset the database filtering only for the species that doesn't match the Reptile Database nomenclature:
+
+```{.r}
+review <- reptCompare(atlas$species, snakes_br$species, filter = "review") #38 unmatched names 
+```
+
+Now, to verify the sugestions of current nomenclature we parse this names to `reptSync`:
+
+```{.r}
+sync <- reptSync(review, solveAmbiguity = TRUE, cores = (parallel::detectCores()-1))
+sync
+
+table(sync$status)
+```
+
+
+```{r, echo = FALSE}
+library(knitr)
+
+# Create a data frame
+tab <- data.frame(
+  ambiguous = 3,
+  merge = 2,
+  updated = 33
+)
+
+# Render the table
+kable(tab, align = "c")
+```
+
+Alright, now we know that most species names could be unambiguously updated but we do have 3 cases of ambiguous nomenclature and 2 cases of species that should me merged, possibly because of species lumping. Let's see who they are in a tidy way:
+
+```{.r}
+reptTidySyn(sync, filter = c("merge", "ambiguous"))
+```
+
+
+```{r}
+reptSearch("Corallus cookii")
+reptSearch("Corallus hortulana")
+
+reptSearch("Adelphostigma occipitalis")
+reptSearch("Adelphostigma quadriocellata")
+reptSearch("Eutrachelophis papilio")
+
+reptSearch("Tachymenis ocellata")
+reptSearch("Tachymenis trigonatus")
+
+reptSearch("Liotyphlops ternetzii")
+
+write.csv(snakes_names, here::here("outputs", "Table S1.csv"), row.names = FALSE)
+```
+
+# taxize comparison
+```{r, eval = FALSE}
+library(taxize)
+
+taxize_sync <- gna_verifier(c("Corallus hortulanus",
+                              "Liotyphlops beui",
+                              "Liotyphlops sousai",
+                              "Taeniophallus occipitalis",
+                              "Tomodon ocellatus"),
+                              all_matches = TRUE)
+
+
+print(taxize_sync[,c("submittedName",
+                     "currentName",
+                     "dataSourceTitleShort",
+                     "taxonomicStatus",
+                     "sortScore")],
+      n=length(taxize_sync$submittedName))
+```
+
+# check for species taxonomic split
+
+```{r, eval = FALSE}
+matched <- reptCompare(atlas$species, snakes_br, filter = c("matched", "absent")) #372 unmatched names + 1 absent
+
+split_check <- reptSplitCheck(matched, pubDate = 2019, cores = (parallel::detectCores()-1))
+
+table(split_check$status)
+```
+
+Make a table, or print the output
+#check_split: 19; up_to_date: 353
+
+#to check check_split species:
+```{r, eval = FALSE}
+reptTidySyn(split_check, filter = c("check_split"))
+```
+
+```{r, eval = FALSE}
+#Atractus
+reptSpecies(reptAdvancedSearch(synonym = "Atractus badius"), taxonomicInfo = T)
+reptSearch("Atractus akerios")
+
+reptSpecies(reptAdvancedSearch(synonym = "Atractus major"), taxonomicInfo = T)
+reptSearch("Atractus nawa", getRef = T)
+
+reptSpecies(reptAdvancedSearch(synonym = "Atractus snethlageae"), taxonomicInfo = T)
+reptSearch("Atractus snethlageae", getRef = T)
+
+#Chironius
+reptSpecies(reptAdvancedSearch(synonym = "Chironius bicarinatus"), taxonomicInfo = T)
+reptSearch("Chironius dracomaris", getRef = T)
+reptSearch("Chironius gouveai", getRef = T)
+
+
+reptSpecies(reptAdvancedSearch(synonym = "Chironius carinatus"), taxonomicInfo = T)
+reptSearch("Chironius nigelnoriegai", getRef = T)
+
+#Oxybelis aeneus
+reptSpecies(herpAdvancedSearch(synonym = "Oxybelis aeneus"), taxonomicInfo = T)
+reptSearch("Oxybelis inkaterra", getRef = T)
+reptSearch("Oxybelis koehleri", getRef = T)
+reptSearch("Oxybelis rutherfordi", getRef = T)
+```
