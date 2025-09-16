@@ -32,7 +32,7 @@ browseVignettes("letsRept")
 
 ### **Internal datasets**
 
-- The package counts with a full list of current valid species (`allReptiles` - 12,440 species) with their respective higher taxa information (updated to 23th of May, 2025);
+- The package counts with a full list of current valid species (`allReptiles` - 12,500 species) with their respective higher taxa information (updated to 15th of September, 2025);
 
 - A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to 23th of May, 2025); 
 
@@ -40,20 +40,11 @@ browseVignettes("letsRept")
 
 ### **Next steps**
 
-- [x] &nbsp; Implement `reptAdvancedSearch` link testing and result summary
-- [x] &nbsp; Implement `reptSynonym` batch sampling and tryCatch() mechanism
-- [x] &nbsp; `reptSpecies()` with parallel sampling
-- [x] &nbsp; `reptSynonyms()` with parallel sampling
-- [x] &nbsp; CRAN submission (June 14th, 2025)
-- [x] &nbsp; CRAN reviewed submission (June 18th, 2025)
-- [x] &nbsp; CRAN release 0.1.0 (June 23rd, 2025)
-- [x] &nbsp; `reptSync` upgrade
-- [x] &nbsp; Implement "up_to_date" check (`reptSplitCheck`)
-- [x] &nbsp; Implement Reference sampling (df with links)
-- [x] &nbsp; Implement adapted version of `AmphiNom::asw_stats()` (Liedtke, 2018)
-- [x] &nbsp; Stable version 1.0.0 CRAN submission (August 18th, 2025)
-- [x] &nbsp; Stable version 1.0.0 CRAN release (August 22nd, 2025)
+- [x] &nbsp; Stable version 1.0.1 CRAN submission (August 18th, 2025)
+- [x] &nbsp; Stable version 1.0.1 CRAN release (August 22nd, 2025)
 - [x] &nbsp; Paper submission (August 18th, 2025)
+- [ ] &nbsp; Package webpage development
+- [ ] &nbsp; API development and package API compatibility
 
 ### **How to Cite**
 

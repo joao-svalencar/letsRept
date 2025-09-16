@@ -29,69 +29,96 @@
 #' @export
 
 reptCompare <- function(x = NULL, y = NULL, filter = NULL){
-  
+
   if(is.null(x)){
     stop("No species list provided")
   }
+    #cleaning all random white spaces:
+    x <- gsub("\\p{Zs}+", " ", x, perl = TRUE)
+    x <- trimws(x)
+    x <- gsub(" +", " ", x)
+
   if(is.null(y)){
     message("No RDB list provided, comparing with internal data 'allReptiles'")
     y <- letsRept::allReptiles
   }
-  
+
   if(is.data.frame(x)){
     x <- x$species
   }
-  
+
   if(is.data.frame(y)){
     y <- y$species
   }
-  
+
   review <- x[which(!x %in% y)]
   matched <- x[which(x %in% y)]
-  
+
   absent <- review[review %in% letsRept::allReptiles$species]
   review <- review[!review %in% letsRept::allReptiles$species] #removing `absent` species from review
-  
+
   if(length(review) == 0 && length(absent) == 0){
     message("\nAll species nomenclature are up to date!")
     matched <- data.frame(species = matched, status = "matched")
     return(matched)
   }
-  
-  if (!is.null(filter)) {
+
+  if(!is.null(filter)){
     valid_filters <- c("review", "matched", "absent")
-    if (!all(filter %in% valid_filters)) {
+    if(!all(filter %in% valid_filters)){
       stop("No valid filter argument provided")
     }
-    
+
+    # for filtering one status:
     if (length(filter) == 1) {
-      if (filter == "review") return(review)
-      if (filter == "matched") return(matched)
-      if (filter == "absent") return(absent)
-    }else{
-    
+          if (filter == "review"){
+            if(length(review) > 0){
+            return(review)
+              }else {
+                stop("No species with 'review status'")
+              }
+            }
+
+          if (filter == "matched"){
+            if(length(matched) > 0){
+            return(matched)
+              }else {
+                stop("No species with 'matched status'")
+            }
+          }
+
+          if (filter == "absent"){
+            if(length(absent) > 0){
+            return(absent)
+              }else {
+                stop("No species with 'absent status'")
+            }
+          }
+    } else{
+
+    #for filtering multiple status:
     df <- data.frame()
     if ("review" %in% filter) df <- rbind(df, data.frame(species = review, status = "review"))
     if ("matched" %in% filter) df <- rbind(df, data.frame(species = matched, status = "matched"))
     if ("absent" %in% filter) df <- rbind(df, data.frame(species = absent, status = "absent"))
-    
+
     df <- df[order(df$species), ]
     return(df)
     }
   }else{
+
+    #for no status filtering:
     review <- data.frame(species = review, status = "review")
     matched <- data.frame(species = matched, status = "matched")
-    
+
     if(length(absent) != 0){
-      absent <- data.frame(species = absent, status = "absent") 
+      absent <- data.frame(species = absent, status = "absent")
       df <- rbind(review, matched, absent)
     }else{
       df <- rbind(review, matched)
     }
-    
+
     df <- df[order(df$species),]
     return(df)
   }
 }
-
-
