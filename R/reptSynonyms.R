@@ -50,60 +50,60 @@ reptSynonyms <- function(x,
                          resume=FALSE,
                          cores = 1)
 {
-  if(is.character(x)){
-    species_list <- c()
-    synonyms_list <- c()
-    synonymsRef_list <- c()
-    binomial <- x
-    base_url <- "https://reptile-database.reptarium.cz/species"
-    gen <- strsplit(binomial, " ")[[1]][1]
-    species <- strsplit(binomial, " ")[[1]][2]
-    query <- paste0("?genus=", gen, "&species=", species)
-    sppLink <- paste0(base_url, query)
-    
-    url <- rvest::read_html(httr::GET(sppLink, httr::user_agent("Mozilla/5.0")))
-    element <- rvest::html_element(url, "table") # species table
-    
-    # Extract synonyms
-    syn <- xml2::xml_child(element, 4)
-    td2 <- rvest::html_element(syn, "td:nth-child(2)")
-    children <- xml2::xml_contents(td2)
-    
-    synonyms_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
-    synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
-    
-    synonyms <- clean_species_names(synonyms_vector)
-    species <- rep(binomial, times = length(synonyms))
-    
-    species_list <- c(species_list, species)
-    synonyms_list <- c(synonyms_list, synonyms)
-    synonymsRef_list <- c(synonymsRef_list, synonyms_vector)
-    
-    if(getRef==TRUE){
-      synonymsResults <- data.frame(species = species_list,
-                                    synonyms = synonyms_list,
-                                    ref = synonymsRef_list,
-                                    stringsAsFactors = FALSE)
-      return(synonymsResults)
-    }else{
-      synonymsResults <- data.frame(species = species_list,
-                                    synonyms = synonyms_list,
-                                    stringsAsFactors = FALSE)
-      
-      synonymsResults$combined <- paste((synonymsResults)$species, (synonymsResults)$synonyms, sep="_")
-      
-      uniquerec <- data.frame(unique(synonymsResults$combined))
-      
-      uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymsResults.combined.", 
-                                        into=c("species", "synonyms"), sep="_",
-                                        convert=TRUE)
-      
-      if(showProgress == TRUE){
-        cat("\nSynonyms sampling complete!\n")
-      }
-      return(uniqueSynonyms)
-    }
-  }
+  # if(is.character(x)){
+  #   species_list <- c()
+  #   synonyms_list <- c()
+  #   synonymsRef_list <- c()
+  #   binomial <- x
+  #   base_url <- "https://reptile-database.reptarium.cz/species"
+  #   gen <- strsplit(binomial, " ")[[1]][1]
+  #   species <- strsplit(binomial, " ")[[1]][2]
+  #   query <- paste0("?genus=", gen, "&species=", species)
+  #   sppLink <- paste0(base_url, query)
+  #   
+  #   url <- rvest::read_html(httr::GET(sppLink, httr::user_agent("Mozilla/5.0")))
+  #   element <- rvest::html_element(url, "table") # species table
+  #   
+  #   # Extract synonyms
+  #   syn <- xml2::xml_child(element, 4)
+  #   td2 <- rvest::html_element(syn, "td:nth-child(2)")
+  #   children <- xml2::xml_contents(td2)
+  #   
+  #   synonyms_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
+  #   synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
+  #   
+  #   synonyms <- clean_species_names(synonyms_vector)
+  #   species <- rep(binomial, times = length(synonyms))
+  #   
+  #   species_list <- c(species_list, species)
+  #   synonyms_list <- c(synonyms_list, synonyms)
+  #   synonymsRef_list <- c(synonymsRef_list, synonyms_vector)
+  #   
+  #   if(getRef==TRUE){
+  #     synonymsResults <- data.frame(species = species_list,
+  #                                   synonyms = synonyms_list,
+  #                                   ref = synonymsRef_list,
+  #                                   stringsAsFactors = FALSE)
+  #     return(synonymsResults)
+  #   }else{
+  #     synonymsResults <- data.frame(species = species_list,
+  #                                   synonyms = synonyms_list,
+  #                                   stringsAsFactors = FALSE)
+  #     
+  #     synonymsResults$combined <- paste((synonymsResults)$species, (synonymsResults)$synonyms, sep="_")
+  #     
+  #     uniquerec <- data.frame(unique(synonymsResults$combined))
+  #     
+  #     uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymsResults.combined.", 
+  #                                       into=c("species", "synonyms"), sep="_",
+  #                                       convert=TRUE)
+  #     
+  #     if(showProgress == TRUE){
+  #       cat("\nSynonyms sampling complete!\n")
+  #     }
+  #     return(uniqueSynonyms)
+  #   }
+  # }
   
   if (cores==1 && is.null(backup_file) && !is.null(checkpoint) && checkpoint < length(x$species)) {
     stop("You must provide a valid backup_file path if checkpoint is smaller than the number of species.")
@@ -111,11 +111,47 @@ reptSynonyms <- function(x,
     if(!is.null(backup_file) && !grepl(".rds", backup_file)){
       stop("Backup file path must end with 'filename.rds'")
     }
-  if (!"url" %in% names(x) || all(is.na(x$url))) {
-    stop("No valid species URL found in x")
-  }
-  
+  # if (!"url" %in% names(x) || all(is.na(x$url))) {
+  #   stop("No valid species URL found in x")
+  # }
+  # 
   if(cores > 1){
+    
+    
+    if (is.character(x)) {
+      # case: just a vector of binomials
+        synonyms <- safeParallel(
+          data = seq_along(x),
+          FUN = function(i) getSynonymsParallel_vector(x[i], getRef = getRef),
+          cores = cores,
+          showProgress = showProgress
+        )
+        df <- do.call(rbind, synonyms)
+      
+      if (!getRef) {
+        df$combined <- paste(df$species, df$synonyms, sep = "_")
+        df <- data.frame(unique(df$combined))
+        df <- tidyr::separate(df, col = "unique.df.combined.", into = c("species", "synonyms"), sep = "_", convert = TRUE)
+        # warning for failed species
+        n_failed <- sum(df$synonyms == "failed")
+        
+        if (n_failed > 0) {
+          failed_spp <- unique(df$species[df$synonyms == "failed"])
+          msg <- sprintf(
+            "%d species failed. Retrieve failed species and URLs using:\nx[x$species %%in%% c(%s), c(\"species\", \"url\")]",
+            n_failed,
+            paste(shQuote(failed_spp), collapse = ", ")
+          )
+          warning(msg, call. = FALSE)
+        }
+        if(showProgress == TRUE){
+          cat("\nSynonyms sampling complete!\n")
+        }
+      }
+      return(df)
+    }
+    
+    if(is.data.frame(x)){
     synonyms <- safeParallel(
       data = seq_along(x$species),
       FUN = function(i) getSynonymsParallel(
@@ -150,6 +186,9 @@ reptSynonyms <- function(x,
       }
     }
     return(df)
+    }
+    
+    
   }else{
     df <- getSynonyms(x=x,
                       checkpoint = checkpoint,

@@ -191,6 +191,8 @@ reptStats(snakes_br, family = "Viperidae", verbose = TRUE)
 
 Samples species synonyms either using binomial or a data frame with species names and the species link (e.g.: the result of `reptSpecies(link, getLink=TRUE)`). By default this function uses parallel processing, with default set to use half of the available cores.
 
+I benchmarked the options using just a vector of species names and using a dataframe with species url. In general using the dataframe is faster, but for a small list of species using just species names should be enough.
+
 ```{.r}
 #check number of available cores:
 install.packages("parallel")

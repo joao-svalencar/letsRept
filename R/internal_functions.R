@@ -430,7 +430,8 @@ clean_species_names <- function(names_vec) {
 #' @noRd
 getSynonymsParallel <- function(i, x, getRef) {
   tryCatch({
-    url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
+    url <- safeRequest(x$url[i])
+    #url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
     element <- rvest::html_element(url, "table")
     
     syn <- xml2::xml_child(element, 4)
@@ -503,7 +504,8 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
   
   for (i in seq_along(x$species)) {
     result <- tryCatch({
-      url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
+      url <- safeRequest(x$url[i])
+      #url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
       element <- rvest::html_element(url, "table") # species table
       
       # Extract synonyms
@@ -580,6 +582,82 @@ getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, 
   }
 }
 
+
+# getSynonymsParallel_vector ----------------------------------------------
+
+#' Get reptile species synonyms from vector
+#' 
+#' Scrapes synonyms of reptile species from The Reptile Database.
+#' 
+#' @param binomial A vector with \code{species} binomials.
+#' @param getRef Logical. If \code{TRUE}, returns synonyms along with the references mentioning them. Default is \code{FALSE}.
+#' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
+#' 
+#' @return A data frame with columns \code{species} and \code{synonyms}, optionally \code{ref} if \code{getRef = TRUE},  
+#'   containing the synonyms for each species scraped from The Reptile Database.
+#' 
+#' @keywords internal
+#' @noRd
+#' 
+getSynonymsParallel_vector <- function(binomial, getRef = FALSE, showProgress = TRUE) {
+  base_url <- "https://reptile-database.reptarium.cz/species"
+  gen <- strsplit(binomial, " ")[[1]][1]
+  species <- strsplit(binomial, " ")[[1]][2]
+  query <- paste0("?genus=", gen, "&species=", species)
+  sppLink <- paste0(base_url, query)
+  
+  url <- safeRequest(sppLink)
+  #url <- rvest::read_html(httr::GET(sppLink, httr::user_agent("Mozilla/5.0")))
+  element <- rvest::html_element(url, "table") # species table
+  
+  # Extract synonyms
+  syn <- xml2::xml_child(element, 4)
+  td2 <- rvest::html_element(syn, "td:nth-child(2)")
+  children <- xml2::xml_contents(td2)
+  
+  synonyms_vector <- unique(rvest::html_text(
+    children[xml2::xml_name(children) == "text"],
+    trim = TRUE
+  ))
+  synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
+  
+  synonyms <- clean_species_names(synonyms_vector)
+  species_list <- rep(binomial, times = length(synonyms))
+  
+  if (getRef) {
+    synonymsResults <- data.frame(
+      species = species_list,
+      synonyms = synonyms,
+      ref = synonyms_vector,
+      stringsAsFactors = FALSE
+    )
+    return(synonymsResults)
+  } else {
+    synonymsResults <- data.frame(
+      species = species_list,
+      synonyms = synonyms,
+      stringsAsFactors = FALSE
+    )
+    synonymsResults$combined <- paste(synonymsResults$species,
+                                      synonymsResults$synonyms,
+                                      sep = "_")
+    
+    uniquerec <- data.frame(unique(synonymsResults$combined))
+    
+    uniqueSynonyms <- tidyr::separate(
+      data = uniquerec,
+      col = "unique.synonymsResults.combined.",
+      into = c("species", "synonyms"),
+      sep = "_",
+      convert = TRUE
+    )
+    
+    if (showProgress) {
+      cat("\nSynonyms sampling complete for", binomial, "\n")
+    }
+    return(uniqueSynonyms)
+  }
+}
 # split check -------------------------------------------------------------
 
 #' Check if a species name might represent a split taxon
@@ -681,5 +759,34 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, includeAll = include
   })
 }
 
+
+# safeRequest -------------------------------------------------------------
+safeRequest <- function(url, max_tries = 5, base_wait = 1) {
+  attempt <- 1
+  repeat {
+    # Add random jitter to avoid hammering the server
+    Sys.sleep(runif(1, 0, 0.5))
+    
+    resp <- try(httr::GET(url, httr::user_agent("Mozilla/5.0")), silent = TRUE)
+    
+    if (!inherits(resp, "try-error") && httr::status_code(resp) == 200) {
+      return(rvest::read_html(resp))
+    }
+    
+    if (attempt < max_tries) {
+      wait_time <- base_wait * 2^(attempt - 1)
+      message(sprintf(
+        "Attempt %d for %s failed (status: %s). Retrying in %ds...",
+        attempt, url,
+        ifelse(inherits(resp, "try-error"), "connection error", httr::status_code(resp)),
+        wait_time
+      ))
+      Sys.sleep(wait_time)
+      attempt <- attempt + 1
+    } else {
+      stop(sprintf("Failed to fetch %s after %d tries", url, attempt))
+    }
+  }
+}
 
 # End of internal functions -----------------------------------------------

@@ -1,6 +1,14 @@
 # letsRept NEWS
 The package was renamed to `letsRept`
 
+## Version 1.x.x — 2025-XX-XX
+- Official manuscript release
+- safeParallel modified to safely stop all clusters upon user interruption
+- reptSynonyms nows works for basic list of valid names, does not require species links
+- reptSync status "synonymization" changed to "merge"
+- improved functions documentation (corrected errors and missing information)
+- updated internal datasets (RDB September 2025 version)
+
 ## Version 1.0.1 — 2025-08-23
 - Fixed CRAN test issues by skipping network-dependent tests.
 - Made parallel calls safe on macOS (cores = 1 for tests).
