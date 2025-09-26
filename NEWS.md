@@ -4,9 +4,11 @@ The package was renamed to `letsRept`
 ## Version 1.x.x — 2025-XX-XX
 - Official manuscript release
 - safeParallel modified to safely stop all clusters upon user interruption
-- reptSynonyms nows works for basic list of valid names, does not require species links
+- implemented safeRequest to safely address server workload
+- reptSynonyms nows works for basic list of valid names, does not require species links. Also only runs with parallel sampling.
 - reptSync status "synonymization" changed to "merge"
 - improved functions documentation (corrected errors and missing information)
+- improved reptAdvancedSearch output in case of detecting single species (when searching for synonyms) = reptSearch
 - updated internal datasets (RDB September 2025 version)
 
 ## Version 1.0.1 — 2025-08-23
