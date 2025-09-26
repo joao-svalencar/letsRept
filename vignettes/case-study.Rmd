@@ -52,7 +52,7 @@ The basic update that most other tools provide will just try to detect the curre
 review <- reptCompare(atlas$species, snakes_br$species, filter = "review") #38 unmatched names 
 ```
 
-Now, to verify the sugestions of current nomenclature we parse this names to `reptSync`:
+Now, to verify the suggestions of current nomenclature we parse this names to `reptSync`:
 
 ```{.r}
 sync <- reptSync(review, solveAmbiguity = TRUE, cores = (parallel::detectCores()-1))
@@ -82,11 +82,27 @@ Alright, now we know that most species names could be unambiguously updated but 
 reptTidySyn(sync, filter = c("merge", "ambiguous"))
 ```
 
+For \emph{Corallus hortulanus} two options emerged, \emph{Corallus cookii} and \emph{Corallus hortulana}.
+
+Although it can be quite straightforward for some users (e.g. familiar with the studied species), to be able to decide which name is the most appropriate to use in our study we might need to check extra information.
+
+Let's give a look in their accounts:
 
 ```{r}
 reptSearch("Corallus cookii")
 reptSearch("Corallus hortulana")
+```
 
+Carefully evaluating the species synonyms entry we can verify that "\emph{Corallus hortulanus}" is a true synonym only of \emph{Corallus hortulana}. In \emph{Corallus cookii} account the name \emph{Corallus hortulanus} is considered only a chresonym (identified with an emdash between the name and the reference). Besides that, \emph{Corallus cookii} has never been recorded in Brazil (see Distribution). Therefore the most likely correct name for \emph{Corallus hortulanus} is now \emph{Corallus hortulana}. Users can manually change the nomenclature in their datasets or can optionally substitute the name in the reptSync output:
+
+```{r}
+sync$RDB[syncl$query=="Corallus hortulanus"] <- "Corallus hortulana" #choosing name to keep from RDB
+sync$status[sync$query=="Corallus hortulanus"] <- "updated" #changing the name status
+```
+
+A similar rationale can be used for the remaining species.
+
+```{r}
 reptSearch("Adelphostigma occipitalis")
 reptSearch("Adelphostigma quadriocellata")
 reptSearch("Eutrachelophis papilio")
@@ -99,25 +115,6 @@ reptSearch("Liotyphlops ternetzii")
 write.csv(snakes_names, here::here("outputs", "Table S1.csv"), row.names = FALSE)
 ```
 
-# taxize comparison
-```{r, eval = FALSE}
-library(taxize)
-
-taxize_sync <- gna_verifier(c("Corallus hortulanus",
-                              "Liotyphlops beui",
-                              "Liotyphlops sousai",
-                              "Taeniophallus occipitalis",
-                              "Tomodon ocellatus"),
-                              all_matches = TRUE)
-
-
-print(taxize_sync[,c("submittedName",
-                     "currentName",
-                     "dataSourceTitleShort",
-                     "taxonomicStatus",
-                     "sortScore")],
-      n=length(taxize_sync$submittedName))
-```
 
 # check for species taxonomic split
 
