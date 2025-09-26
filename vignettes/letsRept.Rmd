@@ -148,13 +148,13 @@ failed_spp <- df[df$species %in% df$species[df$error == TRUE], c('species', 'url
 
 Where `df` is object named in the first run of `reptSpecies()`. This line samples the object selecting all species that got any errors in the previous run along with their url, the current requeried entries to run `reptSpecies()` with argument `dataList`:
 
-```{r}
+```{r, eval = FALSE}
 failed <- reptSpecies(dataList = failed_spp, taxonomicInfo = TRUE)
 ```
 
 To merge the original `df` object with the ressampled species we first remove the failed species from `df`, then we `rbind` the objects and reorder the species:
 
-```{r}
+```{r, eval = FALSE}
 df <- df[!df$species %in% df$species[allRept$error == TRUE], c(-8,-9,-10)]
 dfNew <- rbind(df, failed)
 

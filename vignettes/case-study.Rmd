@@ -26,14 +26,14 @@ library(letsRept)
 
 If you downloaded the repository and executed the .Rproj, then to load the example dataset from [Nogueira et al. (2019)](https://doi.org/10.2994/SAJH-D-19-00120.1) run:
 
-```{.r, eval = FALSE}
+```{.r}
 # load Nogueira et al., (2019) Supp. Mat. Table S3 (georeferenced type localities)
 atlas <- read.csv(here::here("data", "atlas.csv"))
 ```
 
 In the manuscript, to introduce readers to some of the main functions of *letsRept* we showed an example of how to subset the Reptile Database to get taxonomic information from a given group, in a given region. 
 
-```{.r, eval = FALSE}
+```{.r}
 link <- reptAdvancedSearch(location = "Brazil", higher = "snakes")
 snakes_br <- reptSpecies(link, taxonomicInfo = TRUE, cores = (parallel::detectCores()-1))
 head(snakes_br)
@@ -46,13 +46,15 @@ compare <- reptCompare(atlas$species)
 table(compare$status)
 ```
 
+## To review unmatched nomenclature:
+
 The basic update that most other tools provide will just try to detect the current name for unmatched entries. To start with these cases we subset the database filtering only for the species that doesn't match the Reptile Database nomenclature:
 
 ```{.r}
 review <- reptCompare(atlas$species, snakes_br$species, filter = "review") #38 unmatched names 
 ```
 
-Now, to verify the suggestions of current nomenclature we parse this names to `reptSync`:
+Now, to verify the suggestions of current nomenclature we parse these names to `reptSync`:
 
 ```{.r}
 sync <- reptSync(review, solveAmbiguity = TRUE, cores = (parallel::detectCores()-1))
@@ -60,7 +62,6 @@ sync
 
 table(sync$status)
 ```
-
 
 ```{r, echo = FALSE}
 library(knitr)
@@ -82,43 +83,76 @@ Alright, now we know that most species names could be unambiguously updated but 
 reptTidySyn(sync, filter = c("merge", "ambiguous"))
 ```
 
-For \emph{Corallus hortulanus} two options emerged, \emph{Corallus cookii} and \emph{Corallus hortulana}.
+For *Corallus hortulanus* two options emerged, *Corallus cookii* and *Corallus hortulana*.
 
 Although it can be quite straightforward for some users (e.g. familiar with the studied species), to be able to decide which name is the most appropriate to use in our study we might need to check extra information.
 
 Let's give a look in their accounts:
 
-```{r}
+```{.r}
 reptSearch("Corallus cookii")
 reptSearch("Corallus hortulana")
 ```
 
-Carefully evaluating the species synonyms entry we can verify that "\emph{Corallus hortulanus}" is a true synonym only of \emph{Corallus hortulana}. In \emph{Corallus cookii} account the name \emph{Corallus hortulanus} is considered only a chresonym (identified with an emdash between the name and the reference). Besides that, \emph{Corallus cookii} has never been recorded in Brazil (see Distribution). Therefore the most likely correct name for \emph{Corallus hortulanus} is now \emph{Corallus hortulana}. Users can manually change the nomenclature in their datasets or can optionally substitute the name in the reptSync output:
+Carefully evaluating the species synonyms entry we can verify that "*Corallus hortulanus*" is a true synonym only of *Corallus hortulana}*. In *Corallus cookii* account the name *Corallus hortulanus* is considered only a chresonym (identified with an emdash between the name and the reference). Besides that, *Corallus cookii* has never been recorded in Brazil (see Distribution). Therefore the most likely correct name for *Corallus hortulanus* is now *Corallus hortulana*. Users can manually change the nomenclature in their datasets or can optionally substitute the name in the `reptSync` output:
 
-```{r}
+```{.r}
 sync$RDB[syncl$query=="Corallus hortulanus"] <- "Corallus hortulana" #choosing name to keep from RDB
 sync$status[sync$query=="Corallus hortulanus"] <- "updated" #changing the name status
 ```
 
 A similar rationale can be used for the remaining species.
 
-```{r}
+```{.r}
 reptSearch("Adelphostigma occipitalis")
 reptSearch("Adelphostigma quadriocellata")
 reptSearch("Eutrachelophis papilio")
 
+sync$RDB[sync$query=="Taeniophallus occipitalis"] <- "Adelphostigma occipitalis"
+sync$status[sync$query=="Taeniophallus occipitalis"] <- "updated"
+```
+
+```{.r}
 reptSearch("Tachymenis ocellata")
 reptSearch("Tachymenis trigonatus")
 
-reptSearch("Liotyphlops ternetzii")
-
-write.csv(snakes_names, here::here("outputs", "Table S1.csv"), row.names = FALSE)
+sync$RDB[sync$query=="Tomodon ocellatus"] <- "Tachymenis ocellata"
+sync$status[sync$query=="Tomodon ocellatus"] <- "updated"
 ```
 
+With all done in object `sync` we only have to fix the entry of the *Liotyplhops* species, but let's wait for the next steps.
 
-# check for species taxonomic split
+## To check for taxonomic splitting:
 
-```{r, eval = FALSE}
+One of the main functions in *letsRept* is `reptSplitCheck`. This function allows to check the species with matched nomenclature for the possibility of being split after a user defined date. If no date is provided, the function will use `1758` as a reference and every single species described from which the queried names are synonyms/chresonyms will show up.
+
+But attention here. Run:
+
+```{.r}
+#example 1
+reptTidySyn(reptSplitCheck("Boa constrictor"))
+```
+
+Then run:
+
+```{.r}
+#example 2
+reptTidySyn(reptSplitCheck("Boa constrictor", exact = TRUE))
+```
+
+Function `reptSplitCheck` parses the binomials provided to `reptAdvancedSearch(synonyms = binomial)`. The algorithm of Reptile Database allows users to query exact searches by using quotes around the names provided. When not between quotes, the search will return species with anything from the synonym/chresonym section that matches "Boa" or "constrictor". That is why *Acrantophis dumerili*, *Malayopython reticulatus* and *Simalia amethistina* are returned from example chunk #1 and not from #2. It matters because some newly described species might have been associated with a valid name with, for example a `cf.` or `aff.` notation and will not show up if a exact match is queried:
+
+```{.r}
+#example 3
+reptTidySyn(reptSplitCheck("Tantilla melanocephala", exact = TRUE))
+
+#example 4
+reptTidySyn(reptSplitCheck("Tantilla melanocephala"))
+```
+
+As we knew that some localities reported for *Tantilla melanocephala* in [Nogueira et al. (2019)](https://doi.org/10.2994/SAJH-D-19-00120.1) are now attributed to *Tantilla selmae*, we knew that using and exact match would exclude the latter from our output. At the same time, without the exact match some species not related to our query might show up (example #1). To avoid missing other similar (but unknown) possibilities I decided to proceed without the exact match filter. This decision has to be made considering the balance of checking all split possibilities (even not meaninful ones) and taxonomic exactness. With *letsRept* it is not too hard to check all possibilities in most cases.
+
+```{.r}
 matched <- reptCompare(atlas$species, snakes_br, filter = c("matched", "absent")) #372 unmatched names + 1 absent
 
 split_check <- reptSplitCheck(matched, pubDate = 2019, cores = (parallel::detectCores()-1))
@@ -126,37 +160,202 @@ split_check <- reptSplitCheck(matched, pubDate = 2019, cores = (parallel::detect
 table(split_check$status)
 ```
 
-Make a table, or print the output
-#check_split: 19; up_to_date: 353
+```{r, echo = FALSE}
+library(knitr)
 
-#to check check_split species:
-```{r, eval = FALSE}
+# Create a data frame
+tab <- data.frame(
+  check_split = 19,
+  up_to_date = 353
+)
+
+# Render the table
+kable(tab, align = "c")
+```
+
+Using `reptTidySyn` again to verify the species of interest:
+
+```{.r}
 reptTidySyn(split_check, filter = c("check_split"))
 ```
 
-```{r, eval = FALSE}
+An approach to the applied to "review" species can be used here: "search", "decide", "update"
+
+```{.r}
 #Atractus
-reptSpecies(reptAdvancedSearch(synonym = "Atractus badius"), taxonomicInfo = T)
 reptSearch("Atractus akerios")
-
-reptSpecies(reptAdvancedSearch(synonym = "Atractus major"), taxonomicInfo = T)
-reptSearch("Atractus nawa", getRef = T)
-
-reptSpecies(reptAdvancedSearch(synonym = "Atractus snethlageae"), taxonomicInfo = T)
-reptSearch("Atractus snethlageae", getRef = T)
-
-#Chironius
-reptSpecies(reptAdvancedSearch(synonym = "Chironius bicarinatus"), taxonomicInfo = T)
-reptSearch("Chironius dracomaris", getRef = T)
-reptSearch("Chironius gouveai", getRef = T)
-
-
-reptSpecies(reptAdvancedSearch(synonym = "Chironius carinatus"), taxonomicInfo = T)
-reptSearch("Chironius nigelnoriegai", getRef = T)
-
-#Oxybelis aeneus
-reptSpecies(herpAdvancedSearch(synonym = "Oxybelis aeneus"), taxonomicInfo = T)
-reptSearch("Oxybelis inkaterra", getRef = T)
-reptSearch("Oxybelis koehleri", getRef = T)
-reptSearch("Oxybelis rutherfordi", getRef = T)
+reptSearch("Atractus nawa")
+reptSearch("Atractus ukupacha")
 ```
+
+For the purpose of simplicity, consider that we have decided how to split/get the data and want to add *A. akerios* and *A. nawa* to our species list and that we won't add *Atractus ukupacha* because it is not known to occur in Brazil:
+
+```{.r}
+split_check$RDB[split_check$query=="Atractus badius"] <- "Atractus badius"
+split_check$status[split_check$query=="Atractus badius"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Atractus major"] <- "Atractus major"
+split_check$status[split_check$query=="Atractus major"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Atractus snethlageae"] <- "Atractus snethlageae"
+split_check$status[split_check$query=="Atractus snethlageae"] <- "up_to_date"
+
+toAdd <- data.frame(query = c("Atractus akerios", "Atractus nawa"),
+                    RDB = c("Atractus akerios", "Atractus nawa"),
+                    status = "split_added")
+      
+```
+
+To keep the workflow I will just pretend that only checking if the species occurs in Brazil is enough to add them to our list as if we got the their data managed properly:
+
+*Chironius:*
+
+```{.r}
+reptSearch("Chironius dracomaris")
+reptSearch("Chironius gouveai")
+reptSearch("Chironius nigelnoriegai") #not in Brazil
+
+split_check$RDB[split_check$query=="Chironius bicarinatus"] <- "Chironius bicarinatus"
+split_check$status[split_check$query=="Chironius bicarinatus"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Chironius carinatus"] <- "Chironius carinatus"
+split_check$status[split_check$query=="Chironius carinatus"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Chironius fuscus"] <- "Chironius fuscus"
+split_check$status[split_check$query=="Chironius fuscus"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Chironius dracomaris", "Chironius gouveai"),
+                      RDB = c("Chironius dracomaris", "Chironius gouveai"),
+                      status = "split_added"))
+```
+
+*Oxybelis:*
+
+```{.r}
+reptSearch("Oxybelis inkaterra") #not in Brazil
+reptSearch("Oxybelis koehleri") #not in Brazil
+reptSearch("Oxybelis rutherfordi") #not in Brazil
+
+split_check$RDB[split_check$query=="Oxybelis aeneus"] <- "Oxybelis aeneus"
+split_check$status[split_check$query=="Oxybelis aeneus"] <- "up_to_date"
+```
+
+*Bothrocophias:*
+
+```{.r}
+reptSearch("Bothrocophias myrringae") #not in Brazil
+reptSearch("Bothrocophias tulitoi") #not in Brazil
+
+split_check$RDB[split_check$query=="Bothrocophias microphthalmus"] <- "Bothrocophias microphthalmus"
+split_check$status[split_check$query=="Bothrocophias microphthalmus"] <- "up_to_date"
+```
+
+*Bothrops:*
+
+```{.r}
+reptSearch("Bothrops oligobalius")
+reptSearch("Bothrops monsignifer") #not in Brazil
+reptSearch("Bothrops sonene") #not in Brazil
+
+split_check$RDB[split_check$query=="Bothrops brazili"] <- "Bothrops brazili"
+split_check$status[split_check$query=="Bothrops brazili"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Bothrops mattogrossensis"] <- "Bothrops mattogrossensis"
+split_check$status[split_check$query=="Bothrops mattogrossensis"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Bothrops neuwiedi"] <- "Bothrops neuwiedi"
+split_check$status[split_check$query=="Bothrops neuwiedi"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Bothrops oligobalius"),
+                      RDB = c("Bothrops oligobalius"),
+                      status = "split_added"))
+```
+
+*Erythrolamprus:*
+
+```{.r}
+reptSearch("Erythrolamprus aenigma")
+reptSearch("Erythrolamprus pseudoreginae") #not in Brazil
+
+split_check$RDB[split_check$query=="Erythrolamprus poecilogyrus"] <- "Erythrolamprus poecilogyrus"
+split_check$status[split_check$query=="Erythrolamprus poecilogyrus"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Erythrolamprus reginae"] <- "Erythrolamprus reginae"
+split_check$status[split_check$query=="Erythrolamprus reginae"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Erythrolamprus aenigma"),
+                      RDB = c("Erythrolamprus aenigma"),
+                      status = "split_added"))
+```
+
+*Helicops:*
+
+```{.r}
+reptSearch("Helicops phantasma")
+
+split_check$RDB[split_check$query=="Helicops leopardinus"] <- "Helicops leopardinus"
+split_check$status[split_check$query=="Helicops leopardinus"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Helicops phantasma"),
+                      RDB = c("Helicops phantasma"),
+                      status = "split_added"))
+```
+
+*Leptophis:*
+
+```{.r}
+reptSearch("Leptophis ahaetulla")
+
+split_check$RDB[split_check$query=="Leptophis ahaetulla"] <- "Leptophis ahaetulla"
+split_check$status[split_check$query=="Leptophis ahaetulla"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Leptophis mystacinus"),
+                      RDB = c("Leptophis mystacinus"),
+                      status = "split_added"))
+```
+
+*Micrurus:*
+
+```{.r}
+reptSearch("Micrurus anibal")
+
+split_check$RDB[split_check$query=="Micrurus ibiboboca"] <- "Micrurus ibiboboca"
+split_check$status[split_check$query=="Micrurus ibiboboca"] <- "up_to_date"
+
+split_check$RDB[split_check$query=="Micrurus lemniscatus"] <- "Micrurus lemniscatus"
+split_check$status[split_check$query=="Micrurus lemniscatus"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Micrurus anibal"),
+                      RDB = c("Micrurus anibal"),
+                      status = "split_added"))
+```
+
+*Taeniophallus:*
+
+```{.r}
+reptSearch("Chlorosoma dunupyana")
+
+split_check$RDB[split_check$query=="Taeniophallus brevirostris"] <- "Taeniophallus brevirostris"
+split_check$status[split_check$query=="Taeniophallus brevirostris"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Chlorosoma dunupyana"),
+                      RDB = c("Chlorosoma dunupyana"),
+                      status = "split_added"))
+```
+
+*Tantilla:*
+
+```{.r}
+reptSearch("Tantilla selmae")
+
+split_check$RDB[split_check$query=="Tantilla melanocephala"] <- "Tantilla melanocephala"
+split_check$status[split_check$query=="Tantilla melanocephala"] <- "up_to_date"
+
+toAdd <- rbind(toAdd, data.frame(query = c("Tantilla selmae"),
+                      RDB = c("Tantilla selmae"),
+                      status = "split_added"))
+```
+
+At this point we have no other species to check for taxonomic split and a data frame with 12 new species to add to our initial list.
+
+
