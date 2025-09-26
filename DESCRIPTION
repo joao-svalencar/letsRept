@@ -1,6 +1,6 @@
 Package: letsRept
 Title: An Interface to the Reptile Database
-Version: 1.0.1
+Version: 1.1.0
 Authors@R:
     c(
     person(given="João Paulo dos Santos",
