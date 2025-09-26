@@ -33,13 +33,19 @@ reptSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
     query <- paste0("?genus=", gen, "&species=", species)
     sppLink <- paste0(base_url, query)
     
-    url <- rvest::read_html(sppLink)
+    #url <- rvest::read_html(sppLink)
+    url <- safeRequest(sppLink)
     element <- rvest::html_element(url, "table") # full table
     
     if (is.na(element)) {
       if(verbose) message("Species not found: ", binomial, "\nSearching as synonym in advanced search.\n")
-      link <- letsRept::reptAdvancedSearch(synonym = binomial, verbose = verbose)
+      link <- reptAdvancedSearch(synonym = binomial, verbose = verbose)
+      
+      if(is.null(link)){
+      return(invisible(NULL))
+      }else{
       return(link)
+      }
     }
     
     output_list[["url"]] <- sppLink
