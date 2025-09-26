@@ -28,7 +28,7 @@ A data frame with the following columns:
 \itemize{
 \item \code{query}: the original input names.
 \item \code{RDB}: the best-matching valid names according to The Reptile Database.
-\item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, \code{"merge"}, or \code{"not_found"}).
+\item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"updated_typo"}, \code{"ambiguous"}, \code{"merge"}, or \code{"not_found"}).
 \item \code{url}: Optional, if getLink = TRUE returns the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 }
 }

@@ -4,15 +4,7 @@
 \alias{reptSynonyms}
 \title{Retrieve Synonyms for Reptile Species from RDB}
 \usage{
-reptSynonyms(
-  x,
-  getRef = FALSE,
-  showProgress = TRUE,
-  checkpoint = NULL,
-  backup_file = NULL,
-  resume = FALSE,
-  cores = 1
-)
+reptSynonyms(x, getRef = FALSE, showProgress = TRUE, cores = 1)
 }
 \arguments{
 \item{x}{A character string with a species binomial or a data frame with columns \code{species} and \code{url}, typically the output of \code{\link{reptSpecies}} with \code{getLink = TRUE}.}
@@ -21,28 +13,19 @@ reptSynonyms(
 
 \item{showProgress}{Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.}
 
-\item{checkpoint}{Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).}
-
-\item{backup_file}{Optional. Character string specifying the path to an \code{.rds} file used to save or resume intermediate results. Required if using \code{checkpoint} or \code{resume}.}
-
-\item{resume}{Logical. If \code{TRUE}, resumes sampling from a previous run using the file provided in \code{backup_file}. Only works when \code{cores = 1}.}
-
 \item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.}
 }
 \value{
 A data frame with columns:
 \itemize{
 \item \code{species}: The valid species name according to RDB.
-\item \code{synonym}: A recognized synonym for the species.
+\item \code{synonym}: Recognized synonyms and chresonyms for the species. Chresonyms are usually separated from authors with an emdash.
 \item \code{reference} (optional): If \code{getRef = TRUE}, the citation where the synonym was reported.
 }
 }
 \description{
 Retrieves a data frame containing the current valid names of reptile species along with all their recognized synonyms, as listed in The Reptile Database (RDB).
 Optionally, the references citing each synonym can also be included.
-}
-\note{
-To enable safe resuming or backup progress saving, set \code{cores = 1}. Parallel processing does not support backups.
 }
 \examples{
 # Filter species belonging to genus Boa
@@ -57,7 +40,6 @@ Bconstrictor_syn <- reptSynonyms(x = "Boa constrictor")
 }
 \references{
 Uetz, P., Freed, P., Aguilar, R., Reyes, F., Kudera, J., & Hošek, J. (eds.) (2025). The Reptile Database. Retrieved from \url{http://www.reptile-database.org}
-Liedtke, H. C. (2018). AmphiNom: an amphibian systematics tool. \emph{Systematics and Biodiversity}, 17(1), 1–6. \doi{10.1080/14772000.2018.1518935}
 }
 \seealso{
 \code{\link{reptSpecies}}, \code{\link{reptAdvancedSearch}}

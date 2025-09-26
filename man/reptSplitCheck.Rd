@@ -10,7 +10,8 @@ reptSplitCheck(
   includeAll = FALSE,
   verbose = TRUE,
   cores = 1,
-  showProgress = TRUE
+  showProgress = TRUE,
+  exact = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ reptSplitCheck(
 \item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.}
 
 \item{showProgress}{Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.}
+
+\item{exact}{Logical. Will search queried names for exact matches only (e.g., does not retrieve "Tantilla cf. melanocephala" when searching for "Tantilla melanocephala"). Default is \code{FALSE}.}
 }
 \value{
 A data frame with the following columns:

@@ -4,7 +4,7 @@
 \alias{reptCompare}
 \title{Compare species nomenclature between datasets or with Reptile Database Data}
 \usage{
-reptCompare(x = NULL, y = NULL, filter = NULL)
+reptCompare(x = NULL, y = NULL, filter = NULL, compareDataset = FALSE)
 }
 \arguments{
 \item{x}{A character vector or a data frame containing a column named \code{species} with species names to be compared.}
@@ -17,6 +17,9 @@ If \code{"matched"}, returns only matched species.
 If \code{"absent"}, returns only species from \code{x} that are absent from \code{y}.
 If \code{NULL} (default), returns a data frame with all species and respective statuses.
 Multiple filters can be concatenated and the resulting data frame will return all species with both status.}
+
+\item{compareDataset}{Logical. If TRUE, assumes all input names are up-to-date and
+compares the input list with the reference database to identify any missing species.}
 }
 \value{
 A character vector (if \code{filter} is \code{"review"}, \code{"matched"} or \verb{"absent}), or a data frame with columns:
@@ -24,6 +27,8 @@ A character vector (if \code{filter} is \code{"review"}, \code{"matched"} or \ve
 \item{species}{Species names from \code{x}}
 \item{status}{Comparison result: \code{"review"}, \code{"matched"} or \code{"absent"}}
 }
+
+If compareDataset = \code{TRUE}, then the function returns a vector of species from \code{y} that is absent from \code{x}.
 }
 \description{
 This function compares a list of species (\code{x}) with another list (\code{y}), typically from the Reptile Database (RDB).
