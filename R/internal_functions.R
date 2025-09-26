@@ -165,7 +165,8 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
   
   j <- which(species_list == x)
   tryCatch({
-    sp_page <- rvest::read_html(url_list[j])
+    #sp_page <- rvest::read_html(url_list[j])
+    sp_page <- safeRequest(url_list[j])
     title <- rvest::html_element(sp_page, "h1")
     
     sppAuthor <- rvest::html_text(title, trim = TRUE)
@@ -257,7 +258,8 @@ higherSample <- function(species_list,
   
   for (j in seq_along(species_list)) {
     tryCatch({
-      sp_page <- rvest::read_html(url_list[j])
+      #sp_page <- rvest::read_html(url_list[j])
+      sp_page <- safeRequest(url_list[j])
       title <- rvest::html_element(sp_page, "h1")
       
       sppAuthor <- rvest::html_text(title, trim = TRUE)
@@ -431,7 +433,6 @@ clean_species_names <- function(names_vec) {
 getSynonymsParallel <- function(i, x, getRef) {
   tryCatch({
     url <- safeRequest(x$url[i])
-    #url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
     element <- rvest::html_element(url, "table")
     
     syn <- xml2::xml_child(element, 4)
@@ -482,105 +483,105 @@ getSynonymsParallel <- function(i, x, getRef) {
 #' @keywords internal
 #' @noRd
 #' 
-getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, getRef=FALSE, showProgress=TRUE){
-  
-  species_list <- c()
-  synonyms_list <- c()
-  synonymsRef_list <- c()
-  
-  start_index <- 1
-  # Load backup if resuming
-  if (resume && file.exists(backup_file)) {
-    x <- readRDS(backup_file)
-    species <- x$species
-    synonyms <- x$synonyms
-    if ("synonymRef" %in% names(backup_file)) {
-      synonymsRef <- backup_file$synonymsRef
-    }
-    
-    start_index <- length(species_list) + 1
-    message(sprintf("Resuming from species %d: %s", start_index, x$species[start_index]))
-  }
-  
-  for (i in seq_along(x$species)) {
-    result <- tryCatch({
-      url <- safeRequest(x$url[i])
-      #url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
-      element <- rvest::html_element(url, "table") # species table
-      
-      # Extract synonyms
-      syn <- xml2::xml_child(element, 4)
-      td2 <- rvest::html_element(syn, "td:nth-child(2)")
-      children <- xml2::xml_contents(td2)
-      
-      synonyms_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
-      synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
-      
-      synonyms <- clean_species_names(synonyms_vector)
-      species <- rep(x$species[i], times = length(synonyms))
-      
-      species_list <- c(species_list, species)
-      synonyms_list <- c(synonyms_list, synonyms)
-      synonymsRef_list <- c(synonymsRef_list, synonyms_vector)
-      
-      if(showProgress == TRUE){
-      msg <- sprintf("Progress: %.1f%%  - %s done! ", (i / length(x$species)) * 100, x$species[i])
-      cat("\r", format(msg, width = 60), sep = "")
-      utils::flush.console()
-      }
-      # Save backup every checkpoint
-      if(!is.null(checkpoint)){
-        if ((i %% checkpoint) == 0 || i == length(x$species)) {
-          backup <- data.frame(species = species_list,
-                               synonyms = synonyms_list,
-                               stringsAsFactors = FALSE)
-          if(getRef==FALSE){
-            backup$combined <- paste(backup$species, backup$synonyms, sep="_")
-            uniquerec <- data.frame(unique(backup$combined))
-            
-            backup_uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.backup.combined.", 
-                                                     into=c("species", "synonyms"), sep="_",
-                                                     convert=TRUE)
-            saveRDS(backup_uniqueSynonyms, backup_file)
-          }else{
-            backup$synonymsRef <- synonymsRef_list
-            saveRDS(backup, backup_file)
-          }
-        }else{}
-      }
-    }, error = function(e) {
-      message(sprintf("Error scraping %s: %s", x$species[i], e$message))
-      species_list <<- c(species_list, x$species[i])
-      synonyms_list <<- c(synonyms_list, "failed")
-      synonymsRef_list <<- c(synonymsRef_list, "failed")
-    })
-  }
-  
-  if(getRef==TRUE){
-    synonymsResults <- data.frame(species = species_list,
-                                  synonyms = synonyms_list,
-                                  ref = synonymsRef_list,
-                                  stringsAsFactors = FALSE)
-    return(synonymsResults)
-  }else{
-    synonymsResults <- data.frame(species = species_list,
-                                  synonyms = synonyms_list,
-                                  stringsAsFactors = FALSE)
-    
-    synonymsResults$combined <- paste((synonymsResults)$species, (synonymsResults)$synonyms, sep="_")
-    
-    uniquerec <- data.frame(unique(synonymsResults$combined))
-    
-    uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymsResults.combined.", 
-                                      into=c("species", "synonyms"), sep="_",
-                                      convert=TRUE)
-    
-    if(showProgress == TRUE){
-    cat("\nSynonyms sampling complete!\n")
-    }
-    return(uniqueSynonyms)
-  }
-}
+# getSynonyms <- function(x, checkpoint = NULL, resume=FALSE, backup_file = NULL, getRef=FALSE, showProgress=TRUE){
+#   
+#   species_list <- c()
+#   synonyms_list <- c()
+#   synonymsRef_list <- c()
+#   
+#   start_index <- 1
+#   # Load backup if resuming
+#   if (resume && file.exists(backup_file)) {
+#     x <- readRDS(backup_file)
+#     species <- x$species
+#     synonyms <- x$synonyms
+#     if ("synonymRef" %in% names(backup_file)) {
+#       synonymsRef <- backup_file$synonymsRef
+#     }
+#     
+#     start_index <- length(species_list) + 1
+#     message(sprintf("Resuming from species %d: %s", start_index, x$species[start_index]))
+#   }
+#   
+#   for (i in seq_along(x$species)) {
+#     result <- tryCatch({
+#       url <- safeRequest(x$url[i])
+#       #url <- rvest::read_html(httr::GET(x$url[i], httr::user_agent("Mozilla/5.0")))
+#       element <- rvest::html_element(url, "table") # species table
+#       
+#       # Extract synonyms
+#       syn <- xml2::xml_child(element, 4)
+#       td2 <- rvest::html_element(syn, "td:nth-child(2)")
+#       children <- xml2::xml_contents(td2)
+#       
+#       synonyms_vector <- unique(rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE))
+#       synonyms_vector <- synonyms_vector[!is.na(synonyms_vector) & trimws(synonyms_vector) != ""]
+#       
+#       synonyms <- clean_species_names(synonyms_vector)
+#       species <- rep(x$species[i], times = length(synonyms))
+#       
+#       species_list <- c(species_list, species)
+#       synonyms_list <- c(synonyms_list, synonyms)
+#       synonymsRef_list <- c(synonymsRef_list, synonyms_vector)
+#       
+#       if(showProgress == TRUE){
+#       msg <- sprintf("Progress: %.1f%%  - %s done! ", (i / length(x$species)) * 100, x$species[i])
+#       cat("\r", format(msg, width = 60), sep = "")
+#       utils::flush.console()
+#       }
+#       # Save backup every checkpoint
+#       if(!is.null(checkpoint)){
+#         if ((i %% checkpoint) == 0 || i == length(x$species)) {
+#           backup <- data.frame(species = species_list,
+#                                synonyms = synonyms_list,
+#                                stringsAsFactors = FALSE)
+#           if(getRef==FALSE){
+#             backup$combined <- paste(backup$species, backup$synonyms, sep="_")
+#             uniquerec <- data.frame(unique(backup$combined))
+#             
+#             backup_uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.backup.combined.", 
+#                                                      into=c("species", "synonyms"), sep="_",
+#                                                      convert=TRUE)
+#             saveRDS(backup_uniqueSynonyms, backup_file)
+#           }else{
+#             backup$synonymsRef <- synonymsRef_list
+#             saveRDS(backup, backup_file)
+#           }
+#         }else{}
+#       }
+#     }, error = function(e) {
+#       message(sprintf("Error scraping %s: %s", x$species[i], e$message))
+#       species_list <<- c(species_list, x$species[i])
+#       synonyms_list <<- c(synonyms_list, "failed")
+#       synonymsRef_list <<- c(synonymsRef_list, "failed")
+#     })
+#   }
+#   
+#   if(getRef==TRUE){
+#     synonymsResults <- data.frame(species = species_list,
+#                                   synonyms = synonyms_list,
+#                                   ref = synonymsRef_list,
+#                                   stringsAsFactors = FALSE)
+#     return(synonymsResults)
+#   }else{
+#     synonymsResults <- data.frame(species = species_list,
+#                                   synonyms = synonyms_list,
+#                                   stringsAsFactors = FALSE)
+#     
+#     synonymsResults$combined <- paste((synonymsResults)$species, (synonymsResults)$synonyms, sep="_")
+#     
+#     uniquerec <- data.frame(unique(synonymsResults$combined))
+#     
+#     uniqueSynonyms <- tidyr::separate(data=uniquerec, col="unique.synonymsResults.combined.", 
+#                                       into=c("species", "synonyms"), sep="_",
+#                                       convert=TRUE)
+#     
+#     if(showProgress == TRUE){
+#     cat("\nSynonyms sampling complete!\n")
+#     }
+#     return(uniqueSynonyms)
+#   }
+# }
 
 
 # getSynonymsParallel_vector ----------------------------------------------
@@ -607,7 +608,6 @@ getSynonymsParallel_vector <- function(binomial, getRef = FALSE, showProgress = 
   sppLink <- paste0(base_url, query)
   
   url <- safeRequest(sppLink)
-  #url <- rvest::read_html(httr::GET(sppLink, httr::user_agent("Mozilla/5.0")))
   element <- rvest::html_element(url, "table") # species table
   
   # Extract synonyms
@@ -697,7 +697,9 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, includeAll = include
     
     # Character link: standard HTML parsing
     if (is.character(link) && grepl("^https:", link)) {
-      search <- rvest::read_html(link)
+      
+      #search <- rvest::read_html(link)
+      search <- safeRequest(link)
       title_node <- rvest::html_element(search, "h1")
       title_text <- rvest::html_text(title_node, trim = TRUE)
       
