@@ -88,7 +88,8 @@ reptAdvancedSearch <- function(higher = NULL,
   url <- paste0(base_url, query)
   
   # implement link test:
-  test <- rvest::read_html(url)
+  #test <- rvest::read_html(url)
+  test <- safeRequest(url)
   title_node <- rvest::html_element(test, "h1")
   title_text <- rvest::html_text(title_node, trim = TRUE)
   
@@ -112,7 +113,7 @@ reptAdvancedSearch <- function(higher = NULL,
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
     if(verbose) message("Searched binomial is currently:\n", binomial, "\n")
-    search <- reptSearch(binomial = binomial, verbose = FALSE)
-    return(search)
+    reptSearch(binomial = binomial, verbose = verbose)
+    return(invisible(NULL))
   }
 }
