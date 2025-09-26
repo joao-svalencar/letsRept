@@ -6,12 +6,30 @@ bibentry(
   bibtype = "Manual",
   title   = "letsRept: An Interface to the Reptile Database",
   author  = c(as.person("João Paulo Santos Vieira-Alencar"),
-              as.person("H. Cristoph Liedtke")),
+              as.person("H. Christoph Liedtke")),
   year    = "2025",
-  note    = paste("R package version 1.0.1")
+  note    = paste("R package version 1.0.1"),
+  url = "https://doi.org/10.32614/CRAN.package.letsRept"
 )
 
-# 2. Reptile Database citation
+# 2. Package manuscript citation
+bibentry(
+  bibtype = "Article",
+  title   = "letsRept: An R Package to Access the Global Reptile Database and Facilitate Taxonomic Harmonization",
+  author  = c(
+    as.person("João Paulo Santos Vieira-Alencar"),
+    as.person("H. Christoph Liedtke"),
+    as.person("Shai Meiri"),
+    as.person("Uri Roll"),
+    as.person("Peter Uetz"),
+    as.person("Javier Nori")
+  ),
+  year    = 2025,
+  journal = "Biodiversity Informatics",
+  url = "https://doi.org/10.1234/soon"
+)
+
+# 3. Reptile Database citation
 bibentry(
   bibtype = "Misc",
   title   = "The Reptile Database",
