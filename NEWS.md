@@ -18,6 +18,9 @@ The package was renamed to `letsRept`
 - reptCompare:   
   - implemented argument `compareDataset` to detect missing names in comparison with another dataset
 
+-reptSpecies:
+  - Only runs with parallel sampling, default is cores = 1.
+  
 - reptSplitCheck:
   - implemented argument `exact` for optional search only for exact matches
   
@@ -27,7 +30,7 @@ The package was renamed to `letsRept`
   
 - reptSynonyms:
   - Now works with vectors of valid names, does not require species links.
-  - Only runs with parallel sampling.
+  - Only runs with parallel sampling, default is cores = 1.
 
 ## Version 1.0.1 — 2025-08-23
 - Fixed CRAN test issues by skipping network-dependent tests.
