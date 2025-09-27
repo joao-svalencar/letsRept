@@ -114,6 +114,7 @@ reptSpecies <- function(url=NULL,
     orders <- c("Squamata", "Crocodylia", "Rhynchocephalia", "Testudines")
     suborders <- c("Amphisbaenia","Sauria", "Serpentes")
     
+
       results_list <- safeParallel(
         data = species_list,
         FUN = function(x) higherSampleParallel(
