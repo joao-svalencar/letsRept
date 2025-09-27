@@ -113,7 +113,7 @@ reptAdvancedSearch <- function(higher = NULL,
     # Presumably this is a direct species page
     binomial <- rvest::html_text(rvest::html_element(title_node, "em"), trim = TRUE)
     if(verbose) message("Searched binomial is currently:\n", binomial, "\n")
-    reptSearch(binomial = binomial, verbose = verbose)
-    return(invisible(NULL))
+    search <- reptSearch(binomial = binomial, verbose = verbose)
+    return(search)
   }
 }
