@@ -209,6 +209,60 @@ higherSampleParallel <- function(x, species_list, genus_list, url_list, orders =
                 url = url_list[j]))
   })
 }
+# higherSampleParallel_vector ---------------------------------------------
+higherSampleParallel_vector <- function(binomial, orders = orders, suborders = suborders, fullHigher = FALSE, getLink = FALSE)
+{ 
+  base_url <- "https://reptile-database.reptarium.cz/species"
+  gen <- strsplit(binomial, " ")[[1]][1]
+  species <- strsplit(binomial, " ")[[1]][2]
+  query <- paste0("?genus=", gen, "&species=", species)
+  sppLink <- paste0(base_url, query)
+  
+  tryCatch({
+    sp_page <- safeRequest(sppLink)
+    title <- rvest::html_element(sp_page, "h1")
+    
+    sppAuthor <- rvest::html_text(title, trim = TRUE)
+    sppAuthor <- gsub("^([A-Z][a-z]+\\s+[a-z\\-]+)\\s*", "", sppAuthor)
+    sppAuthor <- gsub("\\s{2,}", " ", sppAuthor)
+    
+    sppAuthor <- trimws(gsub("\\s+", " ", sppAuthor))
+    
+    sppYear <- stringr::str_extract(sppAuthor, "\\d{4}")
+    
+    element <- rvest::html_element(sp_page, "table")
+    
+    taxa <- xml2::xml_child(element, 1)
+    td_taxa <- rvest::html_element(taxa, "td:nth-child(2)")
+    children <- xml2::xml_contents(td_taxa)
+    
+    taxa_vector <- rvest::html_text(children[xml2::xml_name(children) == "text"], trim = TRUE)
+    taxa_vector <- paste(taxa_vector, collapse = ", ")
+    
+    family <- stringr::str_extract(taxa_vector, "\\b[A-Z][a-z]+idae\\b")
+    order <- match_taxon(taxa_vector, orders)
+    suborder <- match_taxon(taxa_vector, suborders)
+    
+    return(list(
+      order = order,
+      suborder = suborder,
+      family = family,
+      genus = gen,
+      species = binomial,
+      year = sppYear,
+      author = sppAuthor,
+      taxa_vector = if (fullHigher) taxa_vector else NULL,
+      url = if (getLink) sppLink else NULL
+    ))
+    
+  }, error = function(e) {
+    return(list(error = TRUE,
+                species = binomial,
+                message = e$message,
+                url = sppLink)
+    )
+  })
+}
 # clean_species_names -----------------------------------------------------
 
 #' Clean taxonomic species names from synonym strings
