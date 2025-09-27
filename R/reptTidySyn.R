@@ -38,7 +38,7 @@ reptTidySyn <- function(df, filter = NULL) {
   
   if ("url" %in% names(df)) df <- df[ , !(names(df) == "url")]
   
-  statuses <- c("up_to_date", "updated", "ambiguous", "not_found", "merge", "check_split")
+  statuses <- c("up_to_date", "updated", "ambiguous", "not_found", "merge", "check_split", "updated_typo")
   
   if (is.null(filter)) filter <- statuses
     
