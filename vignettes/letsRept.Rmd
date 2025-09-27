@@ -14,22 +14,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package was developed to facilitate the processes of reptile nomenclature update based on a search for species synonyms according to [The Reptile Database](https://reptile-database.reptarium.cz) website (Uetz et al., 2025).
+This package was developed to facilitate the processes of reptile nomenclature update based on a search for species synonyms according to the [Reptile Database](https://reptile-database.reptarium.cz) website (Uetz et al., 2025).
 
 Currently, the package accesses many species information from the Reptile Database using R interface.
 
-It is useful to people trying to match databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species information directly in R, optionally storing this information in a list.
-
-Any feedback, suggestion or request are welcome!
+It is useful to people trying to harmonize reptile nomenclature in databases from different sources (IUCN, species traits database, etc), or trying to get summaries from a given higher taxa or region (e.g.: Snakes from Brazil). But it can also just print single species accounts directly in R for quick information check.
 
 ### **Download**
 
-The package is available on CRAN, check if the installed version is 1.0.0 or above. If not, the development version can be installed from GitHub.
+The package is available on CRAN, check if the installed version is 1.1.0 or above. If not, the development version can be installed from GitHub.
 
 To install the stable version of this package, users must run:
 
 ```{.r}
-# Install CRAN version (check package version, must be 1.0.0 or above)
+# Install CRAN version (check package version, must be 1.1.0 or above)
 install.packages("letsRept")
 
 #OR
@@ -47,7 +45,8 @@ library(letsRept)
 
 #### **Function `reptSearch`:**
 
-Retrieves species information from The Reptile Database using a binomial name.
+Retrieves species information from The Reptile Database using a binomial species name.
+
 ```{.r}
 # single species:
 reptSearch(binomial = "Apostolepis adhara")
@@ -90,8 +89,11 @@ link <- reptAdvancedSearch(year = "2010 OR 2011 OR 2012") #returns a link to a l
 
 ⚠️ **Note:**
 
-The argument `exact` does not work properly for searches using logical arguments (e.g. `AND/OR`). If you want to force an exact match (e.g., "*Boa*" as a phrase) with multiple terms (e.g., "*Boa* OR *Apostolepis*"), you must manually include quotes in the input string, e.g., "\"*Boa*\" OR *Apostolepis*".
+The argument `exact` does not work properly for searches using logical arguments (e.g. `AND/OR`). If you want to force an exact match (e.g., "*Boa*" as a phrase) with multiple terms (e.g., "*Boa* OR *Apostolepis*"), you must manually include quotes in the input string: 
 
+```{.r}
+ link <- reptAdvancedSearch(synonym = "\"Boa\" OR Apostolepis")
+```
 #### **Function `reptSpecies`:**
 
 Retrieve species data from the species link created by `reptAdvancedSearch`. User can also copy and paste the url from a RD webpage containing the list of species derived from an advanced search. It includes higher taxa information, authors, year of description, and the species url. By default this function uses parallel processing, with default set to use half of the available cores. If user wants to use just one core, there are options for backup saving based on the `checkpoint` argument.
@@ -341,11 +343,11 @@ reptTidySyn(df)
 
 ### **Internal datasets**
 
-- The package counts with a full list of current valid species (`allReptiles` - 12,440 species) with their respective higher taxa information (updated to May 23rd, 2025);
+- The package counts with a full list of current valid species (`allReptiles` - 12,500 species) with their respective higher taxa information (updated to September 15th, 2025);
 
-- A dataset with all unique synonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to May 23rd, 2025); 
+- A dataset with all unique synonyms and chresonyms for each current valid species (`allSynonyms` - 53,159 entries - updated to May 23rd, 2025);
 
-- Another synonyms dataset with all entries considering their respective references (`allSynonymsRef` - 110,413 entries - updated to May 23rd, 2025).
+- Another synonyms and chresonyms dataset with all entries considering their respective references (`allSynonymsRef` - 110,413 entries - updated to May 23rd, 2025).
 
 ### **How to Cite**
 
@@ -363,8 +365,6 @@ When citing this package, please also cite the original database as a data sourc
 
 ### **References**
 Liedtke, H. C. (2018). AmphiNom: an amphibian systematic tool. Systematics and Biodiversity, 17(1) 1-6. https://doi.org/10.1080/14772000.2018.1518935
-
-Nogueira, C. C., Argôlo, A. J. S., Arzamendia, V., Azevedo, J. A. R., Barbo, F. E., Bérnils, R. S., … & Martins, M. (2019). Atlas of Brazilian Snakes: Verified Point-Locality Maps to Mitigate the Wallacean Shortfall in a Megadiverse Snake Fauna. South American Journal of Herpetology, 14(sp1), 1–274. http://dx.doi.org/10.2994/sajh-d-19-00120.1 
 
 Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025). [The Reptile Database](http://www.reptile-database.org)
 

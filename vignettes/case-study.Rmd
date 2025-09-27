@@ -31,6 +31,12 @@ If you downloaded the repository and executed the .Rproj, then to load the examp
 atlas <- read.csv(here::here("data", "atlas.csv"))
 ```
 
+Alternatively, the same dataset is available within the package and to load it run:
+
+```{.r}
+atlas <- letsRept::br_snakes_atlas
+```
+
 In the manuscript, to introduce readers to some of the main functions of *letsRept* we showed an example of how to subset the Reptile Database to get taxonomic information from a given group, in a given region. 
 
 ```{.r}
@@ -467,3 +473,11 @@ And that will again show *Apostolepis ambiniger* as in the very first comparison
 Providing that nomenclature is harmonized in both datasets `reptCompare` will be useful to highlight discrepancies.
 
 That is all for this tutorial. I hope it helped to comprehend a little better how the package works in terms of harmonizing nomenclature using the Reptile Database as a reference.
+
+## **References**
+
+Nogueira, C. C., Argôlo, A. J. S., Arzamendia, V., Azevedo, J. A. R., Barbo, F. E., Bérnils, R. S., … & Martins, M. (2019). Atlas of Brazilian Snakes: Verified Point-Locality Maps to Mitigate the Wallacean Shortfall in a Megadiverse Snake Fauna. South American Journal of Herpetology, 14(sp1), 1–274. http://dx.doi.org/10.2994/sajh-d-19-00120.1 
+
+Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025). [The Reptile Database](http://www.reptile-database.org)
+
+Vieira-Alencar, J. P. S., Liedtke, H. C., Meiri, S., Roll, U., Uetz, P., Nori, J. (2025). “letsRept: An R Package to Access the Global Reptile Database and Facilitate Taxonomic Harmonization.” _Biodiversity Informatics_, *X*, XX-XX.
