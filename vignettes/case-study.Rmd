@@ -1,5 +1,5 @@
 ---
-title: "Case Study: Using letsRept"
+title: "Case Study: Using letsRept to harmonize reptile species nomenclature"
 author: "João Paulo dos Santos Vieira-Alencar"
 date: "`r Sys.Date()`"
 output: html_vignette
@@ -156,7 +156,11 @@ As we knew that some localities reported for *Tantilla melanocephala* in [Noguei
 matched <- reptCompare(atlas$species, snakes_br, filter = c("matched", "absent")) #372 unmatched names + 1 absent
 
 split_check <- reptSplitCheck(matched, pubDate = 2019, cores = (parallel::detectCores()-1))
+```
 
+Sometimes, if the internet connection is slow or if the Reptile Database server does not respond, a queried species might not be retrieved and it will receive the status "failed", so it is important to check all statuses before continuing:
+
+```{.r}
 table(split_check$status)
 ```
 
@@ -166,11 +170,20 @@ library(knitr)
 # Create a data frame
 tab <- data.frame(
   check_split = 19,
-  up_to_date = 353
+  up_to_date = 354
 )
 
 # Render the table
 kable(tab, align = "c")
+```
+
+If your `split_check` object has any "failed" species you might want to query them again. You can filter them out and re-run the query using:
+
+```{.r}
+split_failed <- reptSplitCheck(split_check$query[split_check$status=="failed"], pubDate = 2019, cores = 9) #select and run
+split_check <- split_check[!split_check$status=="failed",] #remove the failed
+split_check <- rbind(split_check, split_failed) #add the species previously failed
+split_check <- split_check[order(split_check$query),] #Optional: reorder species names
 ```
 
 Using `reptTidySyn` again to verify the species of interest:
@@ -356,6 +369,101 @@ toAdd <- rbind(toAdd, data.frame(query = c("Tantilla selmae"),
                       status = "split_added"))
 ```
 
-At this point we have no other species to check for taxonomic split and a data frame with 12 new species to add to our initial list.
+At this point we have no other species to check for taxonomic split and a data frame with 11 new species to add to our initial list. Obviously, these species could have been added to the list before nomenclature harmonization, yet `reptSplitCheck` will at least suggest users to check their data as parts of it should no longer be attributed to the "split species". That is the case, for example, of *Tantilla melanocephala* and the *Chironius*.
 
+At this point we got two objects: `sync` and `split_check` with the original queried names and the current names according to the Reptile Database. Combining them should return a unique data frame with all 411 queried species:
 
+```{.r}
+atlas_new <- rbind(split_check, sync)
+table(atlas_new$status)
+```
+
+```{r, echo = FALSE}
+library(knitr)
+
+# Create a data frame
+tab <- data.frame(
+  merge = 2,
+  up_to_date = 373,
+  updated = 36
+)
+
+# Render the table
+kable(tab, align = "c")
+```
+
+And we have object `toAdd` with the 11 new species we detected as taxonomic split from our queried, but we will combine them latter.
+
+Now, from the 38 reviewed species many had automated nomenclature update. They could have been synonymized with some of the matched names, such as the *Liotyphlops* case we detected before. To verify if any other species were synonymized we have to check the column `RDB` for duplicates:
+
+```{.r}
+atlas_new[duplicated(atlas_new$RDB)|duplicated(atlas_new$RDB, fromLast = TRUE),]
+```
+
+With that we detect that all species with status "updated" were also considered junior synonyms of the "up_to_date" species. The straightforward decision here is to "merge" their data to those of the senior synonyms. Let's pretend this is all already done and now we just have to remove their names from the updated dataset. Just to make everything clear I will first change their status to "merge"
+
+```{.r}
+atlas_new[duplicated(atlas_new$RDB)|duplicated(atlas_new$RDB, fromLast = TRUE),]$status <- "merge"
+
+atlas_new[atlas_new$status=="merge",]
+```
+
+And now we remove the eight species with status "merge" where the `query` is different from `RDB` (e.g. updated nomenclature/junior synonyms):
+
+```{.r}
+atlas_new[atlas_new$query!=atlas_new$RDB & atlas_new$status=="merge",] #checking the entries to remove
+
+atlas_new <- atlas_new[!(atlas_new$query!=atlas_new$RDB & atlas_new$status=="merge"),] #removing from the dataset
+
+atlas_new$status[atlas_new$status=="merge"] <- "up_to_date" #returning the original status to the valid names
+```
+
+Attention here! If you have a large dataset you might not want to remove these entries prior to merging the new nomenclature with the dataset itself. The column used to merge would be the `query`, if you remove these entries you will just have to be careful using `merge`.
+
+Our dataset has 403 species now, but we still have to add the species from "toAdd" detected with `reptSplitCheck`:
+
+```{.r}
+atlas_new <- rbind(atlas_new, toAdd)
+
+atlas_new <- atlas_new[order(atlas_new$query),] #Optional: reorder species names
+
+table(atlas_new$status)
+```
+
+```{r, echo = FALSE}
+library(knitr)
+
+# Create a data frame
+tab <- data.frame(
+  split_added = 11,
+  up_to_date = 373,
+  updated = 30
+)
+
+# Render the table
+kable(tab, align = "c")
+```
+
+Final check for duplicated names in the updated nomenclature:
+
+```{.r}
+sum(duplicated(atlas_new$RDB))
+```
+
+In terms of nomenclature update, considering that all data management were also accounted for,  we are done. But, let's say that we are interested in verifying which are the other snakes species that occur in Brazil according to the Reptile Database. To do so we can again use `reptCompare`, but with the `compareDataset` argument:
+
+```{.r}
+reptCompare(atlas_new$RDB, br_snakes, compareDataset = TRUE)
+```
+
+This will show which species are in `br_snakes` but are not in `atlas_new`, revealing 37 species that according to the RDB should be added to our distribution database. But that is another story. Now, if we want to check the opposite: which species are in `atlas_new` but are not in `br_snakes`, we can just change the objects position in `reptCompare`:
+
+```{.r}
+reptCompare(br_snakes, atlas_new$RDB, compareDataset = TRUE)
+```
+
+And that will again show *Apostolepis ambiniger* as in the very first comparison in this tutorial in which it received the status "absent".
+
+Providing that nomenclature is harmonized in both datasets `reptCompare` will be useful to highlight discrepancies.
+
+That is all for this tutorial. I hope it helped to comprehend a little better how the package works in terms of harmonizing nomenclature using the Reptile Database as a reference.
