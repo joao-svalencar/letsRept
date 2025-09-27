@@ -6,7 +6,8 @@
 #' @param verbose Logical; If \code{TRUE}, prints progress messages. Default is \code{TRUE}.
 #' @param cores Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.
 #' @param showProgress Logical. If \code{TRUE}, prints data sampling progress. Default is \code{TRUE}.
-#'
+#' @param exact Logical. Will search queried names for exact matches only (e.g., does not retrieve "Tantilla cf. melanocephala" when searching for "Tantilla melanocephala"). Default is \code{FALSE}.
+#' 
 #' @return A data frame with the following columns:
 #' \itemize{
 #'   \item \code{query}: the original input names.
@@ -45,7 +46,8 @@ reptSplitCheck <- function(x,
                            includeAll = FALSE,
                            verbose = TRUE,
                            cores = 1,
-                           showProgress = TRUE) {
+                           showProgress = TRUE,
+                           exact = FALSE) {
   if(!is.character(x)){
     stop("Object x is not a character vector")
   }
@@ -55,7 +57,7 @@ reptSplitCheck <- function(x,
   }
   
   results <- safeParallel(x, function(spp) {
-    splitCheck(spp, pubDate = pubDate, includeAll = includeAll, verbose = verbose, x = x)
+    splitCheck(spp, pubDate = pubDate, includeAll = includeAll, verbose = verbose, x = x, exact = exact)
   }, cores = cores,
   showProgress = showProgress)
   
