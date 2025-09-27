@@ -42,9 +42,9 @@ reptSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
       link <- reptAdvancedSearch(synonym = binomial, verbose = verbose)
       
       if(is.null(link)){
-      return(invisible(NULL))
+          return(invisible(NULL))
       }else{
-      return(link)
+          return(link)
       }
     }
     
