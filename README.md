@@ -56,12 +56,10 @@ citation("letsRept")
 
 ⚠️ Important note:
 
-`letsRept` retrieves valuable taxonomic and synonymy data directly from [The Reptile Database](http://www.reptile-database.org)..
+`letsRept` retrieves valuable taxonomic and synonymy data directly from the [Reptile Database](http://www.reptile-database.org)..
 When citing this package, please also cite the original database as a data source.
 
 ### **References**
-Liedtke, H. C. (2018). AmphiNom: an amphibian systematic tool. Systematics and Biodiversity, 17(1) 1-6. https://doi.org/10.1080/14772000.2018.1518935
-
 Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025) The Reptile Database. http://www.reptile-database.org
 
 ### **Author:**
