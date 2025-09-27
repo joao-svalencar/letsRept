@@ -13,7 +13,7 @@
 #' \itemize{
 #'   \item \code{query}: the original input names.
 #'   \item \code{RDB}: the best-matching valid names according to The Reptile Database.
-#'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"ambiguous"}, \code{"merge"}, or \code{"not_found"}).
+#'   \item \code{status}: a status label indicating the result of the match (\code{"up_to_date"}, \code{"updated"}, \code{"updated_typo"}, \code{"ambiguous"}, \code{"merge"}, or \code{"not_found"}).
 #'   \item \code{url}: Optional, if getLink = TRUE returns the URL of the species page retrieved for each match, or a list of possible matches if ambiguous.
 #' }
 #'
@@ -52,7 +52,7 @@ reptSync <- function(x,
       status <- if (species_name == RDB) "up_to_date" else "updated"
       url <- result$url
     } else if (is.character(result) && grepl("^https:", result)) {
-      search <- rvest::read_html(result)
+      search <-safeRequest(result)
       title_node <- rvest::html_element(search, "h1")
       title_text <- rvest::html_text(title_node, trim = TRUE)
       
@@ -69,9 +69,21 @@ reptSync <- function(x,
       status <- "ambiguous"
       url <- result
     } else {
+      fuzzy <- agrep(species_name, letsRept::allReptiles$species, max.distance = 0.2, value = TRUE)
+      if(length(fuzzy) == 0){
       RDB <- result
       status <- "not_found"
       url <- result
+      }else if(length(fuzzy)==1){
+        RDB <- fuzzy
+        status <- "updated_typo"
+        url <- result
+      }else{
+        RDB <- paste(fuzzy, collapse = "; ")
+        status <- "ambiguous"
+        url <- result
+      }
+      
     }
     data.frame(query = species_name, RDB = RDB, status = status, url = url, stringsAsFactors = FALSE)
   }
