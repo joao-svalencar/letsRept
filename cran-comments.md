@@ -28,7 +28,7 @@ R CMD check results:
 - `reptSync` statuses renamed and fuzzy match implemented to solve minor "not_found" status
 - `reptCompare` and `reptSplitCheck` has new arguments to improve user experience and control
 - Vignettes updated and expanded to reflect the changes.
-- Package website released ()
+- Package website released (https://joao-svalencar.github.io/letsRept/)
 
 ## Notes for CRAN reviewers
 

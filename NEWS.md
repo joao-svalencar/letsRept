@@ -3,7 +3,7 @@
 ## Version 1.1.0 — 2025-10-20
 - General:
   - Official manuscript release https://journals.ku.edu/jbi/article/view/24329
-  - Package website release 
+  - Package website release https://joao-svalencar.github.io/letsRept/
   - improved functions documentation (corrected errors and missing information)
   - updated internal datasets (RDB September 2025 version)
   - updated vignettes
