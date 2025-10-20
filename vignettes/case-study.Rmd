@@ -9,9 +9,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Updating nomenclature with letsRept
+# Updating nomenclature with *letsRept*
 
-This article is dedicated to simulate a follow up, step-by-step of the case study presented in `Vieira-Alencar et al. (2025)`.
+This article is dedicated to simulate a follow up, step-by-step of the case study presented in [Vieira-Alencar et al. (2025)](https://journals.ku.edu/jbi/article/view/24329).
 
 The data used in the examples are referenced and publicly available. A full repository dedicated for the paper reproducibility is accessible via: https://doi.org/10.5281/zenodo.16895979. Download the repo and execute the .Rproj file to keep the same code structure as shown herein.
 
@@ -476,8 +476,8 @@ That is all for this tutorial. I hope it helped to comprehend a little better ho
 
 ## **References**
 
-Nogueira, C. C., Argôlo, A. J. S., Arzamendia, V., Azevedo, J. A. R., Barbo, F. E., Bérnils, R. S., … & Martins, M. (2019). Atlas of Brazilian Snakes: Verified Point-Locality Maps to Mitigate the Wallacean Shortfall in a Megadiverse Snake Fauna. South American Journal of Herpetology, 14(sp1), 1–274. http://dx.doi.org/10.2994/sajh-d-19-00120.1 
+Nogueira, C. C., Argôlo, A. J. S., Arzamendia, V., Azevedo, J. A. R., Barbo, F. E., Bérnils, R. S., … & Martins, M. (2019). Atlas of Brazilian Snakes: Verified Point-Locality Maps to Mitigate the Wallacean Shortfall in a Megadiverse Snake Fauna. *South American Journal of Herpetology*, 14(sp1), 1–274. http://dx.doi.org/10.2994/sajh-d-19-00120.1 
 
 Uetz, P., Freed, P, Aguilar, R., Reyes, F., Kudera, J. & Hošek, J. (eds.) (2025). [The Reptile Database](http://www.reptile-database.org)
 
-Vieira-Alencar, J. P. S., Liedtke, H. C., Meiri, S., Roll, U., Uetz, P., Nori, J. (2025). “letsRept: An R Package to Access the Global Reptile Database and Facilitate Taxonomic Harmonization.” _Biodiversity Informatics_, *X*, XX-XX.
+Vieira-Alencar, J. P. S., Liedtke, H. C., Meiri, S., Roll, U., Uetz, P., Nori, J. (2025). “*letsRept*: An R Package to Access the Global Reptile Database and Facilitate Taxonomic Harmonization.” *Biodiversity Informatics*, 19, 120-143. https://doi.org/10.17161/bi.v19i.24329
