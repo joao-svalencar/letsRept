@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/letsRept)](https://CRAN.R-project.org/package=letsRept)
+[![pkgdown](https://img.shields.io/badge/pkgdown-letsRept-blue)](https://joao-svalencar.github.io/letsRept/)
 <!-- badges: end -->
   
 ### **An Interface to the Reptile Database**
@@ -59,7 +60,7 @@ citation("letsRept")
 
 ⚠️ Important note:
 
-`letsRept` retrieves valuable taxonomic and synonymy data directly from the [Reptile Database](http://www.reptile-database.org)..
+`letsRept` retrieves valuable taxonomic and synonymy data directly from the [Reptile Database](http://www.reptile-database.org).
 When citing this package, please also cite the original database as a data source.
 
 ### **References**
