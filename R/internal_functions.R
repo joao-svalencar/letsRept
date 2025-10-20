@@ -293,7 +293,9 @@ clean_species_names <- function(names_vec) {
     "subsp\\.\\s*nov\\.?|var\\.\\s*\\w+|vari", acute_e, "t", acute_e, "\\.?(?:\\s*\\w+)?|",
     "aff\\.\\s*\\w+|cf\\.\\s*\\w+|\"[^\"]+\"|",
     left_dquote, "[^", right_dquote, "]+", right_dquote,
-    "))+)\\s*(?:[-", endash, emdash, "]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*"
+    #"))+)\\s*(?:[-", endash, emdash, "]|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*"
+    "))+)\\s*(?:(?<![A-Za-z])[-", endash, emdash, "](?![A-Za-z])|\\(|\\b\\p{Lu}{2,}\\b|\\d{4}|\\bet al\\.\\b|\\bin\\b).*"
+   
   )
   extracted <- sub(pattern, "\\1", names_vec, perl = TRUE)
   
