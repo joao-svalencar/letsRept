@@ -1,8 +1,7 @@
-# CRAN submission: letsRept 1.0.0
+# CRAN submission: letsRept 1.1.0
 
-This package is a renamed and refactored version of the previously submitted package `letsHerp` (on CRAN since June 23rd, 2025).
-It is submitted as a new package due to the name change, which more accurately reflects the package’s utility, and it supersedes the previous version.
-Although it is submitted as a new package, it is now a stable version, therefore the 1.0.0.
+This new version includes some important news. The official manuscript has been released (https://journals.ku.edu/jbi/article/view/24329);
+Some functions were upgraded
 
 ## R CMD check results
 
@@ -13,23 +12,23 @@ I have run R CMD check on:
 R CMD check results:  
 - No ERRORs  
 - No WARNINGs  
-- Only one NOTE: "New submission". This is technically a new submission under the name `letsRept`, but it replaces the previous package `letsHerp`, which I intend to archive.
+- No NOTEs
 
 ## Test coverage and documentation
 
 - All exported functions are documented and tested using `testthat`.  
 - A `NEWS.md` file is included with a summary of major changes.
 
-## Summary of changes in comparison to letsHerp (version 0.0.1)
+## Summary of changes in comparison to letsHerp (version 1.0.0)
 
-- `herpSync()`, now `reptSync()` was fully redesigned for improved performance and flexibility.
-- Added `reptSplitCheck()` to identify potential taxonomic splits after a user-defined year.
-- Added `reptTidySyn()` to summarize outputs from `reptSync()` and `reptSplitCheck()`, with optional filtering.
-- Added `reptCompare()` to facilitate the comparison of a user species list with the internal dataset or with a subset provided by users
-- Added `reptRefs()` to retrieve the references and links to access them from a species account.
-- Added `reptStats()` to summarize higher taxa information.
-- Added internal helper `splitCheck()` to support `reptSplitCheck`.
+- Improved functions documentation
+- Minor internal functions upgrade
+- Parallel functions safely running in all OS
+- Server requests modified reducing server overload
+- `reptSync` statuses renamed and fuzzy match implemented to solve minor "not_found" status
+- `reptCompare` and `reptSplitCheck` has new arguments to improve user experience and control
 - Vignettes updated and expanded to reflect the changes.
+- Package website released ()
 
 ## Notes for CRAN reviewers
 

@@ -24,11 +24,11 @@ bibentry(
     as.person("Peter Uetz"),
     as.person("Javier Nori")
   ),
-  year    = 2025,
+  year  = 2025,
   journal = "Biodiversity Informatics",
-  volume = 1,
-  issue = 1,
-  pages = "1-10"
+  volume = "19",
+  pages = "120-143",
+  note = "https://doi.org/10.17161/bi.v19i.24329"
 )
 
 # 3. Reptile Database citation
