@@ -14,7 +14,7 @@ Authors@R:
            role = c("aut"),
            comment = c(ORCID = "0000-0002-6221-8043"))
            )
-URL: https://github.com/joao-svalencar/letsRept
+URL: https://joao-svalencar.github.io/letsRept/
 BugReports: https://github.com/joao-svalencar/letsRept/issues
 Description: Provides tools to retrieve and summarize taxonomic information and synonymy data for reptile species using data scraped from The Reptile Database website (<https://reptile-database.reptarium.cz/>). Outputs include clean and structured data frames useful for ecological, evolutionary, and conservation research.
 License: MIT + file LICENSE
