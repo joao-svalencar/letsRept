@@ -1,9 +1,9 @@
 # letsRept NEWS
-The package was renamed to `letsRept`
 
-## Version 1.x.x — 2025-XX-XX
+## Version 1.1.0 — 2025-10-20
 - General:
-  - Official manuscript release
+  - Official manuscript release https://journals.ku.edu/jbi/article/view/24329
+  - Package website release 
   - improved functions documentation (corrected errors and missing information)
   - updated internal datasets (RDB September 2025 version)
   - updated vignettes
@@ -11,6 +11,7 @@ The package was renamed to `letsRept`
 - internal functions: 
   - safeParallel modified to safely stop all clusters upon user interruption
   - implemented safeRequest to safely address server workload
+  - clean_species_names, fixed hyphened names like "Simotes tri-notatus"
   
 - reptAdvancedSearch:
   - improved output in case of detecting single species (when searching for synonyms) = reptSearch
@@ -27,6 +28,7 @@ The package was renamed to `letsRept`
 - reptSync:
   - status "synonymization" changed to "merge"
   - try fuzzy match before giving status "not_found"
+  - added statuses "updated_typo" and "fuzzy_ambiguous" after fuzzy match
   
 - reptSynonyms:
   - Now works with vectors of valid names, does not require species links.
@@ -38,6 +40,8 @@ The package was renamed to `letsRept`
 - Minor bugfixes and test updates.
 
 ## Version 1.0.0 — 2025-08-05
+
+The package was renamed to `letsRept`
 
 ### Major changes
 
