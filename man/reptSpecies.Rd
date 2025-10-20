@@ -11,9 +11,7 @@ reptSpecies(
   taxonomicInfo = FALSE,
   fullHigher = FALSE,
   getLink = FALSE,
-  cores = 1,
-  checkpoint = NULL,
-  backup_file = NULL
+  cores = 1
 )
 }
 \arguments{
@@ -30,10 +28,6 @@ reptSpecies(
 \item{getLink}{Logical. If \code{TRUE}, includes the RDB URL for each species (useful for follow-up functions like \code{\link{reptSynonyms}}). Default is \code{FALSE}.}
 
 \item{cores}{Integer. Number of CPU cores to use for parallel processing. Default is \code{cores = 1}.}
-
-\item{checkpoint}{Optional. Integer specifying the number of species to process before saving a temporary backup. Backup is only saved if \code{cores = 1}. If set to \code{1}, saves progress after each species (safest but slowest).}
-
-\item{backup_file}{Optional. Character string specifying the path to an \code{.rds} file for saving intermediate results when \code{checkpoint} is set. Must end in \code{.rds}.}
 }
 \value{
 If \code{taxonomicInfo = FALSE} (default), returns a character vector of species names.
@@ -48,9 +42,6 @@ If \code{getLink = TRUE}, includes a column with the URL for each species’ pag
 \description{
 Retrieves a list of reptile species from The Reptile Database (RDB) based on a search URL, and optionally returns detailed taxonomic information for each species.
 This function can also save progress to disk during sampling and extract species-specific URLs for further use.
-}
-\note{
-If \code{checkpoint} is used, progress will only be saved when \code{cores = 1}. This prevents potential write conflicts in parallel mode.
 }
 \examples{
 \donttest{
