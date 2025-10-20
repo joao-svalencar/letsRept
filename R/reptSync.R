@@ -69,7 +69,7 @@ reptSync <- function(x,
       status <- "ambiguous"
       url <- result
     } else {
-      fuzzy <- agrep(species_name, letsRept::allReptiles$species, max.distance = 0.2, value = TRUE)
+      fuzzy <- agrep(species_name, letsRept::allReptiles$species, max.distance = 0.1, value = TRUE)
       if(length(fuzzy) == 0){
       RDB <- result
       status <- "not_found"
@@ -80,7 +80,7 @@ reptSync <- function(x,
         url <- result
       }else{
         RDB <- paste(fuzzy, collapse = "; ")
-        status <- "ambiguous"
+        status <- "fuzzy_ambiguous"
         url <- result
       }
       
