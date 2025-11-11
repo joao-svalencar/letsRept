@@ -1,5 +1,11 @@
 # letsRept NEWS
 
+## Version 1.1.1 — 2025-12-XX
+- reptSync:
+  - fixed solveAmbiguous bug when the query did not match any names in the synonym list.
+  - added fuzzy matching to the solveAmbiguous option.
+  - silenced internal reptSearch outputs when cores = 1.
+
 ## Version 1.1.0 — 2025-10-20
 - General:
   - Official manuscript release https://journals.ku.edu/jbi/article/view/24329
