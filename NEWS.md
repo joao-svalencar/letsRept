@@ -6,6 +6,9 @@
   - added fuzzy matching to the solveAmbiguous option.
   - silenced internal reptSearch outputs when cores = 1.
 
+- reptAdvancedSearch:
+  - added verbose condition to warnings when no matches are found.
+
 ## Version 1.1.0 — 2025-10-20
 - General:
   - Official manuscript release https://journals.ku.edu/jbi/article/view/24329
