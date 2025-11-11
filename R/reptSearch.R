@@ -33,7 +33,6 @@ reptSearch <- function(binomial = NULL, getRef = FALSE, verbose = TRUE) {
     query <- paste0("?genus=", gen, "&species=", species)
     sppLink <- paste0(base_url, query)
     
-    #url <- rvest::read_html(sppLink)
     url <- safeRequest(sppLink)
     element <- rvest::html_element(url, "table") # full table
     
