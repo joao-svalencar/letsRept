@@ -45,7 +45,7 @@ reptSync <- function(x,
   
   # Worker function: performs search + classifies result
   worker <- function(species_name) {
-    result <- letsRept::reptSearch(species_name)
+    result <- letsRept::reptSearch(species_name, verbose = FALSE)
     
     if (is.list(result)) {
       RDB <- result$species
