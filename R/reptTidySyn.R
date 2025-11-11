@@ -43,7 +43,11 @@ reptTidySyn <- function(df, filter = NULL) {
   if (is.null(filter)) filter <- statuses
     
     df <- df[df$status %in% filter,]
-
+    
+    if(filter=="merge"){
+      df <- df[order(df$RDB),]
+    }
+    
   spacer <- "   "  # 3 spaces between columns
   col_names <- names(df)
   
