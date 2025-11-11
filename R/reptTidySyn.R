@@ -44,7 +44,7 @@ reptTidySyn <- function(df, filter = NULL) {
     
     df <- df[df$status %in% filter,]
     
-    if(filter=="merge"){
+    if(length(filter) == 1 && filter=="merge"){
       df <- df[order(df$RDB),]
     }
     
