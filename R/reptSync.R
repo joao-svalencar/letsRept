@@ -112,8 +112,18 @@ reptSync <- function(x,
           RDB_new <- paste(synonyms, collapse = "; ")
           status_new <- "ambiguous"
         } else {
-          RDB_new <- "not_found"
-          status_new <- "not_found"
+          
+          fuzzy <- agrep(synSample$query[i], reptSpecies(synSample$url[i], getLink = FALSE, showProgress = FALSE, cores = cores), max.distance = 0.1, value = TRUE)
+          if(length(fuzzy) == 0){
+            RDB_new <- paste(reptSpecies(synSample$url[i], getLink = FALSE, showProgress = FALSE, cores = cores), collapse = "; ")
+            status_new <- "ambiguous"
+          }else if(length(fuzzy)==1){
+            RDB_new <- fuzzy
+            status_new <- "updated_typo"
+          }else{
+            RDB_new <- paste(fuzzy, collapse = "; ")
+            status_new<- "fuzzy_ambiguous"
+          }
         }
         
         list(query = synSample$query[i], RDB_new = RDB_new, status_new = status_new)
