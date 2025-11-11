@@ -9,6 +9,9 @@
 - reptAdvancedSearch:
   - added verbose condition to warnings when no matches are found.
 
+- reptTidySyn:
+  - ordered output by RBD column when filter = "merge" to facilitate visualization of which queried species to merge.
+
 ## Version 1.1.0 — 2025-10-20
 - General:
   - Official manuscript release https://journals.ku.edu/jbi/article/view/24329
