@@ -1,6 +1,10 @@
 # letsRept NEWS
 
-## Version 1.1.1 — 2025-12-XX
+## Version 1.1.1 — 2026-04-XX
+- internal datasets:
+  - allReptiles updated to the current list of valid species (12,568)
+  - allSynonymsRef and allSynonyms updated (55,130 and 112,626 entries respectively)
+  
 - reptSync:
   - fixed solveAmbiguous bug when the query did not match any names in the synonym list.
   - added fuzzy matching to the solveAmbiguous option.

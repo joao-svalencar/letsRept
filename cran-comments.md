@@ -1,34 +1,24 @@
-# CRAN submission: letsRept 1.1.0
+# CRAN submission: letsRept 1.1.1
 
-This new version includes some important news. The official manuscript has been released (https://journals.ku.edu/jbi/article/view/24329);
-Some functions were upgraded
+This new version includes an update on the package internal datasets reflecting current Reptile taxonomy
 
 ## R CMD check results
 
-I have run R CMD check on:
-- macOS 10.15.7, R 4.3.3  
-- Ubuntu 22.04, R 4.3.2 (via GitHub Actions CI)
+I have run R CMD check with the following results:
 
-R CMD check results:  
 - No ERRORs  
 - No WARNINGs  
-- No NOTEs
+- One note: "unable to verify current time"
 
 ## Test coverage and documentation
 
 - All exported functions are documented and tested using `testthat`.  
 - A `NEWS.md` file is included with a summary of major changes.
 
-## Summary of changes in comparison to letsHerp (version 1.0.0)
+## Summary of changes in comparison to letsRept (version 1.1.0)
 
-- Improved functions documentation
 - Minor internal functions upgrade
-- Parallel functions safely running in all OS
-- Server requests modified reducing server overload
-- `reptSync` statuses renamed and fuzzy match implemented to solve minor "not_found" status
-- `reptCompare` and `reptSplitCheck` has new arguments to improve user experience and control
-- Vignettes updated and expanded to reflect the changes.
-- Package website released (https://joao-svalencar.github.io/letsRept/)
+- Internal datasets upgrade
 
 ## Notes for CRAN reviewers
 

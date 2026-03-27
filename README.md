@@ -46,7 +46,7 @@ browseVignettes("letsRept")
 - [x] &nbsp; Paper submission (August 18th, 2025)
 - [x] &nbsp; Paper publication (October 20th, 2025)
 - [x] &nbsp; update `allReptiles`
-- [ ] &nbsp; update `allSynonyms`
+- [x] &nbsp; update `allSynonyms`
 - [ ] &nbsp; Package webpage development
 - [ ] &nbsp; API development and package API compatibility
 
