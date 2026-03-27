@@ -13,7 +13,7 @@ extraction of species names, synonyms, higher taxa, and related metadata for her
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/joao-svalencar/letsRept}
+  \item \url{https://joao-svalencar.github.io/letsRept/}
   \item Report bugs at \url{https://github.com/joao-svalencar/letsRept/issues}
 }
 
