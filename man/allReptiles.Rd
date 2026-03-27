@@ -5,7 +5,7 @@
 \alias{allReptiles}
 \title{Example dataset: allReptiles}
 \format{
-A dataframe (download: September 15th, 2025) with 12500 rows and 8 variables:
+A dataframe (download: March 27th, 2025) with 12568 rows and 8 variables:
 \describe{
 \item{order}{A species current order}
 \item{suborder}{A species current suborder}
