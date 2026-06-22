@@ -1,6 +1,6 @@
 # letsRept NEWS
 
-## Version 1.1.1 — 2026-04-XX
+## Version 1.1.1 — 2026-06-XX
 - internal datasets:
   - allReptiles updated to the current list of valid species (12,568)
   - allSynonymsRef and allSynonyms updated (55,130 and 112,626 entries respectively)
@@ -15,6 +15,9 @@
 
 - reptTidySyn:
   - ordered output by RBD column when filter = "merge" to facilitate visualization of which queried species to merge.
+
+- reptSplitCheck:
+  - now accepts a vector of years in 'pubDate' so each species can be evaluated to a respective year.
 
 ## Version 1.1.0 — 2025-10-20
 - General:

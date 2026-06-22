@@ -46,7 +46,8 @@ reptTidySyn <- function(df, filter = NULL) {
     
     if(length(filter) == 1 && filter=="merge"){
       df <- df[order(df$RDB),]
-    }
+    } else { 
+      df <- df[order(df$query),]}
     
   spacer <- "   "  # 3 spaces between columns
   col_names <- names(df)
