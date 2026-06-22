@@ -42,7 +42,10 @@ browseVignettes("letsRept")
 ### **Next steps**
 
 - [ ] &nbsp; Package webpage development
-- [ ] &nbsp; API development and package API compatibility
+
+### **News on GitHub Version (not in CRAN yet)**
+
+Function `reptSplitCheck()` now accepts a vector of pubDates. In this way each species in the querry can be checked against an specific date.
 
 ### **How to Cite**
 
