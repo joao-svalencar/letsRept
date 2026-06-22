@@ -41,12 +41,6 @@ browseVignettes("letsRept")
 
 ### **Next steps**
 
-- [x] &nbsp; Stable version 1.0.1 CRAN submission (August 18th, 2025)
-- [x] &nbsp; Stable version 1.0.1 CRAN release (August 22nd, 2025)
-- [x] &nbsp; Paper submission (August 18th, 2025)
-- [x] &nbsp; Paper publication (October 20th, 2025)
-- [x] &nbsp; update `allReptiles`
-- [x] &nbsp; update `allSynonyms`
 - [ ] &nbsp; Package webpage development
 - [ ] &nbsp; API development and package API compatibility
 
@@ -74,7 +68,3 @@ Vieira-Alencar, João Paulo dos Santos (joaopaulo.valencar@gmail.com)
 
 [Orcid](https://orcid.org/0000-0001-6894-6773) | [Research Gate](https://www.researchgate.net/profile/Joao-Paulo-Alencar)
 
-Ph.D in Ecology at USP
-
-Post-Doc at:
-Laboratório de Evolução e Diversidade I  - "LED 1" - Centro de Ciências Naturais e Humanas, Universidade Federal do ABC, São Bernardo do Campo, SP – Brazil
