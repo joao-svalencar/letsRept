@@ -33,7 +33,7 @@ browseVignettes("letsRept")
 
 ### **Internal datasets**
 
-- The package counts with a full list of current valid species (`allReptiles` - 12,568 species) with their respective higher taxa information (updated to 27th of March, 2026);
+- The package counts with a full list of current valid species (`allReptiles` - 12,650 species) with their respective higher taxa information (updated to 22nd of June, 2026);
 
 - A dataset with all unique synonyms for each current valid species (`allSynonyms` - 55,130 entries - updated to 27th of March, 2026); 
 

@@ -2,7 +2,7 @@
 
 ## Version 1.1.1 — 2026-06-XX
 - internal datasets:
-  - allReptiles updated to the current list of valid species (12,568)
+  - allReptiles updated to the current list of valid species (12,650)
   - allSynonymsRef and allSynonyms updated (55,130 and 112,626 entries respectively)
   
 - reptSync:
