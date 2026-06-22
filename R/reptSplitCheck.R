@@ -56,8 +56,13 @@ reptSplitCheck <- function(x,
     pubDate <- as.integer(min(letsRept::allReptiles$year))
   }
   
-  results <- safeParallel(x, function(spp) {
-    splitCheck(spp, pubDate = pubDate, includeAll = includeAll, verbose = verbose, x = x, exact = exact)
+  results <- safeParallel(seq_along(x), function(i) {
+    splitCheck(spp = x[i],
+               pubDate = if(length(pubDate)==1) pubDate else pubDate[i],
+               includeAll = includeAll,
+               verbose = verbose,
+               x = x,
+               exact = exact)
   }, cores = cores,
   showProgress = showProgress)
   
