@@ -37,7 +37,7 @@ browseVignettes("letsRept")
 
 - A dataset with all unique synonyms for each current valid species (`allSynonyms` - 55,130 entries - updated to 27th of March, 2026); 
 
-- Another synonyms dataset with all entries considering their respective references (`allSynonymsRef`112,626 entries - updated to 27th of March, 2026).
+- Another synonyms dataset with all entries considering their respective references (`allSynonymsRef`113,377 entries - updated to 22nd of June, 2026).
 
 ### **Next steps**
 

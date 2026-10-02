@@ -5,10 +5,10 @@
 \alias{allSynonyms}
 \title{Example dataset: allSynonyms}
 \format{
-A dataframe with 55,130 rows and 2 variables:
+A dataframe with 55,353 rows and 2 variables:
 \describe{
-\item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website (download: March 27th, 2026)}
-\item{synonym}{A character column with the respective synonyms for all reptile species cataloged in The Reptile Database website information (download: March 27th, 2026)}
+\item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website (download: June 22nd, 2026)}
+\item{synonym}{A character column with the respective synonyms for all reptile species cataloged in The Reptile Database website information (download: June 22nd, 2026)}
 }
 }
 \source{

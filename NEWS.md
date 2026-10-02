@@ -1,9 +1,9 @@
 # letsRept NEWS
 
-## Version 1.1.1 — 2026-06-XX
+## Version 1.1.2 — 2026-06-22
 - internal datasets:
   - allReptiles updated to the current list of valid species (12,650)
-  - allSynonymsRef and allSynonyms updated (55,130 and 112,626 entries respectively)
+  - allSynonymsRef and allSynonyms updated (113,377 and 55,353 entries respectively)
   
 - reptSync:
   - fixed solveAmbiguous bug when the query did not match any names in the synonym list.
@@ -14,10 +14,13 @@
   - added verbose condition to warnings when no matches are found.
 
 - reptTidySyn:
+  - ordered general output by query column
   - ordered output by RBD column when filter = "merge" to facilitate visualization of which queried species to merge.
-
+  
+  
 - reptSplitCheck:
   - now accepts a vector of years in 'pubDate' so each species can be evaluated to a respective year.
+  - silenced internal reptAvancedSearch outputs when simple synonyms are found to keep console clean. Errors are still flaged.
 
 ## Version 1.1.0 — 2025-10-20
 - General:

@@ -44,7 +44,7 @@
 reptSplitCheck <- function(x,
                            pubDate = NULL,
                            includeAll = FALSE,
-                           verbose = TRUE,
+                           verbose = FALSE,
                            cores = 1,
                            showProgress = TRUE,
                            exact = FALSE) {

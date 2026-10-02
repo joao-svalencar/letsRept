@@ -471,9 +471,9 @@ splitCheck <- function(spp, pubDate = NULL, verbose = TRUE, includeAll = include
     exact_flag <- length(parts) == 2 && tolower(parts[1]) == tolower(parts[2])
    
      if (exact_flag) {
-      link <- reptAdvancedSearch(synonym = spp, verbose = verbose, exact = TRUE)
+      link <- reptAdvancedSearch(synonym = spp, verbose = FALSE, exact = TRUE)
     } else {
-      link <- reptAdvancedSearch(synonym = spp, verbose = verbose, exact = exact)
+      link <- reptAdvancedSearch(synonym = spp, verbose = FALSE, exact = exact)
     }
     
     # Character link: standard HTML parsing

@@ -1,6 +1,6 @@
 Package: letsRept
 Title: An Interface to the Reptile Database
-Version: 1.1.1
+Version: 1.1.2
 Authors@R:
     c(
     person(given="João Paulo dos Santos",
@@ -20,7 +20,6 @@ Description: Provides tools to retrieve and summarize taxonomic information and 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports: 
     dplyr,
     httr,
@@ -42,3 +41,4 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0

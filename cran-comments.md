@@ -1,4 +1,4 @@
-# CRAN submission: letsRept 1.1.1
+# CRAN submission: letsRept 1.1.2
 
 This new version includes an update on the package internal datasets reflecting current Reptile taxonomy
 
@@ -8,7 +8,7 @@ I have run R CMD check with the following results:
 
 - No ERRORs  
 - No WARNINGs  
-- One note: "unable to verify current time"
+- No NOTEs
 
 ## Test coverage and documentation
 

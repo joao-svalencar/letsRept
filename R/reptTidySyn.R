@@ -11,12 +11,12 @@
 #'
 #' @examples
 #' df <- data.frame(
-#'   species = c("Genus epithet 1", 
+#'   query = c("Genus epithet 1", 
 #'               "Genus epithet 2",
 #'               "Genus epithet 3",
 #'               "Genus epithet 4",
 #'               "Genus epithet 5"),
-#'   synonyms = c("Genus epithet 1.1; Genus epithet 1.2",
+#'   RDB = c("Genus epithet 1.1; Genus epithet 1.2",
 #'                 "Genus epithet 2",
 #'                 "Genus epithet 3",
 #'                 "Not found",

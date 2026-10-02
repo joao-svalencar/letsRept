@@ -23,6 +23,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item João Paulo dos Santos Vieira-Alencar \email{joaopaulo.valencar@gmail.com} (\href{https://orcid.org/0000-0001-6894-6773}{ORCID})
   \item Christoph Liedtke \email{christoph.liedtke@ebd.csic.es} (\href{https://orcid.org/0000-0002-6221-8043}{ORCID})
 }
 

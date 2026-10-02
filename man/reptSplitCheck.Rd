@@ -8,7 +8,7 @@ reptSplitCheck(
   x,
   pubDate = NULL,
   includeAll = FALSE,
-  verbose = TRUE,
+  verbose = FALSE,
   cores = 1,
   showProgress = TRUE,
   exact = FALSE
@@ -17,7 +17,7 @@ reptSplitCheck(
 \arguments{
 \item{x}{A character vector of species names to check. Usually from a database.}
 
-\item{pubDate}{Integer. An year (e.g., 2019) used as a reference date from when to check potential taxonomic split}
+\item{pubDate}{Integer. An year (e.g., 2019) used as a reference date from when to check potential taxonomic split. Either a single year applied to all queried species, or a vector of years with the same length as x, providing a reference year for each species individually.}
 
 \item{includeAll}{Logical; If \code{TRUE}, include all species described since \code{pubDate} regardless of if it is already included in the queried species list. Default is \code{FALSE}}
 
