@@ -2,7 +2,7 @@
 #'
 #' This dataset contains the valid names and respective listed synonyms for all reptile species cataloged in The Reptile Database.
 #'
-#' @format A dataframe with 55,353 rows and 2 variables:
+#' @format A dataframe with 55,590 rows and 2 variables:
 #' \describe{
 #'   \item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website (download: June 22nd, 2026)}
 #'   \item{synonym}{A character column with the respective synonyms for all reptile species cataloged in The Reptile Database website information (download: June 22nd, 2026)}

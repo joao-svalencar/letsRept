@@ -5,10 +5,10 @@
 \alias{allSynonymsRef}
 \title{Example dataset: allSynonymsRef}
 \format{
-A dataframe with 113,377 rows and 4 variables:
+A dataframe with 114,251 rows and 4 variables:
 \describe{
-\item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website (download: March 27th, 2026)}
-\item{synonym}{A character column with the respective synonyms for all reptile species cataloged in The Reptile Database website information (download: March 27th, 2026)}
+\item{species}{A character vector with known current valid name for all reptile species cataloged in The Reptile Database website (download: October 01st, 2026)}
+\item{synonym}{A character column with the respective synonyms for all reptile species cataloged in The Reptile Database website information (download: October 01st, 2026)}
 \item{ref}{A charater column with the synonyms and respective references that used it}
 \item{refYear}{An integer with the publication year mentionning the refered synonyms}
 }
