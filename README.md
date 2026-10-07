@@ -7,7 +7,7 @@
   
 ### **An Interface to the Reptile Database**
 
-This package was developed to facilitate the processes of reptile nomenclature update based on the [Reptile Database](https://reptile-database.reptarium.cz) website (Uetz et al., 2025).
+This package was developed to facilitate the processes of reptile nomenclature update based on the [Reptile Database](https://reptile-database.reptarium.cz) website (Uetz et al., 2026).
 
 Currently, the package access many species information from the Reptile Database using R interface.
 
@@ -42,10 +42,6 @@ browseVignettes("letsRept")
 ### **Next steps**
 
 - [ ] &nbsp; Package webpage development
-
-### **News on GitHub Version (not in CRAN yet)**
-
-Function `reptSplitCheck()` now accepts a vector of pubDates. In this way each species in the querry can be checked against an specific date.
 
 ### **How to Cite**
 

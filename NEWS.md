@@ -1,5 +1,11 @@
 # letsRept NEWS
 
+## Version 1.1.3 — 2026-10-07
+- internal datasets:
+  - allReptiles updated to the current list of valid species (12,687)
+  - allSynonymsRef and allSynonyms updated (114,251 and 55,590 entries respectively)
+
+
 ## Version 1.1.2 — 2026-06-22
 - internal datasets:
   - allReptiles updated to the current list of valid species (12,650)

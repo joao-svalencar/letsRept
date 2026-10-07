@@ -1,4 +1,4 @@
-# CRAN submission: letsRept 1.1.2
+# CRAN submission: letsRept 1.1.3
 
 This new version includes an update on the package internal datasets reflecting current Reptile taxonomy
 
@@ -14,6 +14,10 @@ I have run R CMD check with the following results:
 
 - All exported functions are documented and tested using `testthat`.  
 - A `NEWS.md` file is included with a summary of major changes.
+
+## Summary of changes in comparison to letsRept (version 1.1.2)
+
+- Internal datasets upgrade
 
 ## Summary of changes in comparison to letsRept (version 1.1.0)
 
